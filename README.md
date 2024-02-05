@@ -3,6 +3,24 @@
 # PURPOSE
 This is your team's repo for the ESN Application, the group project conducted in 18652.
 
+# Technology Usage
+- Backend: 
+   - Node.js
+   - Express.js
+   - 
+- Frontend: 
+   - HTML, CSS, Javascript
+   - Pug
+   - Boostrap
+   - 
+- Database: 
+   - MySQL
+   - 
+- Developing tools: 
+   - Nodemon
+   - ESLint
+   - 
+
 # IMPORTANT RULES
 
 - YOU ARE *NOT* PERMITTED TO SHARE THIS REPO OUTSIDE THIS GITHUB ORG. 

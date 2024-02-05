@@ -1,0 +1,29 @@
+doctype html
+head
+  meta(charset='utf-8')
+  meta(name='viewport' content='width=device-width, initial-scale=1.0')
+  link(rel='stylesheet', type='text/css', href='/stylesheets/index.css')
+  title Sign Up
+.LoginBox
+  form.login-form(action='/register' method='post')
+    h2 Sign Up
+    input(type='text' name='username' placeholder='username')
+    input(type='password' name='password' placeholder='password')
+    input(type='password' name='confirmPassword' placeholder='confirm password')
+    button#btn(type='submit') Sign Up
+    a(href='/') Back
+  script.
+    let pwd = document.querySelector("input[name='password']");
+    let conPwd = document.querySelector("input[name='confirmPassword']");
+    let username = document.querySelector("input[name='username']");
+    let btn = document.getElementById('btn');
+    btn.onclick = () =>{
+    if(pwd.value.trim() != conPwd.value.trim()){
+    alert("The password is not match")
+    return false;
+    }
+    if (pwd.value == "" || username.value == ""){
+    alert("Any input filed cannot be empty")
+    return false;
+    }
+    }
