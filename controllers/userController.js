@@ -23,10 +23,10 @@ export async function login(req, res) {
         // temp implementation, need to replace by web token
         const username = req.nody.username;
         const password = req.body.password; 
-        const user = await userService.Authenticate(username, password);
+        const user = await userService.Authenticate();
         
-        // Need to implement the After the authenticate function 
-        res.json(user);
+        // Need to implement After the authenticate function 
+        // res.json(user);
     } catch (error) {
         res.status(500).send(error.message);
     }

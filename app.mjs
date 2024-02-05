@@ -1,7 +1,7 @@
 import express from 'express';
 import path from 'path';
 // import database
-// import { db } from '../config/database.js';
+import {sequelize, User}  from './config/database.mjs';
 
 // import routing
 import authRoutes from './routes/authRoutes.mjs';
@@ -29,7 +29,9 @@ app.get('/', (req, res) => {
     res.redirect('/users/login');
 });
 
-app.listen(port, () => {
+app.listen(port, async () => {
     console.log(`Server running at http://localhost:${port}`);
+    const users = await User.findAll();
+    console.log(users); // true
 });
 
