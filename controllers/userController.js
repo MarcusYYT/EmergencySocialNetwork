@@ -14,7 +14,7 @@ export async function register(req, res) {
         const username = req.body.username;
         const password = req.body.password;
         const userCheck = await userService.ifUserExist(username).then(async (result)=>{
-            if(userCheck === true){
+            if(result === true){
                 console.log("The User is exist")
                 res.redirect('/users/register/?success=false');
             } else{
