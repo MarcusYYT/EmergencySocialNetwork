@@ -1,11 +1,10 @@
-html,
-body {
+html, body {
     margin: 0;
-    background-color: bisque;
+    background-color: #238EE1;
 }
 
 a {
-    color: burlywood;
+    margin-top: 10px;
 }
 
 .LoginBox {
@@ -19,34 +18,45 @@ a {
 
 
 .login-form {
-    width: 240px;
-    height: 220px;
+    width: 460px;
+    height: 350px;
     display: flex;
     flex-direction: column;
     padding: 40px;
     text-align: center;
     position: relative;
     z-index: 100;
-    background-color:antiquewhite ;
+    background-color: #78caff;
     border-radius: 18px;
-    overflow: hidden; 
-   }
-
-.login-form h2 {
-    font-size: 18px;
-    font-weight: 400;
-    color: #3d5245;
+    overflow: hidden;
+    justify-content: center;
+    align-items: center;
 }
 
-.login-form input,
-.login-form button {
+.login-form h2 {
+    font-size: 25px;
+    font-weight: 400;
+    color: #031926;
+    margin-bottom: 30px;
+    margin-top: 0px;
+}
+
+.login-form input {
     margin: 6px 0;
     height: 36px;
     border: none;
-    background-color: rgba(255, 255, 255, 0.3);
     border-radius: 4px;
     padding: 0 14px;
-    color: #3d5245;
+    width: 350px;
+}
+
+.login-form button {
+    margin-top: 20px;
+    height: 36px;
+    border: none;
+    border-radius: 4px;
+    padding: 0 14px;
+    width: 150px;
 }
 
 .login-form button:hover {
