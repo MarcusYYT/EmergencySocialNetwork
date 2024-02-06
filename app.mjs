@@ -1,7 +1,6 @@
 import express from 'express';
 import path from 'path';
-// import database
-import {sequelize}  from './config/database.mjs';
+// import database model
 import {User} from './models/User.model.mjs'
 
 // import routing

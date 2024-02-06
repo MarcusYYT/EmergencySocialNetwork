@@ -1,4 +1,3 @@
-import mysql from 'mysql2';
 import { Sequelize, DataTypes} from 'sequelize'
 
 // TO-DO, add database config

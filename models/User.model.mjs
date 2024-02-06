@@ -1,5 +1,4 @@
-import mysql from 'mysql2';
-import { Sequelize, DataTypes} from 'sequelize'
+import {DataTypes} from 'sequelize'
 import {sequelize} from '../config/database.mjs'
 
 const User = sequelize.define('user', {

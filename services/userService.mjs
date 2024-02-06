@@ -6,7 +6,7 @@ import {User} from '../models/User.model.mjs'
  * @param {string} password 
  */
 export async function createNewUser(username, password){
-    const newUser = await User.create({ username: username, password: password });
+    await User.create({ username: username, password: password });
 }
 
 /**
