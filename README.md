@@ -19,7 +19,9 @@ This is your team's repo for the ESN Application, the group project conducted in
 - Developing tools: 
    - Nodemon
    - ESLint
-   - JsDoc
+   - JsDoc, jsdoc2md
+      - Run `npx jsdoc -c JsDoc_config.json` to get the HTML of the function documentation in the folder `out`
+      - Run `npx jsdoc2md -c JsDoc_config.json PATH` to get the markdown of the function documentation
    - 
 
 # IMPORTANT RULES
