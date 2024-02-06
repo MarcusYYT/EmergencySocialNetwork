@@ -18,8 +18,8 @@ sequelize.authenticate().then(() => {
     console.error('Unable to connect to the database: ', error);
  });
 
- const User = sequelize.define('User', {
-    userId: {
+ const User = sequelize.define('user', {
+    user_id: {
         type: DataTypes.INTEGER,
         primaryKey: true,
         autoIncrement: true
@@ -32,21 +32,9 @@ sequelize.authenticate().then(() => {
         type: DataTypes.STRING,
         allowNull:false
     }
- });
-
-/*
-const pool = mysql.createPool({
-    host: '34.102.56.250',
-    user: 'root',
-    password: 'sb1sb1',
-    database: 'Emergency_Social_Network',
-    waitForConnections: true,
-    connectionLimit: 10,
-    queueLimit: 0
-});
-
-pool.getConnection(function(err, connection) {
-    console.log("connection")
-});*/
+}, 
+{
+    freezeTableName: true
+  });
 
 export {sequelize, User}

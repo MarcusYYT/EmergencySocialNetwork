@@ -7,7 +7,7 @@ This is your team's repo for the ESN Application, the group project conducted in
 - Backend: 
    - Node.js
    - Express.js
-   - 
+   - Passport.js
 - Frontend: 
    - HTML, CSS, Javascript
    - Pug

@@ -31,7 +31,12 @@ app.get('/', (req, res) => {
 
 app.listen(port, async () => {
     console.log(`Server running at http://localhost:${port}`);
-    const users = await User.findAll();
-    console.log(users); // true
+    await User.sync();
+    /*
+    const jane = await User.create({ username: "Jane", password: "Doe" });
+    console.log("Jane's auto-generated ID:", jane.id);
+    await User.findAll().then((res) => {
+        console.log(res); // true
+    }); */ 
 });
 

@@ -1,15 +1,50 @@
-import {sequelize}  from '../config/database.mjs';
+import {User}  from '../config/database.mjs';
 
-// TO-DO
-export async function Authenticate() {
-    // Logic to check the database to valid user
-    // const [rows, fields] = await db.query('SELECT * FROM users WHERE username = ? AND password = ?', [username, password]);
-    // const users = db.query('SELECT * from user"');
-    console.log(users)
-    
-    return 0;
+/**
+ * This function will inster a row to the user table with username and password 
+ * @param {string} username 
+ * @param {string} password 
+ */
+export async function createNewUser(username, password){
+    const newUser = await User.create({ username: username, password: password });
 }
 
-export async function CheckUserExist(username) {
-    // db.query("Select username from user where username = " + username)
+/**
+ * The function to check if a user is exist in database by username
+ * @param {string} username 
+ * @returns The function will return true if the username is exist in database. Otherwise return false
+ */
+export async function ifUserExist(username) {
+    const result = await User.findAll({
+        where: { username: username }
+      });
+    if (result.length === 0){
+        // user does not exist
+        return false
+    } else {
+        // user exist
+        return true
+    }
+}
+
+/**
+ * Check the username and password with the information stored in database
+ * @param {string} username 
+ * @param {string} enteredPassword 
+ * @returns True if the username and password match, False if the username and password are not match or username not exist
+ */
+export async function Authenticate(username, enteredPassword){
+    const userCheck = await ifUserExist(username)
+    if (userCheck === false){
+        return false
+    }
+    const userQueryResult = await User.findOne({
+        where: {username: username}
+    });
+    const password = userQueryResult.dataValues.password
+    if (password === enteredPassword){
+        return true
+    } else {
+        return false
+    }
 }

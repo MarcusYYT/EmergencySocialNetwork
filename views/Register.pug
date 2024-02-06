@@ -5,7 +5,7 @@ head
   link(rel='stylesheet', type='text/css', href='/stylesheets/index.css')
   title Sign Up
 .LoginBox
-  form.login-form(action='/register' method='post')
+  form.login-form(action='/users/register' method='post')
     h2 Sign Up
     input(type='text' name='username' placeholder='username')
     input(type='password' name='password' placeholder='password')
@@ -26,4 +26,7 @@ head
     alert("Any input filed cannot be empty")
     return false;
     }
+    }
+    if (new URL(window.location.href).searchParams.get('success') === 'false') {
+        alert('Registration failed due to duplicate username');
     }

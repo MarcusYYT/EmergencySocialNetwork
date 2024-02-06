@@ -11,8 +11,18 @@ export function showRegister(req, res) {
 
 export async function register(req, res) {
     try{
-        // TO-DO
-
+        const username = req.body.username;
+        const password = req.body.password;
+        const userCheck = await userService.ifUserExist(username).then(async (result)=>{
+            if(userCheck === true){
+                console.log("The User is exist")
+                res.redirect('/users/register/?success=false');
+            } else{
+                console.log("The User is not exist")
+                await userService.createNewUser(username, password);
+                res.redirect('/users/login/?success=true');
+            }
+        });
     } catch (error) {
         res.status(500).send(error.message);
     }
@@ -21,10 +31,14 @@ export async function register(req, res) {
 export async function login(req, res) {
     try {
         // temp implementation, need to replace by web token
-        const username = req.nody.username;
+        const username = req.body.username;
         const password = req.body.password; 
-        const user = await userService.Authenticate();
-        
+        const ifMatch = await userService.Authenticate(username, password);
+        if (ifMatch === true){
+            res.end("Login Successful")
+        } else {
+            res.redirect('/users/login?LoginSuc=false')
+        }
         // Need to implement After the authenticate function 
         // res.json(user);
     } catch (error) {
