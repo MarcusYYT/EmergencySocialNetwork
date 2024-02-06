@@ -15,7 +15,7 @@ This is your team's repo for the ESN Application, the group project conducted in
    - 
 - Database: 
    - MySQL
-   - 
+   - Sequelzie
 - Developing tools: 
    - Nodemon
    - ESLint

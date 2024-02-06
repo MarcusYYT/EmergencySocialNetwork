@@ -1,4 +1,4 @@
-import {User}  from '../config/database.mjs';
+import {User} from '../models/User.model.mjs'
 
 /**
  * This function will inster a row to the user table with username and password 

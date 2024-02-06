@@ -1,7 +1,8 @@
 import express from 'express';
 import path from 'path';
 // import database
-import {sequelize, User}  from './config/database.mjs';
+import {sequelize}  from './config/database.mjs';
+import {User} from './models/User.model.mjs'
 
 // import routing
 import authRoutes from './routes/authRoutes.mjs';
@@ -32,11 +33,5 @@ app.get('/', (req, res) => {
 app.listen(port, async () => {
     console.log(`Server running at http://localhost:${port}`);
     await User.sync();
-    /*
-    const jane = await User.create({ username: "Jane", password: "Doe" });
-    console.log("Jane's auto-generated ID:", jane.id);
-    await User.findAll().then((res) => {
-        console.log(res); // true
-    }); */ 
 });
 

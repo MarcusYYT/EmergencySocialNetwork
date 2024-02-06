@@ -18,23 +18,4 @@ sequelize.authenticate().then(() => {
     console.error('Unable to connect to the database: ', error);
  });
 
- const User = sequelize.define('user', {
-    user_id: {
-        type: DataTypes.INTEGER,
-        primaryKey: true,
-        autoIncrement: true
-    },
-    username: {
-        type: DataTypes.STRING,
-        allowNull:false
-    },
-    password: {
-        type: DataTypes.STRING,
-        allowNull:false
-    }
-}, 
-{
-    freezeTableName: true
-  });
-
-export {sequelize, User}
+export {sequelize}
