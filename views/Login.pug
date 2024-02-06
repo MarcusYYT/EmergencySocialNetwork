@@ -1,0 +1,21 @@
+html
+  head
+    meta(charset='utf-8')
+    meta(name='viewport', content='width=device-width, initial-scale=1.0')
+    link(rel='stylesheet', type='text/css', href='/stylesheets/index.css')
+    title Login
+  body
+    .LoginBox
+      form.login-form(action='/users/login', method='post')
+        h2 Login
+        input(type='text', name='username', value='', placeholder='username')
+        input(type='password', name='password', value='', placeholder='password')
+        button(type='submit') Login
+        a(href='/users/register') register
+    script.
+      if (new URL(window.location.href).searchParams.get('success') === 'true') {
+        alert('Registration successful!');
+      }
+      if (new URL(window.location.href).searchParams.get('LoginSuc') === 'false') {
+        alert('Login Failed');
+      }
