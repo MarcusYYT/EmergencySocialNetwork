@@ -41,7 +41,8 @@ export async function Authenticate(username, enteredPassword){
     const userQueryResult = await User.findOne({
         where: {username: username}
     });
-    const password = userQueryResult.dataValues.password
+    const password = userQueryResult.toJSON().password
+
     if (password === enteredPassword){
         return true
     } else {
