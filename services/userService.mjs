@@ -1,4 +1,5 @@
 import {User} from '../models/User.model.mjs'
+import { getUsernameBanList } from '../config/usernameBanList.mjs'
 
 /**
  * This function will inster a row to the user table with username and password 
@@ -26,6 +27,16 @@ export async function ifUserExist(username) {
         return true
     }
 }
+
+export async function isUsernameValid(username){
+    const banList = await getUsernameBanList()
+    console.log(typeof(banList))
+    if( banList.includes(username) ){
+        return false;
+    } else {
+        return true
+    }
+}   
 
 /**
  * Check the username and password with the information stored in database
