@@ -1,5 +1,7 @@
-import { User } from "../models/User.model.mjs";
+import {User} from '../models/User.model.mjs'
+import { getUsernameBanList } from '../config/usernameBanList.mjs'
 import { bcrypt } from "bcrypt";
+
 let saltRounds = 10;
 
 /**
@@ -29,6 +31,16 @@ export async function ifUserExist(username) {
     return true;
   }
 }
+
+export async function isUsernameValid(username){
+    const banList = await getUsernameBanList()
+    console.log(typeof(banList))
+    if( banList.includes(username) ){
+        return false;
+    } else {
+        return true
+    }
+}   
 
 /**
  * Check the username and password with the information stored in database
