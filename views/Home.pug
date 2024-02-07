@@ -7,14 +7,20 @@ html
     link(rel='stylesheet', type='text/css', href='/stylesheets/index.css')
     title Home
   body
-    .links
-      a.btn.btn-primary(href='/users/login') Login
-      a.btn.btn-primary(href='/users/register') Sign Up
-    h1#header Emergency Social Network
+    .overlay
+      .links
+        a.btn.btn-primary(href='/users/login') Login
+        a.btn.btn-primary(href='/users/register') Sign Up
+      h1#header Emergency Social Network
 
   script. 
     if (new URL(window.location.href).searchParams.get('success') === 'true') {
             let body = document.getElementsByTagName("body")[0];
+
+            let overlay = document.getElementsByClassName("overlay")[0];
+            overlay.setAttribute("id", "overlay");
+            
+
             let welcomeWrapper = document.createElement('div');
             welcomeWrapper.setAttribute("class", "welcome-wrapper")
             let div = document.createElement('div');
@@ -31,28 +37,22 @@ html
             msg.appendChild(msgText);
 
             let buttonWrapper = document.createElement('div');
-            buttonWrapper.setAttribute("class", "button-wrapper")
+            buttonWrapper.setAttribute("class", "button-wrapper");
             let acknowledgeBtn = document.createElement('button');
             acknowledgeBtn.setAttribute("class", "btn btn-primary");
-            acknowledgeBtn.setAttribute("id", "ack-btn")
-            let acknowledgeBtnText = document.createTextNode("I accept")
-            acknowledgeBtn.appendChild(acknowledgeBtnText)
-
-            
+            acknowledgeBtn.setAttribute("id", "ack-btn");
+            let acknowledgeBtnText = document.createTextNode("I accept");
+            acknowledgeBtn.appendChild(acknowledgeBtnText);
 
             div.appendChild(heading);
             div.appendChild(msg);
-            buttonWrapper.appendChild(acknowledgeBtn)
+            buttonWrapper.appendChild(acknowledgeBtn);
             div.appendChild(buttonWrapper);
             welcomeWrapper.appendChild(div);
-            body.appendChild(welcomeWrapper);
+            overlay.appendChild(welcomeWrapper);
 
             acknowledgeBtn.addEventListener("click", (event) => {
-              body.removeChild(welcomeWrapper);
+              overlay.removeChild(welcomeWrapper);
+              overlay.removeAttribute("id");
             })
-
-
-
-            //alert('Registration successful!');
-            
         }
