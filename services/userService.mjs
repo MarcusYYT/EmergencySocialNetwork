@@ -1,4 +1,6 @@
 import {User} from '../models/User.model.mjs'
+import {bcrypt} from 'bcrypt'
+let saltRounds = 10
 
 /**
  * This function will inster a row to the user table with username and password 
@@ -6,7 +8,8 @@ import {User} from '../models/User.model.mjs'
  * @param {string} password The password passed from the frontend
  */
 export async function createNewUser(username, password){
-    await User.create({ username: username, password: password });
+    let hash = await bcrypt.hash(password, saltRounds)
+    await User.create({ username: username, password: hash })
 }
 
 /**
@@ -41,9 +44,9 @@ export async function Authenticate(username, enteredPassword){
     const userQueryResult = await User.findOne({
         where: {username: username}
     });
-    const password = userQueryResult.toJSON().password
-
-    if (password === enteredPassword){
+    const hashedPassword = userQueryResult.toJSON().password
+    const match = await comparePassword(enteredPassword, hashedPassword)
+    if (match){
         return true
     } else {
         return false
