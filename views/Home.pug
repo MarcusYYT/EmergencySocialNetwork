@@ -7,7 +7,7 @@ html
     link(rel='stylesheet', type='text/css', href='/stylesheets/index.css')
     title Home
   body
-    .overlay
+    .wrapper
       .links
         a.btn.btn-primary(href='/users/login') Login
         a.btn.btn-primary(href='/users/register') Sign Up
@@ -17,8 +17,8 @@ html
     if (new URL(window.location.href).searchParams.get('success') === 'true') {
             let body = document.getElementsByTagName("body")[0];
 
-            let overlay = document.getElementsByClassName("overlay")[0];
-            overlay.setAttribute("id", "overlay");
+            let wrapper = document.getElementsByClassName("wrapper")[0];
+            
             
 
             let welcomeWrapper = document.createElement('div');
@@ -49,10 +49,15 @@ html
             buttonWrapper.appendChild(acknowledgeBtn);
             div.appendChild(buttonWrapper);
             welcomeWrapper.appendChild(div);
-            overlay.appendChild(welcomeWrapper);
+
+            let overlay = document.createElement('div');
+            overlay.setAttribute("id", "overlay")
+            wrapper.appendChild(overlay)
+            wrapper.appendChild(welcomeWrapper);
 
             acknowledgeBtn.addEventListener("click", (event) => {
-              overlay.removeChild(welcomeWrapper);
+              wrapper.removeChild(welcomeWrapper);
+              wrapper.removeAttribute("id");
               overlay.removeAttribute("id");
             })
         }

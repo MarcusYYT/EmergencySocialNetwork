@@ -27,6 +27,8 @@ h1#header {
     justify-content: center;
     align-items: center;
     height: 50vh;
+    z-index: 2;
+    position: relative;
 }
 
 .alert-heading {
@@ -40,9 +42,13 @@ h1#header {
     justify-content: center;
 }
 
-#overlay{
-    background-color: #0000005e;
+#overlay {
+    position: fixed;
+    background-color: #00000070;
     height: 100vh;
+    width: 100vw;
+    top: 0;
+    z-index: 2;
 }
 
 .overlay-btn {
