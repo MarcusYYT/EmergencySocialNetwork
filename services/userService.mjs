@@ -1,5 +1,6 @@
 import { User } from "../models/User.model.mjs";
-import { bcrypt } from "bcrypt";
+import pkg from 'bcrypt';
+const { bcrypt } = pkg;
 let saltRounds = 10;
 
 /**
