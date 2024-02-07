@@ -26,7 +26,7 @@ export async function register(req, res) {
             } else{
                 console.log("The User is not exist")
                 await userService.createNewUser(username, password);
-                res.redirect('/users/login/?success=true');
+                res.redirect('/?success=true');
             }
         });
     } catch (error) {

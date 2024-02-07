@@ -26,7 +26,7 @@ app.use('/users', authRoutes);
 
 app.get('/', (req, res) => {
     // TO-DO: Check if the user was already login
-    res.redirect('/users/login');
+    res.render('Home');
 });
 
 app.listen(port, async () => {
