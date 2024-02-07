@@ -7,6 +7,51 @@ a {
     margin-top: 10px;
 }
 
+a.btn.btn-primary {
+    margin: 6px 6px 6px 0;
+    width: 85px;
+}
+
+.links {
+    display: flex;
+    justify-content: right;
+}
+
+h1#header {
+    text-align: center;
+    color: #031926;
+}
+
+.welcome-wrapper {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 50vh;
+}
+
+.alert-heading {
+    color: inherit;
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.button-wrapper {
+    display: flex;
+    justify-content: center;
+}
+
+button#ack-btn {
+    width: 85px;
+}
+
+.alert-primary {
+    color: #084298;
+    background-color: #cfe2ff;
+    border-color: #b6d4fe;
+    width: 500px;
+    padding: 30px;
+}
+
 .LoginBox {
     width: 100%;
     height: auto;
