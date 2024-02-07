@@ -14,20 +14,36 @@ head
     button#btn.btn.btn-primary(type='submit') Sign Up
     a(href='/') Back
   script.
-    let pwd = document.querySelector("input[name='password']");
-    let conPwd = document.querySelector("input[name='confirmPassword']");
-    let username = document.querySelector("input[name='username']");
-    let btn = document.getElementById('btn');
-    btn.onclick = () =>{
-    if(pwd.value.trim() != conPwd.value.trim()){
-    alert("The password is not match")
-    return false;
-    }
-    if (pwd.value == "" || username.value == ""){
-    alert("Any input filed cannot be empty")
-    return false;
-    }
-    }
+    const form = document.querySelector('form'); 
+    form.addEventListener('submit', function(event) { 
+      let pwd = document.querySelector("input[name='password']");
+      let conPwd = document.querySelector("input[name='confirmPassword']");
+      let username = document.querySelector("input[name='username']");
+      let btn = document.getElementById('btn');
+      username = String(username.value.trim()).toLowerCase()
+      if(username.length < 3){
+      alert("The username must be at least 3 characters long");
+      return false;
+      } 
+      console.log("Password Entered: " + pwd.value.trim());
+      if(pwd.value.trim().length < 4){
+      alert("the password has to be at least 4 characters long");
+      return false; 
+      }
+      if(pwd.value.trim() != conPwd.value.trim()){
+      alert("The password is not match")
+      return false; 
+      }
+      if (pwd.value == "" || username.value == ""){
+      alert("Any input filed cannot be empty")
+      return false; 
+      }
+    }); 
     if (new URL(window.location.href).searchParams.get('success') === 'false') {
         alert('Registration failed due to duplicate username');
     }
+    if (new URL(window.location.href).searchParams.get('usernameValid') === 'false') {
+        alert('Registration failed invalid username, try use another');
+    }
+  
+    

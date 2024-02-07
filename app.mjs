@@ -27,10 +27,11 @@ app.set('view engine', 'pug');
 // Router setting
 app.use('/users', authRoutes);
 
-app.get('/', passport.authenticate('jwt', { session: false }),  (req, res) => {
-    res.json({ message: 'You are authenticated!', user: req.user });
+app.get('/', passport.authenticate('jwt', { session: false }), (req, res) => {
+    // TO-DO: Check if the user was already login
+    // res.json({ message: 'You are authenticated!', user: req.user });
+    res.render('Home');
 
-    // res.redirect('/users/login');
 });
 
 app.listen(port, async () => {
