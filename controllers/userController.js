@@ -17,16 +17,17 @@ export async function register(req, res) {
             if(resolve === false){
                 console.log("username is not valid");
                 res.redirect('/users/register/?usernameValid=false')
-            }
-        });
-        await userService.ifUserExist(username).then(async (resolve)=>{
-            if(resolve === true){
-                console.log("The User is exist")
-                res.redirect('/users/register/?success=false');
-            } else{
-                console.log("The User is not exist")
-                await userService.createNewUser(username, password);
-                res.redirect('/?success=true');
+            } else {
+                await userService.ifUserExist(username).then(async (result)=>{
+                    if(result === true){
+                        console.log("The User is exist")
+                        res.redirect('/users/register/?success=false');
+                    } else{
+                        console.log("The User is not exist")
+                        await userService.createNewUser(username, password);
+                        res.redirect('/?success=true');
+                    }
+                });
             }
         });
     } catch (error) {
