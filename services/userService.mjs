@@ -1,7 +1,6 @@
-import {User} from '../models/User.model.mjs'
-import { getUsernameBanList } from '../config/usernameBanList.mjs'
-import pkg from 'bcrypt';
-const { bcrypt } = pkg;
+import { User } from "../models/User.model.mjs";
+import { getUsernameBanList } from "../config/usernameBanList.mjs";
+import bcrypt from "bcryptjs";
 
 let saltRounds = 10;
 
@@ -11,8 +10,10 @@ let saltRounds = 10;
  * @param {string} password The password passed from the frontend
  */
 export async function createNewUser(username, password) {
-  let hash = await bcrypt.hash(password, saltRounds);
-  await User.create({ username: username, password: hash });
+    console.log(bcrypt.hash(password, saltRounds));
+  await bcrypt.hash(password, saltRounds).then(async (res) => {
+    await User.create({ username: username, password: res });
+  });
 }
 
 /**
@@ -33,15 +34,15 @@ export async function ifUserExist(username) {
   }
 }
 
-export async function isUsernameValid(username){
-    const banList = await getUsernameBanList()
-    console.log(typeof(banList))
-    if( banList.includes(username) ){
-        return false;
-    } else {
-        return true
-    }
-}   
+export async function isUsernameValid(username) {
+  const banList = await getUsernameBanList();
+  console.log(typeof banList);
+  if (banList.includes(username)) {
+    return false;
+  } else {
+    return true;
+  }
+}
 
 /**
  * Check the username and password with the information stored in database
