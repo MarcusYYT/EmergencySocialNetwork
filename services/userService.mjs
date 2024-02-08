@@ -58,13 +58,14 @@ export async function Authenticate(username, enteredPassword) {
     if (res.length > 0) {
       const user = res[0];
       const hashedPassword = user.password;
-    await bcrypt.compare(enteredPassword, hashedPassword).then((isMatch)=>{
-        ifMatch = isMatch
-      });
-      return ifMatch
+      await bcrypt.compare(enteredPassword, hashedPassword).then((isMatch)=>{
+          ifMatch = isMatch
+        });
+      console.log("authentication returned vallue is " + ifMatch)
     } else {
       console.log("User not found");
-      return ifMatch;
+      ifMatch = false;
     }
   })
+  return ifMatch;
 }
