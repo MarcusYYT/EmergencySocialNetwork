@@ -40,18 +40,25 @@ export async function login(req, res) {
     // temp implementation, need to replace by web token
     const username = req.body.username;
     const password = req.body.password;
-    const user = await userService.Authenticate(username, password);
-    if (!user || user.length === 0) {
-      const payload = {
-        id: user._id,
-        username: user.username,
-      };
-      const token = jwt.sign(payload, "sb1sb1", { expiresIn: "1h" });
-      res.json({ message: "Login Successful", token: token });
-      // res.end("Login Successful")
-    } else {
-      res.redirect("/users/login?LoginSuc=false");
-    }
+    await userService.Authenticate(username, password).then((resolve)=>{
+        console.log(resolve)
+        if(resolve === true){
+            res.end("Login Successful")
+        }  
+    //res.json({ message: "Login Successful", token: token });
+    // res.end("Login Successful")
+        else {
+        res.redirect("/users/login?LoginSuc=false");
+        }
+    });
+    // if (!user || user.length === 0) {
+    //   const payload = {
+    //     id: user.user_id,
+    //     username: user.username,
+    //   };
+    
+    //   const token = jwt.sign(payload, "sb1sb1", { expiresIn: "1h" });
+    
 
   } catch (error) {
     res.status(500).send(error.message);

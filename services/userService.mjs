@@ -10,8 +10,8 @@ let saltRounds = 10;
  * @param {string} password The password passed from the frontend
  */
 export async function createNewUser(username, password) {
-    console.log(bcrypt.hash(password, saltRounds));
   await bcrypt.hash(password, saltRounds).then(async (res) => {
+    console.log(res);
     await User.create({ username: username, password: res });
   });
 }
@@ -51,23 +51,20 @@ export async function isUsernameValid(username) {
  * @returns User if the username and password match, null if the username and password are not match or username not exist
  */
 export async function Authenticate(username, enteredPassword) {
-  const userCheck = await ifUserExist(username);
-  if (userCheck === false) {
-    return false;
-  }
-  const userQueryResults = await User.findAll({
+  let ifMatch = false;
+  await User.findAll({
     where: { username: username },
-  });
-  if (userQueryResults.length > 0) {
-    const user = userResults[0];
-    const hashedPassword = user.password;
-    const match = await bcrypt.compare(password, hashedPassword);
-    if (match) {
-      return user;
+  }).then (async (res)=>{
+    if (res.length > 0) {
+      const user = res[0];
+      const hashedPassword = user.password;
+    await bcrypt.compare(enteredPassword, hashedPassword).then((isMatch)=>{
+        ifMatch = isMatch
+      });
+      return ifMatch
     } else {
-      console.log("Password mismatch");
+      console.log("User not found");
+      return ifMatch;
     }
-  } else {
-    console.log("User not found");
-  }
+  })
 }
