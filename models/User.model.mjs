@@ -18,6 +18,6 @@ const User = sequelize.define('user', {
 }, 
 {
     freezeTableName: true
-  });
+});
 
 export {User}
