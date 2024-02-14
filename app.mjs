@@ -1,7 +1,9 @@
 import express from 'express';
 import path from 'path';
+// import swaggerUi from 'swagger-ui-express';
+// import swaggerDocs from './swagger.mjs';
 // import database model
-import {User} from './models/User.model.mjs'
+// import {User} from './models/User.model.mjs'
 // import passport from './config/passportConfig.mjs';
 
 // import routing
@@ -12,13 +14,14 @@ const root = process.cwd();
 const __dirname = root;
 
 const app = express();
-app.use(express.json()); 
+app.use(express.json());  // parse json request
 const port = 3000;
 // app.use(passport.initialize());
 
-app.use(express.static(__dirname +'/public'));
-app.use(express.json());      // parse json request
+app.use(express.static(__dirname +'/public'));  
 app.use(express.urlencoded({ extended: true }));
+
+// app.use('/api-docs', swaggerUi.serve,   swaggerUi.setup(swaggerDocument));
 
 // set the view and pug engine
 app.set('views', path.join(__dirname, 'views'));
@@ -43,6 +46,7 @@ app.get('/', (req, res) => {
 
 app.listen(port, async () => {
     console.log(`Server running at http://localhost:${port}`);
-    await User.sync();
+    // await User.sync();
+    // swaggerDocs(app,port)
 });
 
