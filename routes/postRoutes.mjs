@@ -88,7 +88,7 @@ const router = express.Router();
  *              content:          
  *                type: string
  *    responses:
- *      200:
+ *      201:
  *        description: Database push successful
  */
 

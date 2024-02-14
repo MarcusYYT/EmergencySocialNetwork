@@ -53,7 +53,7 @@ const router = express.Router();
  *                     password:          
  *                        type: string
  *    responses:
- *      200:
+ *      201:
  *        description: register successful
  */
 router.get('/login', showLogin);
