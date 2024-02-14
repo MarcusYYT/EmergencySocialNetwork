@@ -3,7 +3,7 @@ const router = express.Router();
 
 /**
  * @swagger
- * /user/{userId}:
+ * /users/{userId}:
  *  get:
  *    summary: fetch a user object by the userId
  *    tags:
@@ -41,7 +41,7 @@ const router = express.Router();
  *        description: user not found
  * 
  * 
- * /user:
+ * /users:
  *  get:
  *    summary: fetch the whole user list
  *    tags:

@@ -3,7 +3,7 @@ import express from 'express';
 const router = express.Router();
 /**
  * @swagger
- * /post/{postId}:
+ * /posts/{postId}:
  *  get:
  *    tags:
  *      - Post
@@ -43,7 +43,7 @@ const router = express.Router();
  *        description: post not found
  * 
  * 
- * /post:
+ * /posts:
  *  get:
  *    tags:
  *      - Post 
