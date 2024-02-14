@@ -40,7 +40,9 @@ export async function login(req, res) {
   try {
     // temp implementation, need to replace by web token
     const username = req.body.username;
+    console.log(req.body)
     const password = req.body.password;
+    console.log(password)
     await userService.authenticate(username, password).then((resolve)=>{
         console.log(resolve)
         if(resolve === true){

@@ -11,7 +11,7 @@ let saltRounds = 10;
  * @param {string} password The password passed from the frontend
  */
 export async function createNewUser(username, password) {
-  bcrypt.hash(password, saltRounds).then(async (res) => {
+  await bcrypt.hash(password, saltRounds).then(async (res) => {
     console.log(res);
     await createUser(username, res);
   });

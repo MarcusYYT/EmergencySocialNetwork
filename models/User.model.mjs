@@ -47,12 +47,21 @@ export async function ifUserExist(username) {
     }
 }
 
+/**
+ * Find the user with input username in User table
+ * @param {string} username The username as the string 
+ * @returns a list with user object which match the username, empty array will be return if username not exist in database
+ */
 async function getOneUser(username){
     return await User.findAll({
         where: { username: username },
     });
 }
 
+/**
+ * Get the full list of user
+ * @returns a list with all user in User table
+ */
 async function getUserList(){
     return await User.findAll();
 }
