@@ -1,5 +1,6 @@
 import * as userService from "../services/userService.mjs";
-import jwt from "jsonwebtoken";
+import { ifUserExist } from "../models/User.model.mjs";
+// import jwt from "jsonwebtoken";
 
 export function showLogin(req, res) {
   res.render("Login");
@@ -18,7 +19,7 @@ export async function register(req, res) {
                 console.log("username is not valid");
                 res.redirect('/users/register/?usernameValid=false')
             } else {
-                await userService.ifUserExist(username).then(async (result)=>{
+                await ifUserExist(username).then(async (result)=>{
                     if(result === true){
                         console.log("The User is exist")
                         res.redirect('/users/register/?success=false');
@@ -39,8 +40,10 @@ export async function login(req, res) {
   try {
     // temp implementation, need to replace by web token
     const username = req.body.username;
+    console.log(req.body)
     const password = req.body.password;
-    await userService.Authenticate(username, password).then((resolve)=>{
+    console.log(password)
+    await userService.authenticate(username, password).then((resolve)=>{
         console.log(resolve)
         if(resolve === true){
             res.end("Login Successful")

@@ -1,6 +1,5 @@
-import { Sequelize, DataTypes} from 'sequelize'
+import { Sequelize} from 'sequelize'
 
-// TO-DO, add database config
 const sequelize = new Sequelize(
     'Emergency_Social_Network',
     'root',
