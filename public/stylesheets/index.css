@@ -211,6 +211,7 @@ div#directory {
     margin-bottom: 2vw;
     padding: 0vw 2vw 0vw 3vw;
     border-radius: 5px;
+    align-items: center;
 }
 
 p.usernameField {
@@ -219,7 +220,7 @@ p.usernameField {
 }
 
 p.statusField {
-    margin-bottom: 1vw;
+    margin-bottom: 0vw;
     font-size: 3vw;
 }
 
