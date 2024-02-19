@@ -17,16 +17,16 @@ export async function register(req, res) {
         await userService.isUsernameValid(username).then(async (resolve)=>{
             if(resolve === false){
                 console.log("username is not valid");
-                res.redirect('/users/register/?usernameValid=false')
+                res.redirect('/auth/register/?usernameValid=false')
             } else {
                 await ifUserExist(username).then(async (result)=>{
                     if(result === true){
                         console.log("The User is exist")
-                        res.redirect('/users/register/?success=false');
+                        res.redirect('/auth/register/?success=false');
                     } else{
                         console.log("The User is not exist")
                         await userService.createNewUser(username, password);
-                        res.redirect('/?success=true');
+                        res.status(200).json({ success: true, message: 'Registration successful' });
                     }
                 });
             }
@@ -51,7 +51,7 @@ export async function login(req, res) {
     //res.json({ message: "Login Successful", token: token });
     // res.end("Login Successful")
         else {
-        res.redirect("/users/login?LoginSuc=false");
+        res.redirect("/auth/login?LoginSuc=false");
         }
     });
     // if (!user || user.length === 0) {
