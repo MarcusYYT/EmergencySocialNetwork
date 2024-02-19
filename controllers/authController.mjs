@@ -17,12 +17,12 @@ export async function register(req, res) {
         await userService.isUsernameValid(username).then(async (resolve)=>{
             if(resolve === false){
                 console.log("username is not valid");
-                res.redirect('/auth/register/?usernameValid=false')
+                res.status(409).json({ success: false, message: 'Username invalid' });
             } else {
                 await ifUserExist(username).then(async (result)=>{
                     if(result === true){
                         console.log("The User is exist")
-                        res.redirect('/auth/register/?success=false');
+                        res.status(409).json({ success: false, message: 'Username Exist' });
                     } else{
                         console.log("The User is not exist")
                         await userService.createNewUser(username, password);

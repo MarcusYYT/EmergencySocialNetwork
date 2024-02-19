@@ -12,9 +12,6 @@ head
     button#signinbtn.btn.btn-primary(type='submit') Login
     button#registerBtn.btn.btn-primary(onclick='register()', type='button') Register
 script.
-  if (new URL(window.location.href).searchParams.get('success') === 'true') {
-  alert('Registration successful!');
-  }
   if (new URL(window.location.href).searchParams.get('LoginSuc') === 'false') {
   alert('Login Failed');
   }
@@ -43,6 +40,8 @@ script.
   }).then(response => response.json()
   ).then((data)=>{
     if(data.success===true){
+        alert(data.message)
+    } else {
         alert(data.message)
     }
   });
