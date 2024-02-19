@@ -23,7 +23,6 @@ export const User = sequelize.define('user', {
 {
     freezeTableName: true
 });
-
 /**
  * This function will insert one row into user table, with increment user_id, username and password
  * @param {string} username 
