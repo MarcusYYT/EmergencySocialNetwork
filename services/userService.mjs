@@ -41,18 +41,19 @@ export async function isUsernameValid(username) {
  * @returns True if the username and password match, false if the username and password are not match or username not exist
  */
 export async function authenticate(username, enteredPassword) {
-  let ifMatch = false;
+  let ifMatch = {id: -1, match: false};
   await getUser(username).then (async (res)=>{
     if (res.length > 0) {
       const user = res[0];
       const hashedPassword = user.password;
+      ifMatch.id = user.user_id;
       await bcrypt.compare(enteredPassword, hashedPassword).then((isMatch)=>{
-          ifMatch = isMatch
+          ifMatch.match = isMatch
         });
-      console.log("authentication returned vallue is " + ifMatch)
+      console.log(ifMatch)
     } else {
       console.log("User not found");
-      ifMatch = false;
+      ifMatch.match = false;
     }
   })
   return ifMatch;

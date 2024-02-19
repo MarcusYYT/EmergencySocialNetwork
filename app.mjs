@@ -1,8 +1,9 @@
-import express from 'express';
-import path from 'path';
-import swaggerJSDoc from 'swagger-jsdoc';
-import swaggerUI from 'swagger-ui-express';
-// import {User} from './models/User.model.mjs'
+import express from 'express'
+import path from 'path'
+import swaggerJSDoc from 'swagger-jsdoc'
+import swaggerUI from 'swagger-ui-express'
+import {User} from './models/User.model.mjs'
+import {Post} from './models/Post.model.mjs'
 // import passport from './config/passportConfig.mjs';
 
 // import routing
@@ -62,8 +63,8 @@ app.get('/', (req, res) => {
 
 app.listen(port, async () => {
     console.log(`Server running at http://localhost:${port}`);
-    // await User.sync();
-    // swaggerDocs(app,port)
+    // await User.sync()
+    // await Post.sync()
 });
 
 export default app;

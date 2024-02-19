@@ -14,19 +14,22 @@ export const User = sequelize.define('user', {
     password: {
         type: DataTypes.STRING,
         allowNull:false
+    },
+    status:{
+        type: DataTypes.STRING,
+        allowNull: false
     }
 }, 
 {
     freezeTableName: true
 });
-
 /**
  * This function will insert one row into user table, with increment user_id, username and password
  * @param {string} username 
  * @param {string} password 
  */
 export async function createUser(username, password){
-    User.create({ username: username, password: password });
+    User.create({ username: username, password: password, status:"offline"});
 }
 
 /**
@@ -78,4 +81,17 @@ export async function getUser(username=null){
         return await getUserList();
     }
 
-} 
+}
+
+/**
+ * Change the status of the sepcific user id
+ * @param {integer} id The user id
+ * @param {string} status The status wants to be changed to
+ */
+export async function changeStatus(id, status){
+    User.update({status:status},{
+        where: {
+            user_id: id
+        }
+    })
+}

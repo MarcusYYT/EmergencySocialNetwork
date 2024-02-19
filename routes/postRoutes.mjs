@@ -35,6 +35,8 @@ const router = express.Router();
  *                        type: integer
  *                      time:
  *                        type: date-time
+ *                      user_status:
+ *                        type: string
  *                      content:
  *                        type: string
  *                message: 
@@ -69,6 +71,8 @@ const router = express.Router();
  *                        type: integer
  *                      time:
  *                        type: date-time
+ *                      user_status:
+ *                        type: string
  *                      content:
  *                        type: string
  *                message: 
@@ -85,6 +89,8 @@ const router = express.Router();
  *            properties:
  *              user_id:         
  *                type: integer
+ *              user_status:
+ *                type: string
  *              content:          
  *                type: string
  *    responses:

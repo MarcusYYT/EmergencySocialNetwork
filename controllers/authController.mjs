@@ -1,5 +1,5 @@
 import * as userService from "../services/userService.mjs";
-import { ifUserExist } from "../models/User.model.mjs";
+import { ifUserExist, changeStatus } from "../models/User.model.mjs";
 // import jwt from "jsonwebtoken";
 
 export function showLogin(req, res) {
@@ -17,16 +17,16 @@ export async function register(req, res) {
         await userService.isUsernameValid(username).then(async (resolve)=>{
             if(resolve === false){
                 console.log("username is not valid");
-                res.redirect('/users/register/?usernameValid=false')
+                res.status(409).json({ success: false, message: 'Username invalid' });
             } else {
                 await ifUserExist(username).then(async (result)=>{
                     if(result === true){
                         console.log("The User is exist")
-                        res.redirect('/users/register/?success=false');
+                        res.status(409).json({ success: false, message: 'Username Exist' });
                     } else{
                         console.log("The User is not exist")
                         await userService.createNewUser(username, password);
-                        res.redirect('/?success=true');
+                        res.status(200).json({ success: true, message: 'Registration successful' });
                     }
                 });
             }
@@ -45,13 +45,14 @@ export async function login(req, res) {
     console.log(password)
     await userService.authenticate(username, password).then((resolve)=>{
         console.log(resolve)
-        if(resolve === true){
+        if(resolve.match === true){
+            changeStatus(resolve.id, "online")
             res.end("Login Successful")
         }  
     //res.json({ message: "Login Successful", token: token });
     // res.end("Login Successful")
         else {
-        res.redirect("/users/login?LoginSuc=false");
+        res.redirect("/auth/login?LoginSuc=false");
         }
     });
     // if (!user || user.length === 0) {
