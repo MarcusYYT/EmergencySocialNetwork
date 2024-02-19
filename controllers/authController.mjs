@@ -1,5 +1,5 @@
 import * as userService from "../services/userService.mjs";
-import { ifUserExist } from "../models/User.model.mjs";
+import { ifUserExist, changeStatus } from "../models/User.model.mjs";
 // import jwt from "jsonwebtoken";
 
 export function showLogin(req, res) {
@@ -45,7 +45,8 @@ export async function login(req, res) {
     console.log(password)
     await userService.authenticate(username, password).then((resolve)=>{
         console.log(resolve)
-        if(resolve === true){
+        if(resolve.match === true){
+            changeStatus(resolve.id, "online")
             res.end("Login Successful")
         }  
     //res.json({ message: "Login Successful", token: token });
