@@ -41,6 +41,7 @@ script.
   ).then((data)=>{
     if(data.success===true){
         alert(data.message)
+        window.location.href = '/directory';
     } else {
         alert(data.message)
     }

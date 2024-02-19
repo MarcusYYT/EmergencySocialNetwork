@@ -8,6 +8,7 @@ import {Post} from './models/Post.model.mjs'
 
 // import routing
 import authRoutes from './routes/authRoutes.mjs';
+
 const swaggerOptions = {
     failOnErrors: true, // Whether or not to throw when parsing errors. Defaults to false.
     definition: {
@@ -59,6 +60,16 @@ app.get('/', (req, res) => {
     // res.json({ message: 'You are authenticated!', user: req.user });
     res.render('Home');
 
+});
+
+app.get('/directory', (req, res) => {
+  // TO-DO: Check if the user was already login
+  res.render('Directory');
+});
+
+app.get('/messageWall', (req, res) => {
+  // TO-DO: Check if the user was already login
+  res.render('MessageWall');
 });
 
 app.listen(port, async () => {
