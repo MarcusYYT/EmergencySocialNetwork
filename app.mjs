@@ -70,6 +70,10 @@ app.get('/test', (req,res) =>{
   res.render('Test');
 })
 
+app.get('/directory', (req,res) =>{
+  res.render('Directory');
+})
+
 app.listen(port, async () => {
     console.log(`Server running at http://localhost:${port}`);
     // await User.sync()

@@ -40,19 +40,17 @@ export async function login(req, res) {
   try {
     // temp implementation, need to replace by web token
     const username = req.body.username;
-    console.log(req.body)
     const password = req.body.password;
-    console.log(password)
     await userService.authenticate(username, password).then((resolve)=>{
         console.log(resolve)
         if(resolve.match === true){
             changeStatus(resolve.id, "online")
-            res.end("Login Successful")
+            res.status(200).json({success: true, message:resolve.message})
         }  
     //res.json({ message: "Login Successful", token: token });
     // res.end("Login Successful")
         else {
-        res.redirect("/auth/login?LoginSuc=false");
+            res.status(400).json({success: false, message:resolve.message})
         }
     });
     // if (!user || user.length === 0) {
