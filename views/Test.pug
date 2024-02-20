@@ -1,0 +1,33 @@
+doctype html
+html
+  head
+    script.
+      async function callApi() {
+      await fetch('/posts/2', {
+                  method: 'GET',
+                  headers: {
+                  'Content-Type': 'application/json',
+                  }
+                }
+                )
+      .then(response => {
+      console.log(response); // Log the raw response
+      return response.json();
+      })
+      .then(data => console.log(data))
+      .catch(error => console.error('Error:', error));
+      }
+      async function callPostApi() {
+      await fetch('/posts', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                            },
+                            body: JSON.stringify({ user_id: 1, content: "this is a post", status: "online"}),
+                            })
+      .then(response => response.json())
+      .then(data => console.log(data))
+      }
+  body
+    button(onclick='callApi()') Call API
+    button(onclick='callPostApi()') Call Post API
