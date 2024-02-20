@@ -1,5 +1,6 @@
 import express from 'express';
 const router = express.Router();
+import {getUserById, getUserList} from '../controllers/userController.mjs'
 
 /**
  * @swagger
@@ -22,8 +23,8 @@ const router = express.Router();
  *            schema:
  *              type: object
  *              properties:
- *                code:         
- *                  type: integer
+ *                success:         
+ *                  type: boolean
  *                data:          
  *                  type: array
  *                  items:
@@ -54,8 +55,8 @@ const router = express.Router();
  *            schema:
  *              type: object
  *              properties:
- *                code:         
- *                  type: integer
+ *                success:         
+ *                  type: boolean
  *                data:          
  *                  type: array
  *                  items:
@@ -70,5 +71,8 @@ const router = express.Router();
  *                message: 
  *                  type: string
  */
+
+router.get('', getUserList);
+router.get('/:user_id', getUserById);
 
 export default router;
