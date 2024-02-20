@@ -71,7 +71,7 @@ app.get('/test', (req,res) =>{
 })
 
 app.get('/directory', (req,res) =>{
-  res.render('Directory');
+  res.render('Test');
 })
 
 app.listen(port, async () => {
