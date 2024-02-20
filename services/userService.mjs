@@ -12,7 +12,6 @@ let saltRounds = 10;
  */
 export async function createNewUser(username, password) {
   await bcrypt.hash(password, saltRounds).then(async (res) => {
-    console.log(res);
     await userModel.createUser(username, res);
   });
 }
@@ -28,13 +27,14 @@ export async function getUserById(user_id){
     data:[]
   }
   await userModel.getUserById(user_id).then((res) => {
-    if(res.length > 0){
+    if(res != null){
       returnJson.exist = true;
-      returnJson.data = res; 
+      returnJson.data.push(res) 
     } else {
       returnJson.exist = false;
     }
   })
+
   return returnJson;
 }
 
@@ -64,7 +64,6 @@ export async function getUserList(){
  */
 export async function isUsernameValid(username) {
   const banList = await getUsernameBanList();
-  console.log(typeof banList);
   if (banList.includes(username)) {
     return false;
   } else {
@@ -89,7 +88,6 @@ export async function authenticate(username, enteredPassword) {
       await bcrypt.compare(enteredPassword, hashedPassword).then((isMatch)=>{
           ifMatch.match = isMatch
         });
-      console.log(ifMatch)
     } else {
       console.log("User not found");
       ifMatch.match = false;

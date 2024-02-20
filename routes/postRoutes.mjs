@@ -1,4 +1,5 @@
 import express from 'express';
+import {getPostById, getPostList, postPost} from '../controllers/postController.mjs'
 
 const router = express.Router();
 /**
@@ -97,5 +98,8 @@ const router = express.Router();
  *      201:
  *        description: Database push successful
  */
+router.get('', getPostList);
+router.get('/:post_id', getPostById);
+router.post('', postPost);
 
 export default router;

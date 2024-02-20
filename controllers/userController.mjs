@@ -14,6 +14,7 @@ export async function getUserById(req, res){
         res.status(500).send(error.message);
     }
 
+
 }
 
 export async function getUserList(req, res){
