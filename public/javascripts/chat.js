@@ -30,3 +30,4 @@ class ChatMessage {
 if (typeof module !== 'undefined' && module.exports) {
     module.exports = ChatMessage;
 }
+
