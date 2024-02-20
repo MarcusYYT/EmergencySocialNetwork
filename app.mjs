@@ -7,7 +7,9 @@ import {Post} from './models/Post.model.mjs'
 // import passport from './config/passportConfig.mjs';
 
 // import routing
-import authRoutes from './routes/authRoutes.mjs';
+import authRoutes from './routes/authRoutes.mjs'
+import userRoutes from './routes/userRoutes.mjs'
+
 const swaggerOptions = {
     failOnErrors: true, // Whether or not to throw when parsing errors. Defaults to false.
     definition: {
@@ -38,6 +40,7 @@ app.set('view engine', 'pug');
 
 // Router setting
 app.use('/auth', authRoutes);
+app.use('./users', userRoutes);
 
 // app.get('/', passport.authenticate('jwt', { session: false }), (req, res) => {
 //     // TO-DO: Check if the user was already login

@@ -1,4 +1,4 @@
-import {createUser, getUser} from "../models/User.model.mjs";
+import * as userModel from "../models/User.model.mjs";
 import { getUsernameBanList } from "../config/usernameBanList.mjs";
 import bcrypt from "bcryptjs";
 
@@ -13,8 +13,47 @@ let saltRounds = 10;
 export async function createNewUser(username, password) {
   await bcrypt.hash(password, saltRounds).then(async (res) => {
     console.log(res);
-    await createUser(username, res);
+    await userModel.createUser(username, res);
   });
+}
+
+/**
+ * TODO: Write the comment for jsdoc
+ * @param {*} user_id 
+ * @returns 
+ */
+export async function getUserById(user_id){
+  let returnJson = {
+    exist: null,
+    data:[]
+  }
+  await userModel.getUserById(user_id).then((res) => {
+    if(res.length > 0){
+      returnJson.exist = true;
+      returnJson.data = res; 
+    } else {
+      returnJson.exist = false;
+    }
+  })
+  return returnJson;
+}
+
+/**
+ * TODO: write the function documentation
+ * @returns 
+ */
+export async function getUserList(){
+  let returnJson = {
+    data:[],
+    message:"initial message"
+  }
+
+  await userModel.getUser().then((res)=>{
+    returnJson.message = "Fetch user list successful"
+    returnJson.data = res;
+  })
+
+  return returnJson
 }
 
 /**
@@ -42,7 +81,7 @@ export async function isUsernameValid(username) {
  */
 export async function authenticate(username, enteredPassword) {
   let ifMatch = {id: -1, match: false};
-  await getUser(username).then (async (res)=>{
+  await userModel.getUser(username).then (async (res)=>{
     if (res.length > 0) {
       const user = res[0];
       const hashedPassword = user.password;

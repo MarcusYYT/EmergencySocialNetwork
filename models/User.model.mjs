@@ -83,6 +83,11 @@ export async function getUser(username=null){
 
 }
 
+export async function getUserById(user_id){
+    return await User.findByPk(user_id);
+
+}
+
 /**
  * Change the status of the sepcific user id
  * @param {integer} id The user id
