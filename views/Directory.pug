@@ -17,9 +17,40 @@ html(lang='en')
       #directory
     script.
       const socket = io();
-      socket.on("status_update") {
-        location.reload();
-      }
+      socket.emit('registered', #{user_id});
+      socket.on("status_update",async ()=> {
+        await fetch('/users')
+        .then(response => response.json())
+        .then(data => {
+            console.log(data);
+
+            let online = []
+            let offline = []
+
+            for (let i = 0; i < data.data.length; i++) {
+                if (data.data[i].online_status === "online") {
+                    online.push(data.data[i])
+                }
+                else {
+                    offline.push(data.data[i])
+                }
+            }
+
+            online.sort(function (a, b) {
+                return a.username.localeCompare(b.username)
+            })
+
+            offline.sort(function (a, b) {
+                return a.username.localeCompare(b.username)
+            })
+            let directory = document.getElementById("directory");
+            while(directory.firstChild){
+              directory.removeChild(directory.lastChild);
+            }
+            renderESNList(online)
+            renderESNList(offline)
+            })
+            })
       function newPost() {
       const user_id = #{user_id};
       window.location.href = `/messageWall/${user_id}`;

@@ -22,7 +22,7 @@ script.
     const user_id = #{user_id}
     window.location.href = `/directory/${user_id}`
   }
-    socket.emit('registered', #{user_id});
+  socket.emit('in_chat', #{user_id});
   function postChatMessage(){
   let textArea = document.getElementById("message")
   let textContent = textArea.value
@@ -42,7 +42,7 @@ script.
     console.log(postData);
   }
   window.onload = async function() {
-  const userId = #{user_id}
+    const userId = #{user_id}
     const response = await fetch(`/users/${userId}`, {
       method: 'GET',
       headers: {
@@ -52,7 +52,6 @@ script.
       console.log(data.data[0].username);
       username = data.data[0].username;
     })
-
   }
       async function logout(){
       const userId = #{user_id};

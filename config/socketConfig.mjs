@@ -10,17 +10,16 @@ export default function (server) {
     io.on("connection", (socket) => {
         console.log(`User ${socket.id} connected`);
         socket.on("registered", (userId) => {
-            if (! socketToUser.has(socket.id)) {
-                socketToUser.set(socket.id, userId);
-            }
+            console.log(userId)
+            socketToUser.set(socket.id, userId);
             io.emit("status_update");
         })
         
         socket.on("disconnect", async () => {
             console.log(`user ${socketToUser.get(socket.id)} disconnected`);
-            await userService.changeOnlineStatus(socketToUser.get(socket.id), "Offline").then((res)=>{
-                console.log(res);
-            })
+            // await userService.changeOnlineStatus(Number(socketToUser.get(socket.id)), "Offline").then((res)=>{
+            //      console.log(res);
+            // })
         });
         socket.on("postData", (postData) => {
             io.emit("postData", postData);
