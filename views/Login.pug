@@ -4,16 +4,37 @@ head
   link(href='https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css', rel='stylesheet', integrity='sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3', crossorigin='anonymous')
   link(rel='stylesheet', type='text/css', href='/stylesheets/index.css')
   title Login
-.LoginBox
-  form#loginForm.login-form(action='/auth/login', method='post')
-    h2 Emergency Social Network
-    input(type='text', name='username', value='', placeholder='Username')
-    input(type='password', name='password', value='', placeholder='Password')
-    button#signinbtn.btn.btn-primary(type='submit') Login
-    button#registerBtn.btn.btn-primary(onclick='register()', type='button') Register
+.wrapper
+  .LoginBox
+    form#loginForm.login-form(action='/auth/login', method='post')
+      h2 Emergency Social Network
+      input(type='text', name='username', value='', placeholder='Username')
+      input(type='password', name='password', value='', placeholder='Password')
+      button#signinbtn.btn.btn-primary(onclick='login()', type='button') Login
+      button#registerBtn.btn.btn-primary(onclick='togglePopUp()', type='button') Register
 script.
   if (new URL(window.location.href).searchParams.get('LoginSuc') === 'false') {
   alert('Login Failed');
+  }
+  async function login(){
+  let form = document.getElementById('loginForm');
+  let username = form.username.value.trim().toLowerCase();
+  let password = form.password.value.trim();
+  await fetch('/auth/login', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ username: username, password:password }),
+
+  }).then(response => response.json()
+  ).then(async (data)=>{
+    if(data.success===true){
+      window.location.href = "/directory";
+    } else {
+        alert(data.message)
+    }
+  });
   }
   async function register() {
   let form = document.getElementById('loginForm');
@@ -46,4 +67,63 @@ script.
         alert(data.message)
     }
   });
+  }
+  function togglePopUp(){
+    let body = document.getElementsByTagName("body")[0];
+
+            let wrapper = document.getElementsByClassName("wrapper")[0];
+
+            let welcomeWrapper = document.createElement('div');
+            welcomeWrapper.setAttribute("class", "welcome-wrapper")
+            let div = document.createElement('div');
+            div.setAttribute("class", "alert alert-primary");
+            div.setAttribute("role", "alert");
+
+            let heading = document.createElement('h4');
+            heading.setAttribute("class", "alert-heading");
+            let headingText = document.createTextNode("Welcome!");
+            heading.appendChild(headingText);
+
+            let msg = document.createElement('p');
+            let msgText = document.createTextNode("Welcome to become a new member of Citizen! There are three kind of status for you to share with other member of Citizen: green means you are okay and you do not need help; yellow means you need help but it is not an emergency; red means you need help ASAP! You can change your status as you needed!");
+            msg.appendChild(msgText);
+
+            let buttonWrapper = document.createElement('div');
+            buttonWrapper.setAttribute("class", "button-wrapper");
+            let acknowledgeBtn = document.createElement('button');
+            acknowledgeBtn.setAttribute("class", "btn btn-primary");
+            acknowledgeBtn.setAttribute("id", "ack-btn");
+            let acknowledgeBtnText = document.createTextNode("I accept");
+            acknowledgeBtn.appendChild(acknowledgeBtnText);
+
+            let cancelBtn = document.createElement('button');
+            cancelBtn.setAttribute("class", "btn btn-primary");
+            cancelBtn.setAttribute("id", "ack-btn");
+            let cancelBtnText = document.createTextNode("cancel");
+            cancelBtn.appendChild(cancelBtnText);
+
+            div.appendChild(heading);
+            div.appendChild(msg);
+            buttonWrapper.appendChild(acknowledgeBtn);
+            buttonWrapper.appendChild(cancelBtn);
+            div.appendChild(buttonWrapper);
+            welcomeWrapper.appendChild(div);
+
+            let overlay = document.createElement('div');
+            overlay.setAttribute("id", "overlay")
+            wrapper.appendChild(overlay)
+            wrapper.appendChild(welcomeWrapper);
+
+            acknowledgeBtn.addEventListener("click", async (event) => {
+              await register();
+              wrapper.removeChild(welcomeWrapper);
+              wrapper.removeAttribute("id");
+              overlay.removeAttribute("id");
+            })
+
+            cancelBtn.addEventListener("click", async (event) => {
+              wrapper.removeChild(welcomeWrapper);
+              wrapper.removeAttribute("id");
+              overlay.removeAttribute("id");
+            })
   }
