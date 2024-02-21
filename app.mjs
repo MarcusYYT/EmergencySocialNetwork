@@ -2,8 +2,8 @@ import express from 'express'
 import path from 'path'
 import swaggerJSDoc from 'swagger-jsdoc'
 import swaggerUI from 'swagger-ui-express'
-import {User} from './models/User.model.mjs'
-import {Post} from './models/Post.model.mjs'
+// import {User} from './models/User.model.mjs'
+// import {Post} from './models/Post.model.mjs'
 // import passport from './config/passportConfig.mjs';
 
 // import routing
@@ -67,6 +67,10 @@ app.get('/', (req, res) => {
 });
 
 app.get('/test', (req,res) =>{
+  res.render('Test');
+})
+
+app.get('/directory', (req,res) =>{
   res.render('Test');
 })
 

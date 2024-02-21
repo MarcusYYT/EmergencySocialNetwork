@@ -18,6 +18,10 @@ export const User = sequelize.define('user', {
     status:{
         type: DataTypes.STRING,
         allowNull: false
+    },
+    online_status: {
+        type: DataTypes.STRING,
+        allowNull: false
     }
 }, 
 {
@@ -29,7 +33,7 @@ export const User = sequelize.define('user', {
  * @param {string} password 
  */
 export async function createUser(username, password){
-    return User.create({ username: username, password: password, status:"offline"});
+    return User.create({ username: username, password: password, status:"place_holder", online_status:"offline"});
 }
 
 /**
@@ -93,8 +97,8 @@ export async function getUserById(user_id){
  * @param {integer} id The user id
  * @param {string} status The status wants to be changed to
  */
-export async function changeStatus(id, status){
-    User.update({status:status},{
+export async function changeOnlineStatus(id, status){
+    User.update({online_status:status},{
         where: {
             user_id: id
         }
