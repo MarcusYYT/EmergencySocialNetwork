@@ -43,14 +43,14 @@ export async function login(req, res) {
     const password = req.body.password;
     await userService.authenticate(username, password).then((resolve)=>{
         console.log(resolve)
-        if(resolve.match === true){
+        if(resolve.code === 200){
             changeOnlineStatus(resolve.id, "online")
-            res.status(200).json({success: true, message:resolve.message})
+            res.status(200).json({code: 200, message:resolve.message})
         }  
     //res.json({ message: "Login Successful", token: token });
     // res.end("Login Successful")
         else {
-            res.status(400).json({success: false, message:resolve.message})
+            res.status(resolve.code).json({code: resolve.code, message:resolve.message})
         }
     });
     // if (!user || user.length === 0) {
