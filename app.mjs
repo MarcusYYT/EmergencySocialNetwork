@@ -66,14 +66,16 @@ app.get('/', (req, res) => {
 
 });
 
-app.get('/directory', (req, res) => {
+app.get('/directory/:user_id', (req, res) => {
   // TO-DO: Check if the user was already login
-  res.render('Directory');
+  const user_id = req.params.user_id;
+  res.render('Directory', {user_id: user_id});
 });
 
-app.get('/messageWall', (req, res) => {
+app.get('/messageWall/:user_id', (req, res) => {
   // TO-DO: Check if the user was already login
-  res.render('MessageWall');
+  const user_id = req.params.user_id;
+  res.render('MessageWall', {user_id: user_id});
 });
 app.get('/test', (req,res) =>{
   res.render('Test');

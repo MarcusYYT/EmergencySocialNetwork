@@ -27,7 +27,7 @@ script.
   }).then(response => response.json()
   ).then(async (data)=>{
     if(data.code===200){
-      window.location.href = "/directory";
+      window.location.href = `/directory/${data.user_id}`;
     }
     else if(data.code===404){
       togglePopUp()
