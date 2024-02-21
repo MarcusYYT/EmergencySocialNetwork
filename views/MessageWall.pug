@@ -22,6 +22,7 @@ script.
     const user_id = #{user_id}
     window.location.href = `/directory/${user_id}`
   }
+    socket.emit('registered', #{user_id});
   function postChatMessage(){
   let textArea = document.getElementById("message")
   let textContent = textArea.value
