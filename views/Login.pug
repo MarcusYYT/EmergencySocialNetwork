@@ -69,61 +69,59 @@ script.
   });
   }
   function togglePopUp(){
-    let body = document.getElementsByTagName("body")[0];
+    let wrapper = document.getElementsByClassName("wrapper")[0];
 
-            let wrapper = document.getElementsByClassName("wrapper")[0];
+    let welcomeWrapper = document.createElement('div');
+    welcomeWrapper.setAttribute("class", "welcome-wrapper")
+    let div = document.createElement('div');
+    div.setAttribute("class", "alert alert-primary");
+    div.setAttribute("role", "alert");
 
-            let welcomeWrapper = document.createElement('div');
-            welcomeWrapper.setAttribute("class", "welcome-wrapper")
-            let div = document.createElement('div');
-            div.setAttribute("class", "alert alert-primary");
-            div.setAttribute("role", "alert");
+    let heading = document.createElement('h4');
+    heading.setAttribute("class", "alert-heading");
+    let headingText = document.createTextNode("Welcome!");
+    heading.appendChild(headingText);
 
-            let heading = document.createElement('h4');
-            heading.setAttribute("class", "alert-heading");
-            let headingText = document.createTextNode("Welcome!");
-            heading.appendChild(headingText);
+    let msg = document.createElement('p');
+    let msgText = document.createTextNode("Welcome to become a new member of Citizen! There are three kind of status for you to share with other member of Citizen: green means you are okay and you do not need help; yellow means you need help but it is not an emergency; red means you need help ASAP! You can change your status as needed!");
+    msg.appendChild(msgText);
 
-            let msg = document.createElement('p');
-            let msgText = document.createTextNode("Welcome to become a new member of Citizen! There are three kind of status for you to share with other member of Citizen: green means you are okay and you do not need help; yellow means you need help but it is not an emergency; red means you need help ASAP! You can change your status as you needed!");
-            msg.appendChild(msgText);
+    let buttonWrapper = document.createElement('div');
+    buttonWrapper.setAttribute("class", "button-wrapper");
+    let acknowledgeBtn = document.createElement('button');
+    acknowledgeBtn.setAttribute("class", "btn btn-primary");
+    acknowledgeBtn.setAttribute("id", "ack-btn");
+    let acknowledgeBtnText = document.createTextNode("I accept");
+    acknowledgeBtn.appendChild(acknowledgeBtnText);
 
-            let buttonWrapper = document.createElement('div');
-            buttonWrapper.setAttribute("class", "button-wrapper");
-            let acknowledgeBtn = document.createElement('button');
-            acknowledgeBtn.setAttribute("class", "btn btn-primary");
-            acknowledgeBtn.setAttribute("id", "ack-btn");
-            let acknowledgeBtnText = document.createTextNode("I accept");
-            acknowledgeBtn.appendChild(acknowledgeBtnText);
+    let cancelBtn = document.createElement('button');
+    cancelBtn.setAttribute("class", "btn btn-primary");
+    cancelBtn.setAttribute("id", "ack-btn");
+    let cancelBtnText = document.createTextNode("Cancel");
+    cancelBtn.appendChild(cancelBtnText);
 
-            let cancelBtn = document.createElement('button');
-            cancelBtn.setAttribute("class", "btn btn-primary");
-            cancelBtn.setAttribute("id", "ack-btn");
-            let cancelBtnText = document.createTextNode("cancel");
-            cancelBtn.appendChild(cancelBtnText);
+    div.appendChild(heading);
+    div.appendChild(msg);
+    buttonWrapper.appendChild(acknowledgeBtn);
+    buttonWrapper.appendChild(cancelBtn);
+    div.appendChild(buttonWrapper);
+    welcomeWrapper.appendChild(div);
 
-            div.appendChild(heading);
-            div.appendChild(msg);
-            buttonWrapper.appendChild(acknowledgeBtn);
-            buttonWrapper.appendChild(cancelBtn);
-            div.appendChild(buttonWrapper);
-            welcomeWrapper.appendChild(div);
+    let overlay = document.createElement('div');
+    overlay.setAttribute("id", "overlay")
+    wrapper.appendChild(overlay)
+    wrapper.appendChild(welcomeWrapper);
 
-            let overlay = document.createElement('div');
-            overlay.setAttribute("id", "overlay")
-            wrapper.appendChild(overlay)
-            wrapper.appendChild(welcomeWrapper);
+    acknowledgeBtn.addEventListener("click", async (event) => {
+      await register();
+      wrapper.removeChild(welcomeWrapper);
+      wrapper.removeAttribute("id");
+      overlay.removeAttribute("id");
+    })
 
-            acknowledgeBtn.addEventListener("click", async (event) => {
-              await register();
-              wrapper.removeChild(welcomeWrapper);
-              wrapper.removeAttribute("id");
-              overlay.removeAttribute("id");
-            })
-
-            cancelBtn.addEventListener("click", async (event) => {
-              wrapper.removeChild(welcomeWrapper);
-              wrapper.removeAttribute("id");
-              overlay.removeAttribute("id");
-            })
+    cancelBtn.addEventListener("click", async (event) => {
+      wrapper.removeChild(welcomeWrapper);
+      wrapper.removeAttribute("id");
+      overlay.removeAttribute("id");
+    })
   }

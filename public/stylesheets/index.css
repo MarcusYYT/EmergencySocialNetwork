@@ -29,6 +29,7 @@ h1#header {
     height: 50vh;
     z-index: 2;
     position: relative;
+    top: -28vh;
 }
 
 .alert-heading {
@@ -39,7 +40,7 @@ h1#header {
 
 .button-wrapper {
     display: flex;
-    justify-content: center;
+    justify-content: space-between;
 }
 
 #overlay {
@@ -65,8 +66,9 @@ button#ack-btn {
     color: #084298;
     background-color: #cfe2ff;
     border-color: #b6d4fe;
-    width: 500px;
+    width: 82vw;
     padding: 30px;
+    text-align: center;
 }
 
 .LoginBox {
@@ -78,6 +80,7 @@ button#ack-btn {
     margin-top: 10%;
     top: 14vh;
     position: relative;
+    z-index: 0;
 }
 
 

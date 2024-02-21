@@ -11,10 +11,10 @@ function renderESNList(list) {
 
         let statusField = document.createElement("p");
         statusField.setAttribute("class", "statusField");
-        let statusFieldText = document.createTextNode(list[i].status);
+        let statusFieldText = document.createTextNode(list[i].online_status);
         statusField.appendChild(statusFieldText);
 
-        if (list[i].status === "online") {
+        if (list[i].online_status === "online") {
             statusField.classList.add("online");
         }
         else {
@@ -37,7 +37,7 @@ window.addEventListener("load", async () => {
             let offline = []
 
             for (let i = 0; i < data.data.length; i++) {
-                if (data.data[i].status === "online") {
+                if (data.data[i].online_status === "online") {
                     online.push(data.data[i])
                 }
                 else {
