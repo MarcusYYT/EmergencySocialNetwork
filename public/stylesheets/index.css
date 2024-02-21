@@ -132,7 +132,6 @@ button#ack-btn {
 }
 
 #post-wrapper {
-    background-color: #78caff;
     width: 80vw;
     border-radius: 15px;
     height: 89vh;
@@ -148,7 +147,7 @@ button#ack-btn {
 form#post-form {
     display: flex;
     flex-direction: column;
-    width: 75vw;
+    width: 85vw;
     justify-content: end;
     margin-bottom: 5vw;
 }
@@ -160,10 +159,11 @@ form#post-form {
 
 div#message-board {
     background-color: white;
-    width: 75vw;
+    width: 85vw;
     margin: 3vw;
     border-radius: 15px;
     overflow: scroll;
+    height: 75vh;
 }
 
 textarea {
@@ -181,6 +181,7 @@ button#post-btn {
 h2#message-header {
     margin-top: 1.5vh;
     font-size: 5vw;
+    color: white;
 }
 
 #directory-wrapper {
