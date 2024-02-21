@@ -1,6 +1,6 @@
 import express from 'express';
 const router = express.Router();
-import {getUserById, getUserList} from '../controllers/userController.mjs'
+import {getUserById, getUserList, updateUser} from '../controllers/userController.mjs'
 
 /**
  * @swagger
@@ -74,5 +74,6 @@ import {getUserById, getUserList} from '../controllers/userController.mjs'
 
 router.get('', getUserList);
 router.get('/:user_id', getUserById);
+router.put('/:user_id', updateUser)
 
 export default router;

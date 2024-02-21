@@ -7,7 +7,7 @@ head
   script(src='/javascripts/posts.js')
   title Message Wall
 .links
-  a.btn.btn-primary(href='/directory') Back
+  a.btn.btn-primary(onclick='routeToDirectory()') Back
 #post-wrapper
   h2#message-header Message Wall
   #message-board.list-group
@@ -17,6 +17,11 @@ head
 script(src='https://cdn.socket.io/4.7.4/socket.io.min.js')
 script.
   const socket = io();
+  let username = "";
+  function routeToDirectory(){
+    const user_id = #{user_id}
+    window.location.href = `/directory/${user_id}`
+  }
   function postChatMessage(){
   let textArea = document.getElementById("message")
   let textContent = textArea.value
@@ -26,24 +31,56 @@ script.
   let userId = #{user_id}
   console.log(userId); // Output: 1 (for the URL /users/1)
   const postData = {
+  username: username, 
   userId: userId,
   status: "status",
   dateTime: new Date().toLocaleString(),
   content: textContent
   };
   socket.emit("postData", postData);
-  console.log(postData);
+    console.log(postData);
   }
+  window.onload = async function() {
+  const userId = #{user_id}
+    const response = await fetch(`/users/${userId}`, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    }).then(response => response.json()).then((data) => {
+      console.log(data.data[0].username);
+      username = data.data[0].username;
+    })
 
+  }
+      async function logout(){
+      const userId = #{user_id};
+      const requestBody = {
+      user_id: userId,
+      updateAt: "online_status",
+      updateValue: "offline"
+      }
+      await fetch(`/users/${userId}`, {
+      method: 'PUT',
+      headers: {
+      'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(requestBody),
+      }).then(response=> response.json()).then((data)=>{
+        console.log(data.message)
+      })
+      window.location.href = `/`;
+      }
   socket.on("postData", (postData) => {
     let messageBoard = document.getElementById("message-board")
     let messageElement = constructChatMessage(
-        postData.userId,
+        postData.username,
         postData.content,
         postData.status,
         postData.dateTime,
     );
     messageBoard.appendChild(messageElement);
+    console.log(username);
     document.getElementById("message-board").scrollTop = messageBoard.scrollHeight;
       });
   

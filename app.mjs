@@ -8,6 +8,7 @@ import socketConfig from './config/socketConfig.mjs'
 import authRoutes from './routes/authRoutes.mjs'
 import userRoutes from './routes/userRoutes.mjs'
 import postRoutes from './routes/postRoutes.mjs'
+import pageRoutes from './routes/pageRoutes.mjs'
 
 import { createServer } from 'node:http';
 // import { fileURLToPath } from 'node:url';
@@ -44,16 +45,11 @@ app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'pug');
 
 // Router setting
+app.use('', pageRoutes);
 app.use('/auth', authRoutes);
 app.use('/users', userRoutes);
 app.use('/posts', postRoutes);
 
-// app.get('/', passport.authenticate('jwt', { session: false }), (req, res) => {
-//     // TO-DO: Check if the user was already login
-//     // res.json({ message: 'You are authenticated!', user: req.user });
-//     res.render('Home');
-
-// });
 // setup swagger
 const swaggerSpec = await swaggerJSDoc(swaggerOptions);
 app.get('/swagger.json', (req, res) => {
@@ -62,31 +58,6 @@ app.get('/swagger.json', (req, res) => {
 });
 app.use('/api-docs', swaggerUI.serve, swaggerUI.setup(swaggerSpec));
 
-
-app.get('/', (req, res) => {
-  // TO-DO: Check if the user was already login
-  // res.json({ message: 'You are authenticated!', user: req.user });
-  res.render('Home');
-
-});
-
-app.get('/directory/:user_id', (req, res) => {
-  // TO-DO: Check if the user was already login
-  const user_id = req.params.user_id;
-  res.render('Directory', {user_id: user_id});
-});
-app.get('/messageWall/:user_id', (req, res) => {
-  // TO-DO: Check if the user was already login
-  const user_id = req.params.user_id;
-  res.render('MessageWall', {user_id: user_id});
-});
-
-app.get('/test', (req, res) => {
-  res.render('Test');
-})
-app.get('/socket', (req, res) => {
-  res.render('socketTest');
-})
 
 // app.listen(port, async () => {
 //     console.log(`Server running at http://localhost:${port}`);

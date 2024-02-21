@@ -13,14 +13,35 @@ html(lang='en')
       a.btn.btn-primary(onclick='logout()') Log Out
     #directory-wrapper
       h1#directory-header ESN Directory
-      |  
       #directory
-    script. 
-      function newPost(){
-        const user_id = #{user_id};
-        window.location.href = `/messageWall/${user_id}`;
+    script.
+      function newPost() {
+      const user_id = #{user_id};
+      window.location.href = `/messageWall/${user_id}`;
       }
-      
+      async function logout(){
+      const userId = #{user_id};
+      const requestBody = {
+      user_id: userId,
+      updateAt: "online_status",
+      updateValue: "offline"
+      }
+      await fetch(`/users/${userId}`, {
+      method: 'PUT',
+      headers: {
+      'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(requestBody),
+      }).then(response=> response.json()).then((data)=>{
+        console.log(data.message)
+      })
+      window.location.href = `/`;
+      }
+      //- window.addEventListener('beforeunload', async function(event) {
+      //- console.log('Browser is closing');
+      //- await logout()
+      //- });
+        
 
 
-      
+    

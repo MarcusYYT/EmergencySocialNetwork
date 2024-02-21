@@ -63,7 +63,8 @@ script.
   ).then((data)=>{
     if(data.success===true){
         alert(data.message)
-        window.location.href = '/directory';
+        console.log(data.user_id);
+        window.location.href = `/directory/${data.user_id}`;
     } else {
         alert(data.message)
     }

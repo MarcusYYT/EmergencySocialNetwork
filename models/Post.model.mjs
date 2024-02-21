@@ -93,7 +93,13 @@ export async function getPostsByUsername(username) {
  * @returns An array of all posts
  */
 export async function getAllPosts() {
-    return await Post.findAll();
+    
+    return await Post.findAll({
+        include: [{
+          model: User,
+          attributes: ['username']
+        }]
+      });
 }
 
 /**

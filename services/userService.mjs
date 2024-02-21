@@ -11,9 +11,16 @@ let saltRounds = 10;
  * @param {string} password The password passed from the frontend
  */
 export async function createNewUser(username, password) {
+  let returnJson = {success: null, user_id: -1, message: "initial message"};
   await bcrypt.hash(password, saltRounds).then(async (res) => {
-    await userModel.createUser(username, res);
+    await userModel.createUser(username, res).then((user)=>{
+      returnJson.success = true;
+      returnJson.user_id = user.user_id
+      returnJson.message = "Create user successfulS"
+    });
+
   });
+  return returnJson;
 }
 
 /**
@@ -69,6 +76,15 @@ export async function isUsernameValid(username) {
   } else {
     return true;
   }
+}
+
+export async function changeOnlineStatus(id, status){
+  let returnJson = {success: null, message:"initial message"}
+  await userModel.changeOnlineStatus(id, status).then((res)=>{
+    returnJson.success = true;
+    returnJson.message = "Change online status successfull"
+  });
+  return returnJson;
 }
 
 /**

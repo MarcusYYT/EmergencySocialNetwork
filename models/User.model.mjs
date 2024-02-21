@@ -33,7 +33,7 @@ export const User = sequelize.define('user', {
  * @param {string} password 
  */
 export async function createUser(username, password){
-    return User.create({ username: username, password: password, status:"place_holder", online_status:"online"});
+    return await User.create({ username: username, password: password, status:"place_holder", online_status:"online"});
 }
 
 /**
