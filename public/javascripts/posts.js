@@ -70,3 +70,6 @@ let textArea = document.getElementById("id", "message")
 function postChatMessage(user_id, content){
     
 }
+async function logout(){
+    // TODO
+}
