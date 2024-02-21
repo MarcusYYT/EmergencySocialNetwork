@@ -13,9 +13,6 @@ html(lang='en')
     #post-wrapper
       h2#message-header Message Wall
       #message-board.list-group
-      form#post-form
+      form#post-form(method='POST')
         textarea#message(placeholder='Type your message here...', required='')
         button#post-btn.btn.btn-primary Post
-
-      
-

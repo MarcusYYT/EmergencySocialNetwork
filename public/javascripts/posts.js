@@ -1,3 +1,5 @@
+import socketio from './socket.io.js';
+
 function constructChatMessage(sender, message, status, dateTime) {
 
     const messageDiv = document.createElement('div');
@@ -60,3 +62,11 @@ window.addEventListener("load", async () => {
             console.error('Error fetching data:', error);
         });
 }, false)
+
+
+let postButton = document.getElementById("id", "post-btn")
+let textArea = document.getElementById("id", "message")
+
+function postChatMessage(user_id, content){
+    
+}
