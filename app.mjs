@@ -5,23 +5,29 @@ import swaggerUI from 'swagger-ui-express'
 // import {User} from './models/User.model.mjs'
 // import {Post} from './models/Post.model.mjs'
 // import passport from './config/passportConfig.mjs';
-
+import socketConfig from './config/socketConfig.mjs'
+// import { Server } from 'socket.io';
 // import routing
 import authRoutes from './routes/authRoutes.mjs'
 import userRoutes from './routes/userRoutes.mjs'
 import postRoutes from './routes/postRoutes.mjs'
 
+import { createServer } from 'node:http';
+// import { fileURLToPath } from 'node:url';
+// import { dirname, join } from 'node:path';
+
+
 const swaggerOptions = {
-    failOnErrors: true, // Whether or not to throw when parsing errors. Defaults to false.
-    definition: {
-      openapi: '3.0.0',
-      info: {
-        title: 'ESN Restful API',
-        version: '1.0.0',
-      },
+  failOnErrors: true, // Whether or not to throw when parsing errors. Defaults to false.
+  definition: {
+    openapi: '3.0.0',
+    info: {
+      title: 'ESN Restful API',
+      version: '1.0.0',
     },
-    apis: ['./routes/*.mjs'],
-  };
+  },
+  apis: ['./routes/*.mjs'],
+};
 
 // get the root folder for the project
 const root = process.cwd();
@@ -29,9 +35,10 @@ const __dirname = root;
 
 const app = express();
 const port = 3000;
-// app.use(passport.initialize());
+const server = createServer(app);
+socketConfig(server);
 
-app.use(express.static(__dirname +'/public'));
+app.use(express.static(__dirname + '/public'));
 app.use(express.json());  // parse json request  
 app.use(express.urlencoded({ extended: true }));
 
@@ -53,16 +60,16 @@ app.use('/posts', postRoutes);
 // setup swagger
 const swaggerSpec = await swaggerJSDoc(swaggerOptions);
 app.get('/swagger.json', (req, res) => {
-    res.setHeader('Content-Type', 'application/json');
-    res.send(swaggerSpec);
-  });
+  res.setHeader('Content-Type', 'application/json');
+  res.send(swaggerSpec);
+});
 app.use('/api-docs', swaggerUI.serve, swaggerUI.setup(swaggerSpec));
 
 
 app.get('/', (req, res) => {
-    // TO-DO: Check if the user was already login
-    // res.json({ message: 'You are authenticated!', user: req.user });
-    res.render('Home');
+  // TO-DO: Check if the user was already login
+  // res.json({ message: 'You are authenticated!', user: req.user });
+  res.render('Home');
 
 });
 
@@ -71,20 +78,27 @@ app.get('/directory/:user_id', (req, res) => {
   const user_id = req.params.user_id;
   res.render('Directory', {user_id: user_id});
 });
-
 app.get('/messageWall/:user_id', (req, res) => {
   // TO-DO: Check if the user was already login
   const user_id = req.params.user_id;
   res.render('MessageWall', {user_id: user_id});
 });
-app.get('/test', (req,res) =>{
+
+app.get('/test', (req, res) => {
   res.render('Test');
 })
+app.get('/socket', (req, res) => {
+  res.render('socketTest');
+})
 
-app.listen(port, async () => {
-    console.log(`Server running at http://localhost:${port}`);
-    // await User.sync()
-    // await Post.sync()
+// app.listen(port, async () => {
+//     console.log(`Server running at http://localhost:${port}`);
+//     // await User.sync()
+//     // await Post.sync()
+// });
+
+server.listen(3000, () => {
+  console.log('Server running at http://localhost:3000');
 });
 
 export default app;
