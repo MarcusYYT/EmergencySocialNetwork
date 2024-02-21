@@ -9,12 +9,17 @@ html(lang='en')
     title Directory 
   body
     .links
-      a.btn.btn-primary(href='/messageWall') New Post
-      a.btn.btn-primary(onclick='logout()')Log Out
+      a.btn.btn-primary(onclick='newPost()') New Post
+      a.btn.btn-primary(onclick='logout()') Log Out
     #directory-wrapper
       h1#directory-header ESN Directory
       |  
       #directory
+    script. 
+      function newPost(){
+        const user_id = #{user_id};
+        window.location.href = `/messageWall/${user_id}`;
+      }
       
 
 
