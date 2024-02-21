@@ -60,3 +60,7 @@ window.addEventListener("load", async () => {
             console.error('Error fetching data:', error);
         });
 }, false)
+
+async function logout(){
+    // TODO
+}

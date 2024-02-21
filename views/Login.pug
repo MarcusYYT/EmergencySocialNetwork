@@ -13,9 +13,6 @@ head
       button#signinbtn.btn.btn-primary(onclick='login()', type='button') Login
       button#registerBtn.btn.btn-primary(onclick='togglePopUp()', type='button') Register
 script.
-  if (new URL(window.location.href).searchParams.get('LoginSuc') === 'false') {
-  alert('Login Failed');
-  }
   async function login(){
   let form = document.getElementById('loginForm');
   let username = form.username.value.trim().toLowerCase();
@@ -29,10 +26,14 @@ script.
 
   }).then(response => response.json()
   ).then(async (data)=>{
-    if(data.success===true){
+    if(data.code===200){
       window.location.href = "/directory";
-    } else {
-        alert(data.message)
+    }
+    else if(data.code===404){
+      togglePopUp()
+    }
+    else{
+      alert(data.message)
     }
   });
   }
