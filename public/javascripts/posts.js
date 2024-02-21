@@ -1,4 +1,7 @@
-// import socketio from './socket.io.js';
+// import socketio from './socket.io.js'
+// const {socketio} = require('./socket.io.js');
+// import io from 'socket.io-client';
+
 
 function constructChatMessage(sender, message, status, dateTime) {
 
@@ -13,6 +16,7 @@ function constructChatMessage(sender, message, status, dateTime) {
     senderSpan.textContent = sender;
     const dateSpan = document.createElement('span');
     dateSpan.className = 'message-date';
+    console.log("1111111111:" + dateTime)
     dateSpan.textContent = new Date(dateTime).toLocaleString();
 
     const statusSpan = document.createElement('span');
@@ -64,12 +68,37 @@ window.addEventListener("load", async () => {
 }, false)
 
 
-let postButton = document.getElementById("id", "post-btn")
-let textArea = document.getElementById("id", "message")
+let postButton = document.getElementById("post-btn")
 
-function postChatMessage(user_id, content){
-    
-}
+
+
+
+// function postChatMessage(){
+//     let textArea = document.getElementById("message")
+//     let textContent = textArea.value
+
+//     let path = window.location.pathname;
+
+//     // Split the path by slashes
+//     let pathParts = path.split('/');
+
+//     // Get the user_id (assuming it's the last part of the URL)
+//     let userId = pathParts[pathParts.length - 1];
+
+//     console.log(userId); // Output: 1 (for the URL /users/1)
+//     const postData = {
+//         userId: userId,
+//         status: "status",
+//         dateTime: new Date().toLocaleString(),
+//         message: textContent
+//       };
+//     socket.emit("post msg", postData);
+//     console.log(postData)
+
+// }
+
+
+
 async function logout(){
     // TODO
 }
