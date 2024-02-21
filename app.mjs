@@ -4,10 +4,7 @@ import swaggerJSDoc from 'swagger-jsdoc'
 import swaggerUI from 'swagger-ui-express'
 // import {User} from './models/User.model.mjs'
 // import {Post} from './models/Post.model.mjs'
-// import passport from './config/passportConfig.mjs';
 import socketConfig from './config/socketConfig.mjs'
-// import { Server } from 'socket.io';
-// import routing
 import authRoutes from './routes/authRoutes.mjs'
 import userRoutes from './routes/userRoutes.mjs'
 import postRoutes from './routes/postRoutes.mjs'
@@ -97,8 +94,10 @@ app.get('/socket', (req, res) => {
 //     // await Post.sync()
 // });
 
-server.listen(3000, () => {
-  console.log('Server running at http://localhost:3000');
+server.listen(port, () => {
+  console.log(`Server running at http://localhost:${port}`);
+  // await User.sync()
+  // await Post.sync()
 });
 
 export default app;
