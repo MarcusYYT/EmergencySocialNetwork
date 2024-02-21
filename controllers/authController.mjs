@@ -45,7 +45,7 @@ export async function login(req, res) {
         console.log(resolve)
         if(resolve.code === 200){
             changeOnlineStatus(resolve.id, "online")
-            res.status(200).json({code: 200, message:resolve.message})
+            res.status(200).json({code: 200, message:resolve.message, user_id: resolve.id})
         }  
     //res.json({ message: "Login Successful", token: token });
     // res.end("Login Successful")
