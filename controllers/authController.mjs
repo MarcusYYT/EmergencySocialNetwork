@@ -25,8 +25,12 @@ export async function register(req, res) {
                         res.status(409).json({ success: false, message: 'Username Exist' });
                     } else{
                         console.log("The User is not exist")
-                        await userService.createNewUser(username, password);
-                        res.status(201).json({ success: true, message: 'Registration successful' });
+                        await userService.createNewUser(username, password).then((user)=>{
+                            const newUserId = user.user_id;
+                            console.log(newUserId)
+                            res.status(201).json({ success: true, user_id: newUserId, message: 'Registration successful' });
+                        });
+                        
                     }
                 });
             }

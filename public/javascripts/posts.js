@@ -16,7 +16,7 @@ function constructChatMessage(sender, message, status, dateTime) {
     senderSpan.textContent = sender;
     const dateSpan = document.createElement('span');
     dateSpan.className = 'message-date';
-    console.log("1111111111:" + dateTime)
+    // console.log("1111111111:" + dateTime)
     dateSpan.textContent = new Date(dateTime).toLocaleString();
 
     const statusSpan = document.createElement('span');
@@ -45,7 +45,7 @@ async function renderChats(chatlist) {
 
         
         let messageElement = constructChatMessage(
-            msgData.user_id,
+            msgData.user.username,
             msgData.content,
             msgData.status,
             msgData.createdAt
@@ -96,9 +96,3 @@ let postButton = document.getElementById("post-btn")
 //     console.log(postData)
 
 // }
-
-
-
-async function logout(){
-    // TODO
-}
