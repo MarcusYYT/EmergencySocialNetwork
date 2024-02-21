@@ -26,38 +26,3 @@ function renderESNList(list) {
         directory.appendChild(userdiv);
     }
 }
-
-window.addEventListener("load", async () => {
-    await fetch('/users')
-        .then(response => response.json())
-        .then(data => {
-            console.log(data);
-
-            let online = []
-            let offline = []
-
-            for (let i = 0; i < data.data.length; i++) {
-                if (data.data[i].online_status === "online") {
-                    online.push(data.data[i])
-                }
-                else {
-                    offline.push(data.data[i])
-                }
-            }
-
-            online.sort(function (a, b) {
-                return a.username.localeCompare(b.username)
-            })
-
-            offline.sort(function (a, b) {
-                return a.username.localeCompare(b.username)
-            })
-
-            renderESNList(online)
-            renderESNList(offline)
-
-        })
-        .catch(error => {
-            console.error('Error fetching data:', error);
-        });
-} , false)
