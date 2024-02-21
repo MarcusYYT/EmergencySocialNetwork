@@ -66,11 +66,16 @@ app.get('/', (req, res) => {
 
 });
 
-app.get('/test', (req,res) =>{
-  res.render('Test');
-})
+app.get('/directory', (req, res) => {
+  // TO-DO: Check if the user was already login
+  res.render('Directory');
+});
 
-app.get('/directory', (req,res) =>{
+app.get('/messageWall', (req, res) => {
+  // TO-DO: Check if the user was already login
+  res.render('MessageWall');
+});
+app.get('/test', (req,res) =>{
   res.render('Test');
 })
 
