@@ -47,19 +47,19 @@ const router = express.Router();
  *        description: post not found
  * 
  * 
- * /privatePosts:
+ * /privatePosts/{senderId}/{recieverId}:
  *  get:
  *    tags:
  *      - Private Post 
  *    summary: fetch a list of all post objects
  *    parameters:
- *      - in: query
- *        name: sender_Id
+ *      - in: path
+ *        name: senderId
  *        schema:
  *          type: integer
  *        description: Numeric ID of the sender of the posts to get.
- *      - in: query
- *        name: reciever_Id
+ *      - in: path
+ *        name: recieverId
  *        schema:
  *          type: integer
  *        description: Numeric ID of the reciever of posts to get.
@@ -92,6 +92,9 @@ const router = express.Router();
  *                        type: string
  *                message: 
  *                  type: string
+ *
+ * 
+ * /privatePosts:
  *  post:
  *    tags:
  *      - Private Post 
