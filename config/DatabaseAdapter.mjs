@@ -1,7 +1,7 @@
 import MySQLDatabase from './MySQLDatabase.mjs';
 import SQLiteDatabase from './SQLiteDatabase.mjs';
 
-export default class DatabaseFactory {
+export default class DatabaseAdapter {
     static createDatabase() {
         const databaseMap = {
             'test': SQLiteDatabase,
