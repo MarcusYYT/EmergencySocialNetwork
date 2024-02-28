@@ -1,7 +1,9 @@
 import {DataTypes} from 'sequelize'
-import {sequelize} from '../config/database.mjs'
 import { User } from './User.model.mjs'
+import DatabaseFactory from '../config/DatabaseFactory.mjs';
 
+
+const sequelize = DatabaseFactory.createDatabase().sequelize;
 export const Post = sequelize.define('post', {
     post_id: {
         type: DataTypes.INTEGER,
