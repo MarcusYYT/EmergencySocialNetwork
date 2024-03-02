@@ -1,6 +1,8 @@
 import {DataTypes} from 'sequelize'
-import {sequelize} from '../config/database.mjs'
 import { User } from './User.model.mjs'
+import DatabaseAdapter from '../config/DatabaseAdapter.mjs';
+
+const sequelize = DatabaseAdapter.createDatabase().sequelize;
 
 export const Post = sequelize.define('post', {
     post_id: {
