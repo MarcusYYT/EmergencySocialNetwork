@@ -12,11 +12,58 @@ html(lang='en')
     .links
       a.btn.btn-primary(onclick='newPost()') New Post
       a.btn.btn-primary(onclick='logout()') Log Out
+    #status-wrapper 
+      form#status-form(action="") 
+        #status-options
+          label(for='status') Change my status:
+          select#status(name='status')
+            option(value='ok') OK
+            option(value='help') Help
+            option(value='emergency') Emergency
+        button.btn.btn-primary(type='button' onclick='changeMyStatus()') Submit
     #directory-wrapper
       h1#directory-header ESN Directory
       #directory
     script.
       const socket = io();
+      let username = '';
+
+      window.onload = async function() {
+        const userId = #{user_id}
+        const response = await fetch(`/users/${userId}`, {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        }).then(response => response.json()).then((data) => {
+          username = data.data[0].username;
+          renderMyStatus(username, data.data[0].status)
+        })
+      }
+
+      async function changeMyStatus() {
+        let selectElement = document.getElementById('status');
+        let selectedValue = selectElement.value;
+        console.log(selectedValue);
+        const userId = #{user_id};
+        const requestBody = {
+          user_id: userId,
+          updateAt: "status",
+          updateValue: selectedValue
+        }
+
+        await fetch(`/users/${userId}`, {
+          method: 'PUT',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(requestBody),
+          }).then(response=> response.json()).then((data)=>{
+            console.log(data.message)
+          })
+          renderMyStatus(username, selectedValue);
+      }
+
       socket.emit('registered', #{user_id});
       socket.on("status_update",async ()=> {
         await fetch('/users')
@@ -43,6 +90,7 @@ html(lang='en')
             offline.sort(function (a, b) {
                 return a.username.localeCompare(b.username)
             })
+
             let directory = document.getElementById("directory");
             while(directory.firstChild){
               directory.removeChild(directory.lastChild);
@@ -52,26 +100,28 @@ html(lang='en')
             })
             })
       function newPost() {
-      const user_id = #{user_id};
-      window.location.href = `/messageWall/${user_id}`;
+        const user_id = #{user_id};
+        window.location.href = `/messageWall/${user_id}`;
       }
+      
       async function logout(){
-      const userId = #{user_id};
-      const requestBody = {
-      user_id: userId,
-      updateAt: "online_status",
-      updateValue: "offline"
-      }
-      await fetch(`/users/${userId}`, {
-      method: 'PUT',
-      headers: {
-      'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(requestBody),
-      }).then(response=> response.json()).then((data)=>{
-        console.log(data.message)
-      })
-      window.location.href = `/`;
+        const userId = #{user_id};
+        const requestBody = {
+          user_id: userId,
+          updateAt: "online_status",
+          updateValue: "offline"
+        }
+
+        await fetch(`/users/${userId}`, {
+          method: 'PUT',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(requestBody),
+        }).then(response=> response.json()).then((data)=>{
+          console.log(data.message)
+        })
+        window.location.href = `/`;
       }
       //- window.addEventListener('beforeunload', async function(event) {
       //- console.log('Browser is closing');

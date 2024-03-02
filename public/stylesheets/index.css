@@ -188,7 +188,7 @@ h2#message-header {
     background-color: #78caff;
     width: 80vw;
     border-radius: 15px;
-    height: 89vh;
+    height: 65vh;
     position: relative;
     display: flex;
     margin: auto;
@@ -204,7 +204,7 @@ h2#message-header {
 }
 
 div#directory {
-    padding: 5vw 10vw 5vw 10vw;
+    padding: 0vw 10vw 5vw 10vw;
 }
 
 .directory-user {
@@ -243,4 +243,22 @@ span.message-sender {
 .message-body {
     font-size: 4.5vw;
     color: #031926;
+}
+
+#status-wrapper {
+    background-color: #78caff;
+    border-radius: 15px;
+    width: 80vw;
+    margin: auto;
+    padding: 5vw;
+    text-align: center;
+    margin-top: 1vh;
+}
+
+#status-options {
+    display: flex;
+    justify-content: space-between;
+    width: 63vw;
+    margin: auto;
+    margin-bottom: 2vh;
 }
