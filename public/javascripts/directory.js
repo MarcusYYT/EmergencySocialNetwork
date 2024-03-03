@@ -21,6 +21,11 @@ function renderMyStatus(username, status) {
 }
 
 function renderESNList(list) {
+    let directory = document.getElementById("directory");
+    while(directory.firstChild){
+      directory.removeChild(directory.lastChild);
+    }
+    
     for (let i = 0; i < list.length; i++) {
         let directory = document.getElementById("directory");
         let userdiv = document.createElement("div");
@@ -31,19 +36,25 @@ function renderESNList(list) {
         let usernameFieldText = document.createTextNode(list[i].username);
         usernameField.appendChild(usernameFieldText);
 
-        let statusField = document.createElement("p");
-        statusField.setAttribute("class", "statusField");
-        let statusFieldText = document.createTextNode(list[i].online_status);
-        statusField.appendChild(statusFieldText);
+        let onlineStatusField = document.createElement("p");
+        onlineStatusField.setAttribute("class", "onlineStatusField");
+        let onlineStatusFieldText = document.createTextNode(list[i].online_status);
+        onlineStatusField.appendChild(onlineStatusFieldText);
 
         if (list[i].online_status === "online") {
-            statusField.classList.add("online");
+            onlineStatusField.classList.add("online");
         }
         else {
-            statusField.classList.add("offline");
+            onlineStatusField.classList.add("offline");
         }
 
+        let statusField = document.createElement("p");
+        statusField.setAttribute("class", "statusField");
+        let statusFieldText = document.createTextNode(list[i].status);
+        statusField.appendChild(statusFieldText);
+
         userdiv.appendChild(usernameField);
+        userdiv.appendChild(onlineStatusField);
         userdiv.appendChild(statusField);
         directory.appendChild(userdiv);
     }

@@ -18,6 +18,7 @@ script(src='https://cdn.socket.io/4.7.4/socket.io.min.js')
 script.
   const socket = io();
   let username = "";
+  let status = "";
   function routeToDirectory(){
     const user_id = #{user_id}
     window.location.href = `/directory/${user_id}`
@@ -28,6 +29,7 @@ script.
     let textArea = document.getElementById("message")
     let textContent = textArea.value
     let path = window.location.pathname;
+    textArea.value = "";
     // Get the user_id (assuming it's the last part of the URL)
 
     let userId = #{user_id}
@@ -35,7 +37,7 @@ script.
     const postData = {
       username: username, 
       userId: userId,
-      status: "status",
+      status: status,
       dateTime: new Date().toLocaleString(),
       content: textContent
     };
@@ -53,6 +55,7 @@ script.
     }).then(response => response.json()).then((data) => {
       console.log(data.data[0].username);
       username = data.data[0].username;
+      status = data.data[0].status
     })
   }
 
