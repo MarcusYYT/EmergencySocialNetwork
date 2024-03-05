@@ -1,0 +1,59 @@
+doctype html
+head
+  meta(charset='UTF-8')
+  meta(name='viewport' content='width=device-width, initial-scale=1.0')
+  link(href='https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css' rel='stylesheet' integrity='sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3' crossorigin='anonymous')
+  link(rel='stylesheet' type='text/css' href='/stylesheets/index.css')
+  script(type="module" src='/javascripts/privateChat.js')
+  
+  title Private Chat
+.links
+  a.btn.btn-primary(onclick='routeToDirectory()') Back
+#post-wrapper
+  h2#message-header
+  #message-board.list-group
+  form#post-form(method='POST')
+    textarea#message(placeholder='Type your message here...' required='')
+    button#post-btn.btn.btn-primary(type='button' onclick='postChatMessage()') Post
+script(src='https://cdn.socket.io/4.7.4/socket.io.min.js')
+script.
+
+    let senderUsername = "";
+    let receiverUsername = "";
+
+    window.onload = async function() {
+        const senderId = #{senderId}
+        const senderResponse = await fetch(`/users/${senderId}`, {
+        method: 'GET',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        }).then(response => response.json()).then((data) => {
+            console.log(data.data[0].username);
+            senderUsername = data.data[0].username;
+        })   
+
+        const receiverId = #{receiverId}
+        const receiverResponse = await fetch(`/users/${receiverId}`, {
+        method: 'GET',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        }).then(response => response.json()).then((data) => {
+            console.log(data.data[0].username);
+            receiverUsername = data.data[0].username;
+            renderReceiverName()
+        })     
+    }
+
+    function routeToDirectory(){
+        const senderId = #{senderId}
+        window.location.href = `/directory/${senderId}`
+    }
+
+    function renderReceiverName(){
+        let header = document.getElementById("message-header")
+        let headerText = document.createTextNode(receiverUsername)
+        header.appendChild(headerText)
+    }
+   

@@ -16,13 +16,16 @@ head
     button#post-btn.btn.btn-primary(type='button' onclick='postChatMessage()') Post
 script(src='https://cdn.socket.io/4.7.4/socket.io.min.js')
 script.
+
   const socket = io();
   let username = "";
   let status = "";
+
   function routeToDirectory(){
     const user_id = #{user_id}
     window.location.href = `/directory/${user_id}`
   }
+
   socket.emit('in_chat', #{user_id});
 
   function postChatMessage(){
