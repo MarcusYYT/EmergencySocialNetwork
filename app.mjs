@@ -2,15 +2,15 @@ import express from 'express'
 import path from 'path'
 import swaggerJSDoc from 'swagger-jsdoc'
 import swaggerUI from 'swagger-ui-express'
-// import {User} from './models/User.model.mjs'
-// import {Post} from './models/Post.model.mjs'
-// import {PrivChat} from "./models/PrivChat.model.mjs";
+import {PrivChat} from "./models/PrivChat.model.mjs";
+import {User} from './models/User.model.mjs'
+import {Post} from './models/Post.model.mjs'
 import socketConfig from './config/socketConfig.mjs'
 import authRoutes from './routes/authRoutes.mjs'
 import userRoutes from './routes/userRoutes.mjs'
 import postRoutes from './routes/postRoutes.mjs'
 import pageRoutes from './routes/pageRoutes.mjs'
-
+import DatabaseAdapter from './config/DatabaseAdapter.mjs'
 import { createServer } from 'node:http';
 // import { fileURLToPath } from 'node:url';
 // import { dirname, join } from 'node:path';
@@ -66,11 +66,15 @@ app.use('/api-docs', swaggerUI.serve, swaggerUI.setup(swaggerSpec));
 //     // await Post.sync()
 // });
 
-server.listen(port, () => {
+server.listen(port, async () => {
   console.log(`Server running at http://localhost:${port}`);
-  // await PrivChat.sync()
-  // await User.sync()
-  // await Post.sync()
+  const database = DatabaseAdapter.createDatabase();
+  await database.connect();
+
+  if(process.env.NODE_ENV === 'test'){
+    await User.sync()
+    await Post.sync()
+  }
 });
 
 export default app;
