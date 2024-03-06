@@ -2,7 +2,7 @@ import express from 'express'
 import path from 'path'
 import swaggerJSDoc from 'swagger-jsdoc'
 import swaggerUI from 'swagger-ui-express'
-import {PrivChat} from "./models/PrivChat.model.mjs";
+import {PrivatePost} from "./models/PrivatePost.model.mjs";
 import {User} from './models/User.model.mjs'
 import {Post} from './models/Post.model.mjs'
 import socketConfig from './config/socketConfig.mjs'
@@ -70,10 +70,12 @@ server.listen(port, async () => {
   console.log(`Server running at http://localhost:${port}`);
   const database = DatabaseAdapter.createDatabase();
   await database.connect();
+  await PrivatePost.sync()
 
   if(process.env.NODE_ENV === 'test'){
     await User.sync()
     await Post.sync()
+    await PrivatePost.sync()
   }
 });
 

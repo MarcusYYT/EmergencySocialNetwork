@@ -1,6 +1,8 @@
 import {DataTypes, Op}  from "sequelize";
-import {sequelize} from "../config/database.mjs";
 import {User} from "./User.model.mjs";
+import DatabaseAdapter from '../config/DatabaseAdapter.mjs';
+
+const sequelize = DatabaseAdapter.createDatabase().sequelize;
 
 export const PrivatePost = sequelize.define("private_post", {
     post_id: {
@@ -40,13 +42,10 @@ export const PrivatePost = sequelize.define("private_post", {
     }
 });
 
-PrivatePost.belongsTo(User, {
-    foreignKey: 'user_id',
-    onDelete: 'CASCADE'
-});
-User.hasMany(PrivatePost, {
-    foreignKey: 'user_id'
-});
+User.hasMany(PrivatePost, { foreignKey: 'sender_id', onDelete:'CASCADE'});
+User.hasMany(PrivatePost, { foreignKey: 'receiver_id', onDelete:'CASCADE' });
+PrivatePost.belongsTo(User, { as: 'Sender', foreignKey: 'sender_id' });
+PrivatePost.belongsTo(User, { as: 'Receiver', foreignKey: 'receiver_id' });
 
 /**
  * Get a private chat by its ID
