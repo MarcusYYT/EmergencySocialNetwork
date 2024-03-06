@@ -2,13 +2,13 @@ import {DataTypes, Op}  from "sequelize";
 import {sequelize} from "../config/database.mjs";
 import {User} from "./User.model.mjs";
 
-export const PrivChat = sequelize.define("priv_chat", {
-    chat_id: {
+export const PrivatePost = sequelize.define("private_post", {
+    post_id: {
         type: DataTypes.INTEGER,
         primaryKey: true,
         autoIncrement: true
     },
-    sender: {
+    sender_id: {
         type: DataTypes.INTEGER,
         allowNull: false,
         references: {
@@ -16,7 +16,7 @@ export const PrivChat = sequelize.define("priv_chat", {
             key: 'user_id'
         }
     },
-    receiver: {
+    receiver_id: {
         type: DataTypes.INTEGER,
         allowNull: false,
         references: {
@@ -40,26 +40,35 @@ export const PrivChat = sequelize.define("priv_chat", {
     }
 });
 
+PrivatePost.belongsTo(User, {
+    foreignKey: 'user_id',
+    onDelete: 'CASCADE'
+});
+User.hasMany(PrivatePost, {
+    foreignKey: 'user_id'
+});
+
 /**
  * Get a private chat by its ID
- * @param {number} chat_id - The ID of the chat
+ * @param {integer} chat_id - The ID of the chat
  * @returns The post with the given ID, or null if not found
  */
 export async function getChatById(chatId) {
-    return await PrivChat.findByPk(chatId);
+    return await PrivatePost.findByPk(chatId);
 }
 
 /**
  * Get all chats between two users
- * @param {number, number} senderId, reveiverId - The ID of the two users
+ * @param {integer} sender_Id  - The user_id of the sender
+ * @param {integer} reveiverId - The user_id of the reciever
  * @returns An array of chats by the users
  */
-export async function getChatByChatters(senderId, reveiverId) {
-    return await PrivChat.findAll({
+export async function getChatByChatters(senderId, receiverId) {
+    return await PrivatePost.findAll({
         where: {
             [Op.or]: [
-                { sender: senderId, receiver: receiverId },
-                { sender: receiverId, receiver: senderId }
+                { sender_id: senderId, receiver_id: receiverId },
+                { sender_id: receiverId, receiver_id: senderId }
             ]
         }
     })
@@ -67,10 +76,10 @@ export async function getChatByChatters(senderId, reveiverId) {
 
 /**
  * Mark the sender as read
- * @param {integet} chatId chat_id
+ * @param {integer} chatId chat_id
  */
 export async function senderRead(chatId) {
-    return await PrivChat.update({sender_read: true}, {
+    return await PrivatePost.update({sender_read: true}, {
         where: {
             chat_id: chatId
         }
@@ -79,10 +88,10 @@ export async function senderRead(chatId) {
 
 /**
  * Mark the reader as read
- * @param {integet} chatId chat_id
+ * @param {integer} chatId chat_id
  */
 export async function readerRead(chatId) {
-    return await PrivChat.update({reader_read: true}, {
+    return await PrivatePost.update({reader_read: true}, {
         where: {
             chat_id: chatId
         }
