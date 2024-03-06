@@ -1,5 +1,7 @@
 import {DataTypes} from 'sequelize'
-import {sequelize} from '../config/database.mjs'
+import DatabaseFactory from '../config/DatabaseAdapter.mjs';
+
+const sequelize = DatabaseFactory.createDatabase().sequelize;
 
 export const User = sequelize.define('user', {
     user_id: {

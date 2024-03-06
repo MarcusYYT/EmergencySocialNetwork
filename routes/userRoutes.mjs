@@ -40,8 +40,33 @@ import {getUserById, getUserList, updateUser} from '../controllers/userControlle
  *                  type: string
  *      404:
  *        description: user not found
- * 
- * 
+ *  put:
+ *    summary: update a user object by the userId
+ *    tags:
+ *      - User 
+ *    parameters:
+ *      - in: path
+ *        name: userId
+ *        type: integer
+ *        required: true
+ *        description: Numeric ID of the user to get.
+ *    requestBody:
+ *      content:
+ *        application/json:
+ *          schema:
+ *            type: object
+ *            properties:
+ *              user_id:         
+ *                type: integer
+ *              updateAt:
+ *                type: string
+ *              updateValue:          
+ *                type: string
+ *    responses:
+ *      200:
+ *        description: Successful update the user
+ *      404:
+ *        description: user not found
  * /users:
  *  get:
  *    summary: fetch the whole user list
