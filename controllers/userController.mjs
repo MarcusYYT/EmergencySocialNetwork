@@ -36,6 +36,12 @@ export async function updateUser(req, res){
             await userService.changeOnlineStatus(userId, updateStatus).then((resolve)=>{
                 res.status(200).json({success: resolve.success, message: resolve.message});
         })
+        if(updateAtrribute === "status"){
+            const updateStatus = req.body.updateValue;
+            await userService.changeStatus(userId, updateStatus).then((resolve)=>{
+                res.status(200).json({success: resolve.success, message: resolve.message});
+        })
+        }
     }
     } catch(error){
         res.status(500).json({ message: 'Error updating user', error: error.message });

@@ -100,7 +100,20 @@ export async function getUserById(user_id){
  * @param {string} status The status wants to be changed to
  */
 export async function changeOnlineStatus(id, status){
-    User.update({online_status:status},{
+    return User.update({online_status:status},{
+        where: {
+            user_id: id
+        }
+    })
+}
+
+/**
+ * Change the status of the sepcific user id
+ * @param {integer} id The user id
+ * @param {string} status The status wants to be changed to
+ */
+export async function changeStatus(id, status){
+    return User.update({status:status},{
         where: {
             user_id: id
         }
