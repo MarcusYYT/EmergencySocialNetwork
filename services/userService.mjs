@@ -89,7 +89,7 @@ export async function changeOnlineStatus(id, status){
 
 export async function changeStatus(id, status){
   let returnJson = {success: null, message:"initial message"}
-  await userModel.changeStatus(id, status).then((res)=>{
+  await userModel.changeStatus(id, status).then(()=>{
     returnJson.success = true;
     returnJson.message = "Change status successfull"
   });
