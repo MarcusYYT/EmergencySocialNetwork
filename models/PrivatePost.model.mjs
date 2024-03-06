@@ -49,16 +49,16 @@ PrivatePost.belongsTo(User, { as: 'Receiver', foreignKey: 'receiver_id' });
 
 /**
  * Get a private chat by its ID
- * @param {integer} chat_id - The ID of the chat
+ * @param {integer} post_id - The ID of the chat
  * @returns The post with the given ID, or null if not found
  */
-export async function getChatById(chatId) {
-    return await PrivatePost.findByPk(chatId);
+export async function getChatById(postId) {
+    return await PrivatePost.findByPk(postId);
 }
 
 /**
  * Get all chats between two users
- * @param {integer} sender_Id  - The user_id of the sender
+ * @param {integer} senderId  - The user_id of the sender
  * @param {integer} reveiverId - The user_id of the reciever
  * @returns An array of chats by the users
  */
@@ -75,24 +75,24 @@ export async function getChatByChatters(senderId, receiverId) {
 
 /**
  * Mark the sender as read
- * @param {integer} chatId chat_id
+ * @param {integer} postId post_id
  */
-export async function senderRead(chatId) {
+export async function senderRead(postId) {
     return await PrivatePost.update({sender_read: true}, {
         where: {
-            chat_id: chatId
+            post_id: postId
         }
     })
 }
 
 /**
  * Mark the reader as read
- * @param {integer} chatId chat_id
+ * @param {integer} postId post_id
  */
-export async function readerRead(chatId) {
+export async function readerRead(postId) {
     return await PrivatePost.update({reader_read: true}, {
         where: {
-            chat_id: chatId
+            post_id: postId
         }
     })
 }
