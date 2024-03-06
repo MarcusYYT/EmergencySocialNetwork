@@ -95,7 +95,6 @@ export async function changeStatus(id, status){
   });
   return returnJson;
 }
-
 /**
  * Check the username and password with the information stored in database
  * @async

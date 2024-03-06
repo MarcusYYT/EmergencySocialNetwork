@@ -12,66 +12,170 @@ html(lang='en')
     .links
       a.btn.btn-primary(onclick='newPost()') New Post
       a.btn.btn-primary(onclick='logout()') Log Out
+    #status-wrapper 
+      form#status-form(action="") 
+        #status-options
+          label(for='status') Change my status:
+          select#status(name='status')
+            option(value='ok') OK
+            option(value='help') Help
+            option(value='emergency') Emergency
+        button.btn.btn-primary(type='button' onclick='changeMyStatus()') Submit
     #directory-wrapper
       h1#directory-header ESN Directory
       #directory
     script.
       const socket = io();
+      let username = '';
+
+      window.onload = async function() {
+        const userId = #{user_id}
+        const response = await fetch(`/users/${userId}`, {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        }).then(response => response.json()).then((data) => {
+          username = data.data[0].username;
+          renderMyStatus(username, data.data[0].status)
+        })
+      }
+
+      async function getUsers(){
+        return await fetch('/users')
+   
+      }
+
+      function sortUsers(data){
+        let online = []
+        let offline = []
+
+        for (let i = 0; i < data.length; i++) {
+            if (data[i].online_status === "online") {
+                online.push(data[i])
+            }
+            else {
+                offline.push(data[i])
+            }
+        }
+
+        online.sort(function (a, b) {
+            return a.username.localeCompare(b.username)
+        })
+
+        offline.sort(function (a, b) {
+            return a.username.localeCompare(b.username)
+        })
+
+        return online.concat(offline)
+      }
+
+      function renderESNList(list) {
+        const userId = #{user_id}
+        let directory = document.getElementById("directory");
+        while(directory.firstChild){
+          directory.removeChild(directory.lastChild);
+        }
+      
+        for (let i = 0; i < list.length; i++) {
+          let directory = document.getElementById("directory");
+          let userdiv = document.createElement("div");
+          userdiv.setAttribute("class", "directory-user");
+          userdiv.addEventListener("click", () => {routeToPrivateChat(list[i].user_id, userId)})
+
+          let usernameField = document.createElement("p");
+          usernameField.setAttribute("class", "usernameField");
+          let usernameFieldText = document.createTextNode(list[i].username);
+          usernameField.appendChild(usernameFieldText);
+
+          let onlineStatusField = document.createElement("p");
+          onlineStatusField.setAttribute("class", "onlineStatusField");
+          let onlineStatusFieldText = document.createTextNode(list[i].online_status);
+          onlineStatusField.appendChild(onlineStatusFieldText);
+
+          if (list[i].online_status === "online") {
+              onlineStatusField.classList.add("online");
+          }
+          else {
+              onlineStatusField.classList.add("offline");
+          }
+
+          let statusField = document.createElement("p");
+          statusField.setAttribute("class", "statusField");
+          let statusFieldText = document.createTextNode(list[i].status);
+          statusField.appendChild(statusFieldText);
+
+          userdiv.appendChild(usernameField);
+          userdiv.appendChild(onlineStatusField);
+          userdiv.appendChild(statusField);
+          directory.appendChild(userdiv);
+        }
+      }
+
+      async function changeMyStatus() {
+        let selectElement = document.getElementById('status');
+        let selectedValue = selectElement.value;
+        console.log(selectedValue);
+        const userId = #{user_id};
+        const requestBody = {
+          user_id: userId,
+          updateAt: "status",
+          updateValue: selectedValue
+        }
+
+        const updateStatus = await fetch(`/users/${userId}`, {
+          method: 'PUT',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(requestBody),
+          })
+          
+          if(updateStatus.ok){
+              const fetchUser = await getUsers()
+              if(fetchUser.ok){
+                const data = await fetchUser.json();
+                console.log(data)
+                renderESNList(sortUsers(data.data))
+              }
+
+          }
+         
+        renderMyStatus(username, selectedValue);       
+      }
+
       socket.emit('registered', #{user_id});
-      socket.on("status_update",async ()=> {
-        await fetch('/users')
-        .then(response => response.json())
-        .then(data => {
+      socket.on("status_update", async ()=> { 
+        await getUsers().then(response => response.json()).then(async (data)=>{
+            console.log("data is")
             console.log(data);
-
-            let online = []
-            let offline = []
-
-            for (let i = 0; i < data.data.length; i++) {
-                if (data.data[i].online_status === "online") {
-                    online.push(data.data[i])
-                }
-                else {
-                    offline.push(data.data[i])
-                }
-            }
-
-            online.sort(function (a, b) {
-                return a.username.localeCompare(b.username)
-            })
-
-            offline.sort(function (a, b) {
-                return a.username.localeCompare(b.username)
-            })
-            let directory = document.getElementById("directory");
-            while(directory.firstChild){
-              directory.removeChild(directory.lastChild);
-            }
-            renderESNList(online)
-            renderESNList(offline)
-            })
-            })
-      function newPost() {
-      const user_id = #{user_id};
-      window.location.href = `/messageWall/${user_id}`;
-      }
-      async function logout(){
-      const userId = #{user_id};
-      const requestBody = {
-      user_id: userId,
-      updateAt: "online_status",
-      updateValue: "offline"
-      }
-      await fetch(`/users/${userId}`, {
-      method: 'PUT',
-      headers: {
-      'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(requestBody),
-      }).then(response=> response.json()).then((data)=>{
-        console.log(data.message)
+            renderESNList(sortUsers(data.data))
+        });
       })
-      window.location.href = `/`;
+
+      function newPost() {
+        const user_id = #{user_id};
+        window.location.href = `/messageWall/${user_id}`;
+      }
+      
+      async function logout(){
+        const userId = #{user_id};
+        const requestBody = {
+          user_id: userId,
+          updateAt: "online_status",
+          updateValue: "offline"
+        }
+
+        await fetch(`/users/${userId}`, {
+          method: 'PUT',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(requestBody),
+        }).then(response=> response.json()).then((data)=>{
+          console.log(data.message)
+        })
+        window.location.href = `/`;
       }
       //- window.addEventListener('beforeunload', async function(event) {
       //- console.log('Browser is closing');
