@@ -4,6 +4,8 @@ html(lang='en')
     meta(charset='UTF-8')
     meta(name='viewport', content='width=device-width, initial-scale=1.0')
     link(href='https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css', rel='stylesheet', integrity='sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3', crossorigin='anonymous')
+    link(rel='stylesheet', href='https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css')
+    link(rel="stylesheet", href="https://cdn.jsdelivr.net/npm/bootstrap-select@1.14.0-beta3/dist/css/bootstrap-select.min.css")
     link(rel='stylesheet', type='text/css', href='/stylesheets/index.css')
     script(src='/javascripts/directory.js')
     script(src='https://cdn.socket.io/4.7.4/socket.io.min.js')
@@ -17,16 +19,18 @@ html(lang='en')
         #status-options
           label(for='status') Change my status:
           select#status(name='status')
-            option(value='ok') OK
+            option(value='OK') OK 
             option(value='help') Help
             option(value='emergency') Emergency
         button.btn.btn-primary(type='button' onclick='changeMyStatus()') Submit
     #directory-wrapper
       h1#directory-header ESN Directory
-      #directory
+      #directory.container.text-left
     script.
       const socket = io();
       let username = '';
+
+      
 
       window.onload = async function() {
         const userId = #{user_id}
@@ -80,33 +84,53 @@ html(lang='en')
         for (let i = 0; i < list.length; i++) {
           let directory = document.getElementById("directory");
           let userdiv = document.createElement("div");
-          userdiv.setAttribute("class", "directory-user");
+          userdiv.setAttribute("class", "directory-user row gx-1 justify-content-between");
           userdiv.addEventListener("click", () => {routeToPrivateChat(list[i].user_id, userId)})
 
           let usernameField = document.createElement("p");
-          usernameField.setAttribute("class", "usernameField");
+          usernameField.setAttribute("class", "usernameField col-10");
           let usernameFieldText = document.createTextNode(list[i].username);
           usernameField.appendChild(usernameFieldText);
 
-          let onlineStatusField = document.createElement("p");
-          onlineStatusField.setAttribute("class", "onlineStatusField");
-          let onlineStatusFieldText = document.createTextNode(list[i].online_status);
-          onlineStatusField.appendChild(onlineStatusFieldText);
+          let onlineStatusField = document.createElement("div");
+          onlineStatusField.setAttribute("class", "onlineStatusField col-1");
+
+          let onlineStatusFieldImage = document.createElement("i");
+          onlineStatusFieldImage.setAttribute("class", "bi bi-record-fill");
+        
 
           if (list[i].online_status === "online") {
-              onlineStatusField.classList.add("online");
+            onlineStatusField.classList.add("online");
           }
           else {
-              onlineStatusField.classList.add("offline");
+            onlineStatusField.classList.add("offline");
           }
 
-          let statusField = document.createElement("p");
-          statusField.setAttribute("class", "statusField");
-          let statusFieldText = document.createTextNode(list[i].status);
-          statusField.appendChild(statusFieldText);
+          onlineStatusField.appendChild(onlineStatusFieldImage);
 
-          userdiv.appendChild(usernameField);
+          let statusField = document.createElement("div");
+          statusField.setAttribute("class", "statusField col-1");
+
+          let statusFieldImage = document.createTextNode("");
+
+          if(list[i].status == "OK"){
+            statusFieldImage = document.createElement("i");
+            statusFieldImage.setAttribute("class", "bi bi-check-circle-fill");
+          }
+          else if(list[i].status == "emergency"){
+            statusFieldImage = document.createElement("i");
+            statusFieldImage.setAttribute("class", "bi bi-bandaid-fill");
+            
+          }
+          else if(list[i].status == "help"){
+            statusFieldImage = document.createElement("i");
+            statusFieldImage.setAttribute("class", "bi bi-exclamation-circle-fill");
+          }
+
+          statusField.appendChild(statusFieldImage);
+
           userdiv.appendChild(onlineStatusField);
+          userdiv.appendChild(usernameField);
           userdiv.appendChild(statusField);
           directory.appendChild(userdiv);
         }
@@ -137,12 +161,13 @@ html(lang='en')
                 const data = await fetchUser.json();
                 console.log(data)
                 renderESNList(sortUsers(data.data))
+               
               }
-
           }
          
         renderMyStatus(username, selectedValue);       
       }
+
 
       socket.emit('registered', #{user_id});
       socket.on("status_update", async ()=> { 
