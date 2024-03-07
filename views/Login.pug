@@ -27,7 +27,22 @@ script.
   }).then(response => response.json()
   ).then(async (data)=>{
     if(data.code===200){
-      window.location.href = `/directory/${data.user_id}`;
+      localStorage.setItem('token', data.token);
+      fetch(`/directory/${data.user_id}`, {
+        method: 'GET',
+        headers: {
+          'Authorization': `Bearer ${data.token}`
+        }
+        })
+      .then(response => {
+          if (response.ok) {
+          // If the response is successful, manually redirect to the page
+          window.location.href = `/directory/${data.user_id}`;
+          } else {
+          // Handle unauthorized access or other errors
+              alert('Unauthorized access');
+          }
+      });
     }
     else if(data.code===404){
       togglePopUp()
@@ -64,7 +79,8 @@ script.
   ).then((data)=>{
     if(data.success===true){
         alert(data.message)
-        console.log(data.user_id);
+        console.log(data.token);
+        localStorage.setItem('token', data.token);
         window.location.href = `/directory/${data.user_id}`;
     } else {
         alert(data.message)

@@ -14,6 +14,7 @@ import pageRoutes from './routes/pageRoutes.mjs'
 import statusRoutes from './routes/statusRoutes.mjs'
 import DatabaseAdapter from './config/DatabaseAdapter.mjs'
 import { createServer } from 'node:http';
+import passport from './config/passportConfig.mjs';
 // import { fileURLToPath } from 'node:url';
 // import { dirname, join } from 'node:path';
 
@@ -42,6 +43,7 @@ socketConfig(server);
 app.use(express.static(__dirname + '/public'));
 app.use(express.json());  // parse json request  
 app.use(express.urlencoded({ extended: true }));
+app.use(passport.initialize());
 
 // set the view and pug engine
 app.set('views', path.join(__dirname, 'views'));

@@ -1,6 +1,8 @@
 import * as userService from "../services/userService.mjs";
 import { ifUserExist, changeOnlineStatus } from "../models/User.model.mjs";
-// import jwt from "jsonwebtoken";
+import jwt from 'jsonwebtoken';
+
+const JWT_SECRET = 'your_secret_key';
 
 export function showLogin(req, res) {
   res.render("Login");
@@ -26,9 +28,12 @@ export async function register(req, res) {
                     } else{
                         console.log("The User is not exist")
                         await userService.createNewUser(username, password).then((user)=>{
-                            const newUserId = user.user_id;
-                            console.log(newUserId)
-                            res.status(201).json({ success: true, user_id: newUserId, message: 'Registration successful' });
+                            const payload = {
+                                id: user.user_id,
+                                username: user.username,
+                            };
+                            const token = jwt.sign(payload, JWT_SECRET, { expiresIn: '1h' })
+                            res.status(201).json({ success: true, user_id: user.user_id, token: token, message: 'Registration successful' });
                         });
                         
                     }
@@ -42,30 +47,23 @@ export async function register(req, res) {
 
 export async function login(req, res) {
   try {
-    // temp implementation, need to replace by web token
     const username = req.body.username;
     const password = req.body.password;
-    await userService.authenticate(username, password).then((resolve)=>{
+    await userService.authenticate(username, password).then(async (resolve)=>{
         console.log(resolve)
         if(resolve.code === 200){
-            changeOnlineStatus(resolve.id, "online")
-            res.status(200).json({code: 200, message:resolve.message, user_id: resolve.id})
-        }  
-    //res.json({ message: "Login Successful", token: token });
-    // res.end("Login Successful")
+            const payload = {
+                id: resolve.id,
+                username: username
+            };
+            const token = jwt.sign(payload, JWT_SECRET, { expiresIn: '1h' });
+            await changeOnlineStatus(resolve.id, "online")
+            res.status(200).json({code: 200, message:resolve.message, user_id: resolve.id, token: token})
+        } 
         else {
             res.status(resolve.code).json({code: resolve.code, message:resolve.message})
         }
     });
-    // if (!user || user.length === 0) {
-    //   const payload = {
-    //     id: user.user_id,
-    //     username: user.username,
-    //   };
-    
-    //   const token = jwt.sign(payload, "sb1sb1", { expiresIn: "1h" });
-    
-
   } catch (error) {
     res.status(500).send(error.message);
   }

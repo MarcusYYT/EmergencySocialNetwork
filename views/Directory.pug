@@ -30,12 +30,16 @@ html(lang='en')
 
       window.onload = async function() {
         const userId = #{user_id}
+        const token = localStorage.getItem('token');
+        console.log(`token is ${token}`);
         const response = await fetch(`/users/${userId}`, {
           method: 'GET',
           headers: {
             'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`,
           },
         }).then(response => response.json()).then((data) => {
+          console.log(data)
           username = data.data[0].username;
           renderMyStatus(username, data.data[0].status)
         })
@@ -177,11 +181,6 @@ html(lang='en')
         })
         window.location.href = `/`;
       }
-      //- window.addEventListener('beforeunload', async function(event) {
-      //- console.log('Browser is closing');
-      //- await logout()
-      //- });
-        
 
 
     

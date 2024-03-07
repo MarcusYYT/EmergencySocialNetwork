@@ -1,23 +1,24 @@
-// import passport from "passport";
-// import { Strategy as JwtStrategy, ExtractJwt } from "passport-jwt";
-// import {User} from "../models/User.model.mjs";
+import passport from 'passport';
+import { Strategy as JwtStrategy, ExtractJwt } from 'passport-jwt';
+import { User } from '../models/User.model.mjs';
 
-// var opts = {};
-// opts.jwtFromRequest = ExtractJwt.fromAuthHeaderAsBearerToken();
-// opts.secretOrKey = "sb1sb1";
-// passport.use(
-//   new JwtStrategy(opts, function (jwt_payload, done) {
-//     User.findOne({ id: jwt_payload.sub }, function (err, user) {
-//       if (err) {
-//         return done(err, false);
-//       }
-//       if (user) {
-//         return done(null, user);
-//       } else {
-//         return done(null, false);
-//       }
-//     });
-//   })
-// );
+const JWT_SECRET = 'your_secret_key'; // Use a secure key in production
 
-// export default passport;
+const options = {
+  jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
+  secretOrKey: JWT_SECRET
+};
+
+passport.use(new JwtStrategy(options, async (jwt_payload, done) => {
+  try {
+    const user = await User.findByPk(jwt_payload.id);
+    if (user) {
+      return done(null, user);
+    }
+    return done(null, false);
+  } catch (error) {
+    return done(error, false);
+  }
+}));
+
+export default passport;
