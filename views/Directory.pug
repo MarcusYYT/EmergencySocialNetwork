@@ -30,13 +30,10 @@ html(lang='en')
 
       window.onload = async function() {
         const userId = #{user_id}
-        const token = localStorage.getItem('token');
-        console.log(`token is ${token}`);
         const response = await fetch(`/users/${userId}`, {
           method: 'GET',
           headers: {
             'Content-Type': 'application/json',
-            'Authorization': `Bearer ${token}`,
           },
         }).then(response => response.json()).then((data) => {
           console.log(data)

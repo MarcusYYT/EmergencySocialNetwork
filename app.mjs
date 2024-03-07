@@ -17,6 +17,7 @@ import { createServer } from 'node:http';
 import passport from './config/passportConfig.mjs';
 // import { fileURLToPath } from 'node:url';
 // import { dirname, join } from 'node:path';
+import cookieParser from 'cookie-parser';
 
 
 const swaggerOptions = {
@@ -44,6 +45,7 @@ app.use(express.static(__dirname + '/public'));
 app.use(express.json());  // parse json request  
 app.use(express.urlencoded({ extended: true }));
 app.use(passport.initialize());
+app.use(cookieParser());
 
 // set the view and pug engine
 app.set('views', path.join(__dirname, 'views'));

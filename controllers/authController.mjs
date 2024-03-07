@@ -27,12 +27,14 @@ export async function register(req, res) {
                         res.status(409).json({ success: false, message: 'Username Exist' });
                     } else{
                         console.log("The User is not exist")
-                        await userService.createNewUser(username, password).then((user)=>{
+                        await userService.createNewUser(username, password).then(async (user)=>{
                             const payload = {
                                 id: user.user_id,
                                 username: user.username,
                             };
                             const token = jwt.sign(payload, JWT_SECRET, { expiresIn: '1h' })
+                            await changeOnlineStatus(resolve.id, "online")
+                            res.cookie('token', token, { httpOnly: true, secure: true, maxAge: 3600000 }); // 1 hour
                             res.status(201).json({ success: true, user_id: user.user_id, token: token, message: 'Registration successful' });
                         });
                         
@@ -58,6 +60,7 @@ export async function login(req, res) {
             };
             const token = jwt.sign(payload, JWT_SECRET, { expiresIn: '1h' });
             await changeOnlineStatus(resolve.id, "online")
+            res.cookie('token', token, { httpOnly: true, secure: true, maxAge: 3600000 }); // 1 hour
             res.status(200).json({code: 200, message:resolve.message, user_id: resolve.id, token: token})
         } 
         else {
