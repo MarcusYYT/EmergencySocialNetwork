@@ -6,7 +6,7 @@ import LocalStrategy from "passport-local";
 passport.use('local-login', new LocalStrategy( {
         usernameField: 'username',
         passwordField: 'password',
-        passReqToCallback: true // 允许将整个请求传递给回调函数
+        passReqToCallback: true
     }, async function(req, username, password, done) {
         try {
             const authRes = await userService.validUser(username, password);
@@ -24,25 +24,31 @@ passport.use('local-login', new LocalStrategy( {
     })
 );
 
-//
-// var opts = {};
-// opts.jwtFromRequest = ExtractJwt.fromAuthHeaderAsBearerToken();
-// opts.secretOrKey = "sb1sb1";
-// passport.use(
-//     new JwtStrategy(opts, function (jwt_payload, done) {
-//         User.findOne({ id: jwt_payload.sub }, function (err, user) {
-//             if (err) {
-//                 return done(err, false);
-//             }
-//             if (user) {
-//                 return done(null, user);
-//             } else {
-//                 return done(null, false);
-//             }
-//         });
-//     })
-// );
+const cookieExtractor = (req) => {
+    let token = null;
+    if (req && req.cookies) {
+        token = req.cookies['token'];
+    }
+    return token;
+};
 
+var opts = {
+    jwtFromRequest: cookieExtractor,
+    secretOrKey: process.env.JWT_SECRET_KEY || 'sb1sb1'
+}
+
+passport.use(new JwtStrategy(opts, async (jwt_payload, done) => {
+    try {
+        const user = await userService.getUserById(jwt_payload.user_id);
+        if (user) {
+            return done(null, user);
+        } else {
+            return done(null, false);
+        }
+    } catch (error) {
+        return done(error, false);
+    }
+}));
 
 
 export default passport;

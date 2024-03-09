@@ -1,5 +1,5 @@
 import express from 'express';
-import { login, register } from '../controllers/authController.mjs';
+import {login, register, tokenResolve} from '../controllers/authController.mjs';
 import { showLogin, showRegister } from '../controllers/authController.mjs';
 import passport from "../config/passportConfig.mjs";
 
@@ -64,5 +64,7 @@ router.get('/register', showRegister);
 router.post('/register', register)
 
 router.post('/login', login)
+
+router.get('/token_resolve', passport.authenticate('jwt', { session: false }), tokenResolve);
 
 export default router;

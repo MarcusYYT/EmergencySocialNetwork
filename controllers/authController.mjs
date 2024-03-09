@@ -79,6 +79,18 @@ export async function login(req, res) {
             return res.status(500).json({ success: false, message: err.message });
         }
         changeOnlineStatus(user.user_id, "online")
-        res.status(200).json({ success: true, user_id: user.user_id, message: 'Login successful' });
+
+        const token = jwt.sign({ user_id: user.user_id }, process.env.JWT_SECRET_KEY || 'sb1sb1', { expiresIn: '1h' });
+        res.status(200).json({ success: true, user_id: user.user_id, token, message: 'Login successful' });
     })(req, res);
+}
+
+export async function tokenResolve(req, res) {
+    if (!req.user) {
+        return res.status(401).json({ message: 'Unauthorized' });
+    }
+    res.json({
+        success: true,
+        user_id: req.user.data[0].user_id
+    });
 }

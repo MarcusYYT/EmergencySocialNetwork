@@ -26,14 +26,13 @@ script.
 
   }).then(response => response.json()
   ).then(async (data)=>{
-    if(data.success===true){
-      window.location.href = `/directory/${data.user_id}`;
-    }
-    else if(data.success===false){
-      togglePopUp()
+    if (data.success && data.token) {
+      document.cookie = `token=${data.token};max-age=3600;path=/`;
+      console.log(data.token);
+      window.location.href = `/directory`;
     }
     else{
-      alert(data.message)
+      alert(data.message);
     }
   });
   }

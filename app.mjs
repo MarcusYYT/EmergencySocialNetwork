@@ -6,12 +6,14 @@ import {PrivatePost} from "./models/PrivatePost.model.mjs";
 import {User} from './models/User.model.mjs'
 import {Post} from './models/Post.model.mjs'
 import socketConfig from './config/socketConfig.mjs'
+import passport from './config/passportConfig.mjs'
 import authRoutes from './routes/authRoutes.mjs'
 import userRoutes from './routes/userRoutes.mjs'
 import postRoutes from './routes/postRoutes.mjs'
 import pageRoutes from './routes/pageRoutes.mjs'
 import DatabaseAdapter from './config/DatabaseAdapter.mjs'
 import { createServer } from 'node:http';
+import cookieParser from 'cookie-parser';
 // import { fileURLToPath } from 'node:url';
 // import { dirname, join } from 'node:path';
 
@@ -40,6 +42,8 @@ socketConfig(server);
 app.use(express.static(__dirname + '/public'));
 app.use(express.json());  // parse json request  
 app.use(express.urlencoded({ extended: true }));
+app.use(cookieParser());
+app.use(passport.initialize());
 
 // set the view and pug engine
 app.set('views', path.join(__dirname, 'views'));
