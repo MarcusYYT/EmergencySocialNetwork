@@ -29,7 +29,8 @@ export async function register(req, res) {
                         await userService.createNewUser(username, password).then((user)=>{
                             const newUserId = user.user_id;
                             console.log(newUserId)
-                            res.status(201).json({ success: true, user_id: newUserId, message: 'Registration successful' });
+                            const token = jwt.sign({ user_id: newUserId }, process.env.JWT_SECRET_KEY || 'sb1sb1', { expiresIn: '1h' });
+                            res.status(201).json({ success: true, user_id: newUserId, token, message: 'Registration successful' });
                         });
                         
                     }

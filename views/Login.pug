@@ -28,7 +28,6 @@ script.
   ).then(async (data)=>{
     if (data.success && data.token) {
       document.cookie = `token=${data.token};max-age=3600;path=/`;
-      console.log(data.token);
       window.location.href = `/directory`;
     }
     else{
@@ -60,10 +59,11 @@ script.
                 body: JSON.stringify({ username: username, password:password }),
   }).then(response => response.json()
   ).then((data)=>{
-    if(data.success===true){
+    if(data.success && data.token){
         alert(data.message)
         console.log(data.user_id);
-        window.location.href = `/directory/${data.user_id}`;
+        document.cookie = `token=${data.token};max-age=3600;path=/`;
+        window.location.href = `/directory`;
     } else {
         alert(data.message)
     }
