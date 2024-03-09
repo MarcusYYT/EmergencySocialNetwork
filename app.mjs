@@ -10,6 +10,7 @@ import socketConfig from './config/socketConfig.mjs'
 import authRoutes from './routes/authRoutes.mjs'
 import userRoutes from './routes/userRoutes.mjs'
 import postRoutes from './routes/postRoutes.mjs'
+import privatePostRoutes from './routes/privatePostRoutes.mjs'
 import pageRoutes from './routes/pageRoutes.mjs'
 import statusRoutes from './routes/statusRoutes.mjs'
 import DatabaseAdapter from './config/DatabaseAdapter.mjs'
@@ -53,6 +54,7 @@ app.use('/auth', authRoutes);
 app.use('/users', userRoutes);
 app.use('/posts', postRoutes);
 app.use('/status', statusRoutes)
+app.use('/privatePosts', privatePostRoutes)
 
 // setup swagger
 const swaggerSpec = await swaggerJSDoc(swaggerOptions);

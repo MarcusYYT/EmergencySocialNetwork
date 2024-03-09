@@ -1,4 +1,5 @@
 import express from 'express';
+import {getPrivatePostById, getPrivatePostList, postPrivatePost} from '../controllers/privateChatController.mjs'
 
 const router = express.Router();
 /**
@@ -117,8 +118,8 @@ const router = express.Router();
  *      201:
  *        description: Database push successful
  */
-router.get('', getPostList);
-router.get('/:post_id', getPostById);
-router.post('', postPost);
+router.get('/:sender_id/:receiver_id', getPrivatePostList);
+router.get('/:post_id', getPrivatePostById);
+router.post('', postPrivatePost);
 
 export default router;

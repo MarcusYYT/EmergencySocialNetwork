@@ -59,7 +59,7 @@ export async function getChatById(postId) {
 /**
  * Get all chats between two users
  * @param {integer} senderId  - The user_id of the sender
- * @param {integer} reveiverId - The user_id of the reciever
+ * @param {integer} receiverId - The user_id of the reciever
  * @returns An array of chats by the users
  */
 export async function getChatByChatters(senderId, receiverId) {

@@ -62,6 +62,6 @@ function renderMyStatus(username, status) {
 // }
 
 function routeToPrivateChat(receiver, sender){
-    window.location.href = `/privatePosts/${sender}/${receiver}`;
+    window.location.href = `/privatePostsWall/${sender}/${receiver}`;
 
 }
