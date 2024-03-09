@@ -127,3 +127,25 @@ export async function authenticate(username, enteredPassword) {
   })
   return ifMatch;
 }
+
+/**
+ * Check the username and password with the information stored in database to provide user_id
+ * @async
+ * @param {string} username The username passed from the frontend
+ * @param {string} enteredPassword The password entered by user from the frontend
+ * @returns user_id if user validates, -1 if username password mismatch, -2 if user does not exist
+ */
+export async function validUser(username, enteredPassword) {
+  let ret = 0;
+  await userModel.getOneUser(username).then(async(res)=> {
+    if (res.length > 0) {
+      const user = res[0];
+      const hashedPassword = user.password;
+      await bcrypt.compare(enteredPassword, hashedPassword).then((isMatch) => {
+        if (isMatch == false) ret = -1; // -1 means password mismatch
+        else ret = user.user_id; // other than -1/-2, ret is user id
+      });
+    } else ret = -2; // -2 means user not found
+  })
+  return ret;
+}

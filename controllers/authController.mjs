@@ -1,6 +1,7 @@
 import * as userService from "../services/userService.mjs";
 import { ifUserExist, changeOnlineStatus } from "../models/User.model.mjs";
-// import jwt from "jsonwebtoken";
+import passport from "../config/passportConfig.mjs";
+import jwt from "jsonwebtoken";
 
 export function showLogin(req, res) {
   res.render("Login");
@@ -40,7 +41,7 @@ export async function register(req, res) {
     }
 }
 
-export async function login(req, res) {
+export async function login2(req, res) {
   try {
     // temp implementation, need to replace by web token
     const username = req.body.username;
@@ -69,4 +70,15 @@ export async function login(req, res) {
   } catch (error) {
     res.status(500).send(error.message);
   }
+}
+
+// Optimized json content. Changed code:404/200 to success:true/false to keep the consistancy of restful api format.
+export async function login(req, res) {
+    passport.authenticate('local-login', (err, user, info) => {
+        if (err) {
+            return res.status(500).json({ success: false, message: err.message });
+        }
+        changeOnlineStatus(user.user_id, "online")
+        res.status(200).json({ success: true, user_id: user.user_id, message: 'Login successful' });
+    })(req, res);
 }
