@@ -39,13 +39,32 @@ export const PrivatePost = sequelize.define("private_post", {
         type: DataTypes.BOOLEAN,
         default: false,
         allowNull: false
+    },
+    status:{
+        type: DataTypes.STRING,
+        allowNull: false
     }
+}, 
+{
+    freezeTableName: true
 });
 
 User.hasMany(PrivatePost, { foreignKey: 'sender_id', onDelete:'CASCADE'});
 User.hasMany(PrivatePost, { foreignKey: 'receiver_id', onDelete:'CASCADE' });
 PrivatePost.belongsTo(User, { as: 'Sender', foreignKey: 'sender_id' });
 PrivatePost.belongsTo(User, { as: 'Receiver', foreignKey: 'receiver_id' });
+
+
+export async function createPost(senderId, receiverId, content, status) {
+    return await PrivatePost.create({
+        sender_id: senderId,
+        receiver_id: receiverId,
+        sender_read: true,
+        receiver_read: true,
+        content: content,
+        status: status
+    });
+}
 
 /**
  * Get a private chat by its ID
@@ -69,7 +88,11 @@ export async function getChatByChatters(senderId, receiverId) {
                 { sender_id: senderId, receiver_id: receiverId },
                 { sender_id: receiverId, receiver_id: senderId }
             ]
-        }
+        }, 
+        include: [
+            { model: User, as: 'Sender', attributes: ['username'] },
+            { model: User, as: 'Receiver', attributes: ['username'] }
+        ]    
     })
 }
 

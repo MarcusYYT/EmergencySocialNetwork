@@ -8,8 +8,8 @@ import * as privatePostModel from "../models/PrivatePost.model.mjs";
  * @param {*} status 
  * @returns 
  */
-export async function createNewPrivatePost(senderId, receiverId, content) {
-    return await privatePostModel.createPost(senderId, receiverId, content)
+export async function createPrivatePost(senderId, receiverId, content, status) {
+    return await privatePostModel.createPost(senderId, receiverId, content, status)
   }
 
 

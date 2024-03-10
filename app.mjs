@@ -76,6 +76,7 @@ server.listen(port, async () => {
   const database = DatabaseAdapter.createDatabase();
   await database.connect();
   // await Status.sync()
+  await PrivatePost.sync()
 
   if(process.env.NODE_ENV === 'test'){
     await User.sync()

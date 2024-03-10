@@ -29,11 +29,13 @@ export async function getPrivatePostList(req, res){
 
 export async function postPrivatePost(req, res){
     try{
-        const userId = req.body.user_id;
+        const senderId = req.body.sender_id;
+        const receiverId = req.body.receiver_id;
+        const status = req.body.status;
         const content = req.body.content;
         //const status = req.body.status;
         //await privatePostService.createNewPrivatePost(userId, content, status).then(() =>{
-        await privatePostService.createNewPrivatePost(userId, content).then(() =>{
+        await privatePostService.createPrivatePost(senderId, receiverId, content, status).then(() =>{
             res.status(201).json({ success: true, message: 'Post a new post successful' });
         })
     } catch(error) {
