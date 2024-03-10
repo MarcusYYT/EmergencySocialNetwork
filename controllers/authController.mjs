@@ -95,5 +95,5 @@ export async function tokenResolve(req, res) {
 
 export async function logout(req, res){
     io.emit("status_update");
-
+    res.clearCookie();
 }

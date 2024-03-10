@@ -7,17 +7,32 @@ router.get('/', (req, res) => {
 });
 router.get('/directory/:user_id', passport.authenticate('jwt', { session: false }), (req, res) => {
     const user_id = req.user.data[0].user_id;
-    res.render('Directory', {user_id: user_id});
+    if (user_id != req.params.user_id) {
+        res.status(401).json({message: "Unauthorized access."});
+    }
+    else {
+        res.render('Directory', {user_id: user_id});
+    }
 });
 router.get('/messageWall/:user_id', passport.authenticate('jwt', { session: false }), (req, res) => {
     const user_id = req.user.data[0].user_id;
-    res.render('MessageWall', {user_id: user_id});
+    if (user_id != req.params.user_id) {
+        res.status(401).json({message: "Unauthorized access."});
+    }
+    else {
+        res.render('MessageWall', {user_id: user_id});
+    }
 });
 
 router.get('/privatePosts/:senderId/:receiverId', passport.authenticate('jwt', { session: false }), (req, res) => {
     const senderId = req.params.senderId;
     const receiverId = req.params.receiverId;
-    res.render('PrivateChat', {senderId: senderId, receiverId: receiverId});
+    if (senderId != req.user.data[0].user_id) {
+        res.status(401).json({message: "Unauthorized access."});
+    }
+    else {
+        res.render('PrivateChat', {senderId: senderId, receiverId: receiverId});
+    }
 });
 
 router.get('/test', (req, res) => {
