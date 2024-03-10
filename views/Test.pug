@@ -3,7 +3,7 @@ html
   head
     script.
       async function callApi() {
-      await fetch('/posts/2', {
+      await fetch('/status/1', {
                   method: 'GET',
                   headers: {
                   'Content-Type': 'application/json',
@@ -18,12 +18,12 @@ html
       .catch(error => console.error('Error:', error));
       }
       async function callPostApi() {
-      await fetch('/posts', {
+      await fetch('/status', {
                             method: 'POST',
                             headers: {
                                 'Content-Type': 'application/json',
                             },
-                            body: JSON.stringify({ user_id: 1, content: "this is a post", status: "place_holder"}),
+                            body: JSON.stringify({ user_id: 1,  status: "ok"}),
                             })
       .then(response => response.json())
       .then(data => console.log(data))

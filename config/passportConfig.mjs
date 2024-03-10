@@ -50,5 +50,4 @@ passport.use(new JwtStrategy(opts, async (jwt_payload, done) => {
     }
 }));
 
-
 export default passport;

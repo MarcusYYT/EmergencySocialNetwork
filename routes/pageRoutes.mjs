@@ -5,13 +5,19 @@ const router = express.Router();
 router.get('/', (req, res) => {
     res.render('Home');
 });
-router.get('/directory/', passport.authenticate('jwt', { session: false }), (req, res) => {
+router.get('/directory/:user_id', passport.authenticate('jwt', { session: false }), (req, res) => {
     const user_id = req.user.data[0].user_id;
     res.render('Directory', {user_id: user_id});
 });
-router.get('/messageWall/', passport.authenticate('jwt', { session: false }), (req, res) => {
+router.get('/messageWall/:user_id', passport.authenticate('jwt', { session: false }), (req, res) => {
     const user_id = req.user.data[0].user_id;
     res.render('MessageWall', {user_id: user_id});
+});
+
+router.get('/privatePosts/:senderId/:receiverId', passport.authenticate('jwt', { session: false }), (req, res) => {
+    const senderId = req.params.senderId;
+    const receiverId = req.params.receiverId;
+    res.render('PrivateChat', {senderId: senderId, receiverId: receiverId});
 });
 
 router.get('/test', (req, res) => {

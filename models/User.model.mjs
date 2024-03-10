@@ -95,7 +95,7 @@ export async function getUserById(user_id){
 }
 
 /**
- * Change the status of the sepcific user id
+ * Change the online status of the sepcific user id
  * @param {integer} id The user id
  * @param {string} status The status wants to be changed to
  */

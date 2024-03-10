@@ -47,7 +47,7 @@ const router = express.Router();
  *        description: post not found
  * 
  * 
- * /privatePosts/{senderId}/{recieverId}:
+ * /privatePosts/{senderId}/{receiverId}:
  *  get:
  *    tags:
  *      - Private Post 
@@ -59,7 +59,7 @@ const router = express.Router();
  *          type: integer
  *        description: Numeric ID of the sender of the posts to get.
  *      - in: path
- *        name: recieverId
+ *        name: receiverId
  *        schema:
  *          type: integer
  *        description: Numeric ID of the reciever of posts to get.
@@ -117,5 +117,8 @@ const router = express.Router();
  *      201:
  *        description: Database push successful
  */
+router.get('', getPostList);
+router.get('/:post_id', getPostById);
+router.post('', postPost);
 
 export default router;
