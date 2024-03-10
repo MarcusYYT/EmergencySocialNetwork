@@ -16,31 +16,38 @@ head
     button#post-btn.btn.btn-primary(type='button' onclick='postChatMessage()') Post
 script(src='https://cdn.socket.io/4.7.4/socket.io.min.js')
 script.
+
   const socket = io();
   let username = "";
+  let status = "";
+
   function routeToDirectory(){
     const user_id = #{user_id}
     window.location.href = `/directory/${user_id}`
   }
-  socket.emit('in_chat', #{user_id});
-  function postChatMessage(){
-  let textArea = document.getElementById("message")
-  let textContent = textArea.value
-  let path = window.location.pathname;
-  // Get the user_id (assuming it's the last part of the URL)
 
-  let userId = #{user_id}
-  console.log(userId); // Output: 1 (for the URL /users/1)
-  const postData = {
-  username: username, 
-  userId: userId,
-  status: "status",
-  dateTime: new Date().toLocaleString(),
-  content: textContent
-  };
-  socket.emit("postData", postData);
-    console.log(postData);
+  socket.emit('registered', #{user_id});
+
+  function postChatMessage(){
+    let textArea = document.getElementById("message")
+    let textContent = textArea.value
+    let path = window.location.pathname;
+    textArea.value = "";
+    // Get the user_id (assuming it's the last part of the URL)
+
+    let userId = #{user_id}
+    console.log(userId); // Output: 1 (for the URL /users/1)
+    const postData = {
+      username: username, 
+      userId: userId,
+      status: status,
+      dateTime: new Date().toLocaleString(),
+      content: textContent
+    };
+    socket.emit("postData", postData);
+      console.log(postData);
   }
+
   window.onload = async function() {
     const userId = #{user_id}
     const response = await fetch(`/users/${userId}`, {
@@ -51,26 +58,30 @@ script.
     }).then(response => response.json()).then((data) => {
       console.log(data.data[0].username);
       username = data.data[0].username;
+      status = data.data[0].status
     })
   }
-      async function logout(){
-      const userId = #{user_id};
-      const requestBody = {
+
+  async function logout(){
+    const userId = #{user_id};
+    const requestBody = {
       user_id: userId,
       updateAt: "online_status",
       updateValue: "offline"
-      }
-      await fetch(`/users/${userId}`, {
+    }
+
+    await fetch(`/users/${userId}`, {
       method: 'PUT',
       headers: {
-      'Content-Type': 'application/json',
+        'Content-Type': 'application/json',
       },
       body: JSON.stringify(requestBody),
       }).then(response=> response.json()).then((data)=>{
         console.log(data.message)
       })
       window.location.href = `/`;
-      }
+  }
+
   socket.on("postData", (postData) => {
     let messageBoard = document.getElementById("message-board")
     let messageElement = constructChatMessage(
@@ -82,6 +93,6 @@ script.
     messageBoard.appendChild(messageElement);
     console.log(username);
     document.getElementById("message-board").scrollTop = messageBoard.scrollHeight;
-      });
+  });
   
   

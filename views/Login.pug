@@ -26,32 +26,31 @@ script.
 
   }).then(response => response.json()
   ).then(async (data)=>{
-    if(data.code===200){
+    if (data.success && data.token) {
+      document.cookie = `token=${data.token};max-age=3600;path=/`;
       window.location.href = `/directory/${data.user_id}`;
     }
-    else if(data.code===404){
-      togglePopUp()
-    }
     else{
-      alert(data.message)
+      alert(data.message);
     }
   });
   }
+  
   async function register() {
-  let form = document.getElementById('loginForm');
-  let username = form.username.value.trim().toLowerCase();
-  let password = form.password.value.trim();
-  if (username.length < 3) {
-  alert("The username must be at least 3 characters long");
-  return false;
-  }
-  if (password.length < 4) {
-  alert("The password has to be at least 4 characters long");
-  return false;
-  }
-  if (password === "" || username === "") {
-  alert("Any input field cannot be empty");
-  return false;
+    let form = document.getElementById('loginForm');
+    let username = form.username.value.trim().toLowerCase();
+    let password = form.password.value.trim();
+    if (username.length < 3) {
+      alert("The username must be at least 3 characters long");
+      return false;
+    }
+    if (password.length < 4) {
+      alert("The password has to be at least 4 characters long");
+      return false;
+    }
+    if (password === "" || username === "") {
+      alert("Any input field cannot be empty");
+      return false;
   }
   await fetch('/auth/register', {
                 method: 'POST',
@@ -61,15 +60,17 @@ script.
                 body: JSON.stringify({ username: username, password:password }),
   }).then(response => response.json()
   ).then((data)=>{
-    if(data.success===true){
+    if(data.success && data.token){
         alert(data.message)
         console.log(data.user_id);
+        document.cookie = `token=${data.token};max-age=3600;path=/`;
         window.location.href = `/directory/${data.user_id}`;
     } else {
         alert(data.message)
     }
   });
   }
+
   function togglePopUp(){
     let wrapper = document.getElementsByClassName("wrapper")[0];
 

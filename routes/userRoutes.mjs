@@ -99,6 +99,6 @@ import {getUserById, getUserList, updateUser} from '../controllers/userControlle
 
 router.get('', getUserList);
 router.get('/:user_id', getUserById);
-router.put('/:user_id', updateUser)
+router.put('/:user_id', updateUser);
 
 export default router;
