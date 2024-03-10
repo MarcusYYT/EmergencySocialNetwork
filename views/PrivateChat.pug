@@ -79,6 +79,17 @@ script.
         let headerText = document.createTextNode(receiverUsername)
         header.appendChild(headerText)
     }
+    socket.on("postPrivatePost", (postData) => {
+            let messageBoard = document.getElementById("message-board")
+            let messageElement = constructChatMessage(
+                postData.sender_name,
+                postData.content,
+                postData.status,
+                postData.dateTime,
+            );
+            messageBoard.appendChild(messageElement);
+            document.getElementById("message-board").scrollTop = messageBoard.scrollHeight;
+    });
 
     async function postChatMessage(){
         let textArea = document.getElementById("message")
@@ -91,6 +102,7 @@ script.
         const receiver_id = #{receiverId}
 
         const postData = {
+            sender_name: senderUsername,
             sender_id: sender_id, 
             receiver_id: receiver_id,
             status: status,
@@ -99,16 +111,6 @@ script.
         };
         //- socket.emit("postData", postData);
         //- console.log(postData);
-
-        let messageBoard = document.getElementById("message-board")
-        let messageElement = constructChatMessage(
-            senderUsername,
-            postData.content,
-            postData.status,
-            postData.dateTime,
-        );
-        messageBoard.appendChild(messageElement);
-        document.getElementById("message-board").scrollTop = messageBoard.scrollHeight;
 
         await fetch('/privatePosts', {
             method: 'POST',

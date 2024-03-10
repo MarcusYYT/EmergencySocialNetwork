@@ -24,7 +24,7 @@ router.get('/messageWall/:user_id', passport.authenticate('jwt', { session: fals
     }
 });
 
-router.get('/privatePosts/:senderId/:receiverId', passport.authenticate('jwt', { session: false }), (req, res) => {
+router.get('/privatePostsWall/:senderId/:receiverId', passport.authenticate('jwt', { session: false }), (req, res) => {
     const senderId = req.params.senderId;
     const receiverId = req.params.receiverId;
     if (senderId != req.user.data[0].user_id) {
