@@ -3,7 +3,7 @@ html
   head
     script.
       async function callApi() {
-      await fetch('/status/1', {
+      await fetch('/privatePosts/1/2', {
                   method: 'GET',
                   headers: {
                   'Content-Type': 'application/json',
@@ -18,12 +18,12 @@ html
       .catch(error => console.error('Error:', error));
       }
       async function callPostApi() {
-      await fetch('/status', {
+      await fetch('/privatePosts', {
                             method: 'POST',
                             headers: {
                                 'Content-Type': 'application/json',
                             },
-                            body: JSON.stringify({ user_id: 1,  status: "ok"}),
+                            body: JSON.stringify({ sender_id: 1, receiver_id:2, content:"test message", status: "ok"}),
                             })
       .then(response => response.json())
       .then(data => console.log(data))

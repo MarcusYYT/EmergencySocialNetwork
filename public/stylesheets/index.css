@@ -228,11 +228,11 @@ p.onlineStatusField {
 }
 
 .online {
-    color: #378c00;
+    color:rgb(0, 160, 78)
 }
 
 .offline {
-    color: red;
+    color: rgb(237, 0, 51)
 }
 
 span.message-sender {
@@ -261,4 +261,16 @@ span.message-sender {
     width: 63vw;
     margin: auto;
     margin-bottom: 2vh;
+}
+
+.bi-bandaid-fill{
+    color: rgb(237, 0, 51)
+}
+
+.bi-check-circle-fill{
+    color:rgb(0, 160, 78)
+}
+
+.bi-exclamation-circle-fill{
+    color: rgb(244 199 0)
 }

@@ -11,6 +11,7 @@ import passport from './config/passportConfig.mjs'
 import authRoutes from './routes/authRoutes.mjs'
 import userRoutes from './routes/userRoutes.mjs'
 import postRoutes from './routes/postRoutes.mjs'
+import privatePostRoutes from './routes/privatePostRoutes.mjs'
 import pageRoutes from './routes/pageRoutes.mjs'
 import statusRoutes from './routes/statusRoutes.mjs'
 import DatabaseAdapter from './config/DatabaseAdapter.mjs'
@@ -56,6 +57,7 @@ app.use('/auth', authRoutes);
 app.use('/users', userRoutes);
 app.use('/posts', postRoutes);
 app.use('/status', statusRoutes)
+app.use('/privatePosts', privatePostRoutes)
 
 // setup swagger
 const swaggerSpec = await swaggerJSDoc(swaggerOptions);
@@ -77,6 +79,7 @@ server.listen(port, async () => {
   const database = DatabaseAdapter.createDatabase();
   await database.connect();
   // await Status.sync()
+  await PrivatePost.sync()
 
   if(process.env.NODE_ENV === 'test'){
     await User.sync()

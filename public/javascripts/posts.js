@@ -14,13 +14,27 @@ function constructChatMessage(sender, message, status, dateTime) {
     // console.log("1111111111:" + dateTime)
     dateSpan.textContent = new Date(dateTime).toLocaleString();
 
-    const statusSpan = document.createElement('span');
-    statusSpan.className = 'message-status';
-    statusSpan.textContent = status;
+    // const statusSpan = document.createElement('span');
+    // statusSpan.className = 'message-status';
+
+
+    const statusFieldImage = document.createElement("i");
+    console.log(status)
+    if(status == "OK"){
+        statusFieldImage.setAttribute("class", "bi bi-check-circle-fill");
+      }
+      else if(status == "emergency"){
+        statusFieldImage.setAttribute("class", "bi bi-bandaid-fill");
+        
+      }
+      else if(status == "help"){
+        statusFieldImage.setAttribute("class", "bi bi-exclamation-circle-fill");
+      }
+   // statusSpan.appendChild(statusFieldImage);
 
     messageUsernameHeader.appendChild(senderSpan);
     messageHeader.appendChild(dateSpan);
-    messageUsernameHeader.appendChild(statusSpan);
+    messageUsernameHeader.appendChild(statusFieldImage);
 
     const messageBody = document.createElement('div');
     messageBody.className = 'message-body';
@@ -32,35 +46,45 @@ function constructChatMessage(sender, message, status, dateTime) {
 
 }
 
-async function renderChats(chatlist) {
+async function renderChats(chatlist, isPrivate) {
 
     let messageBoard = document.getElementById("message-board")
 
     for (const msgData of chatlist) {
 
+        let username =  ""
+
+        if (isPrivate){
+          username = msgData.Sender.username;
+        }
+        else{
+          username = msgData.user.username;
+        }
         
         let messageElement = constructChatMessage(
-            msgData.user.username,
+            username,
             msgData.content,
             msgData.status,
             msgData.createdAt
         );
 
         messageBoard.appendChild(messageElement);
+        messageBoard.scrollTop = messageBoard.scrollHeight;
     }
 }
 
-window.addEventListener("load", async () => {
-    await fetch('/posts')
-        .then(response => response.json())
-        .then(data => {
-            console.log(data);
-            renderChats(data.data)
-        })
-        .catch(error => {
-            console.error('Error fetching data:', error);
-        });
-}, false)
+// window.addEventListener("load", async () => {
+
+//     await fetch('/posts')
+//         .then(response => response.json())
+//         .then(data => {
+//             console.log(data);
+//             renderChats(data.data)
+//         })
+//         .catch(error => {
+//             console.error('Error fetching data:', error);
+//         });
+// }, false)
 
 
 

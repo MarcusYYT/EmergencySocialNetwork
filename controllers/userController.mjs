@@ -1,4 +1,5 @@
 import * as userService from '../services/userService.mjs'
+import { io } from "../config/socketConfig.mjs"
 
 export async function getUserById(req, res){
     try{
@@ -39,6 +40,7 @@ export async function updateUser(req, res){
         if(updateAtrribute === "status"){
             const updateStatus = req.body.updateValue;
             await userService.changeStatus(userId, updateStatus).then((resolve)=>{
+                io.emit('status_update')
                 res.status(200).json({success: resolve.success, message: resolve.message});
         })}
 

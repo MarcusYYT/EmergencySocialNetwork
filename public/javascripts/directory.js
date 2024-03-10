@@ -61,7 +61,16 @@ function renderMyStatus(username, status) {
 //     }
 // }
 
-function routeToPrivateChat(receiver, sender){
-    window.location.href = `/privatePosts/${sender}/${receiver}`;
-
+function routeToPrivateChat(sender, receiver){
+    //await changeReadStatus(sender, receiver)
+    window.location.href = `/privatePostsWall/${sender}/${receiver}`;
 }
+
+// async function changeReadStatus(sender, receiver) {
+//     await fetch(`/privatePosts/${sender}/${receiver}`, {
+//         method: 'PUT',
+//         headers: {
+//           'Content-Type': 'application/json',
+//         }
+//     })
+// }
