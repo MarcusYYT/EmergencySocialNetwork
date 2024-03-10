@@ -23,6 +23,7 @@ script.
     
     let senderUsername = "";
     let receiverUsername = "";
+    let status = "";
 
     window.onload = async function() {
         const senderId = #{senderId}
@@ -34,6 +35,7 @@ script.
         }).then(response => response.json()).then((data) => {
             console.log(data.data[0].username);
             senderUsername = data.data[0].username;
+            status = data.data[0].status;
         })   
 
         const receiverId = #{receiverId}
@@ -52,14 +54,20 @@ script.
             .then(response => response.json())
             .then(data => {
                 console.log(data);
-                renderChats(data.data)
+                let sortedList = sortByPostId(data.data);
+                renderChats(sortedList, true);
                 
             })
             .catch(error => {
                 console.error('Error fetching data:', error);
             });
 
-    
+            await fetch(`/privatePosts/${senderId}/${receiverId}`, {
+                method: 'PUT',
+                headers: {
+                'Content-Type': 'application/json',
+                }
+    })  
     }
 
     function routeToDirectory(){
@@ -71,5 +79,58 @@ script.
         let header = document.getElementById("message-header")
         let headerText = document.createTextNode(receiverUsername)
         header.appendChild(headerText)
+    }
+
+    async function postChatMessage(){
+        let textArea = document.getElementById("message")
+        let textContent = textArea.value
+        let path = window.location.pathname;
+        textArea.value = "";
+        // Get the user_id (assuming it's the last part of the URL)
+
+        const sender_id = #{senderId}
+        const receiver_id = #{receiverId}
+
+        const postData = {
+            sender_id: sender_id, 
+            receiver_id: receiver_id,
+            status: status,
+            dateTime: new Date().toLocaleString(),
+            content: textContent
+        };
+        //- socket.emit("postData", postData);
+        //- console.log(postData);
+
+        let messageBoard = document.getElementById("message-board")
+        let messageElement = constructChatMessage(
+            senderUsername,
+            postData.content,
+            postData.status,
+            postData.dateTime,
+        );
+        messageBoard.appendChild(messageElement);
+        document.getElementById("message-board").scrollTop = messageBoard.scrollHeight;
+
+        await fetch('/privatePosts', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(postData)})
+            .then(response => response.json())
+            .then(data => {
+                console.log(data);
+            })
+            .catch(error => {
+                console.error('Error fetching data:', error);
+            });
+                
+    }
+
+    function sortByPostId(data) {
+        data.sort(function (a, b) {
+            return a.post_id - b.post_id;
+        })
+        return data;
     }
    

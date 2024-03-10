@@ -59,8 +59,8 @@ export async function createPost(senderId, receiverId, content, status) {
     return await PrivatePost.create({
         sender_id: senderId,
         receiver_id: receiverId,
-        sender_read: true,
-        receiver_read: true,
+        sender_read: false,
+        receiver_read: false,
         content: content,
         status: status
     });
@@ -108,14 +108,27 @@ export async function senderRead(postId) {
     })
 }
 
+// /**
+//  * Mark the reader as read
+//  * @param {integer} postId post_id
+//  */
+// export async function readerRead(postId) {
+//     return await PrivatePost.update({reader_read: true}, {
+//         where: {
+//             post_id: postId
+//         }
+//     })
+// }
+
 /**
  * Mark the reader as read
  * @param {integer} postId post_id
  */
-export async function readerRead(postId) {
-    return await PrivatePost.update({reader_read: true}, {
+export async function readerRead(senderId, receiverId) {
+    return await PrivatePost.update({sender_read: true, receiver_read: true}, {
         where: {
-            post_id: postId
+            sender_id: senderId,
+            receiver_id: receiverId
         }
     })
 }

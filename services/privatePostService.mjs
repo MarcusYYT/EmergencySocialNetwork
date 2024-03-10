@@ -53,3 +53,11 @@ export async function getPrivatePostList(senderId, receiverId){
     return returnJson
   }
 
+  export async function updateReadStatus(senderId, receiverId) {
+    let returnJson = {success: null, message:"initial message"}
+    await privatePostModel.readerRead(senderId, receiverId).then(()=>{
+      returnJson.success = true;
+      returnJson.message = "Change status successfull"
+    });
+    return returnJson;
+  }

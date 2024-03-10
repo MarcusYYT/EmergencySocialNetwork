@@ -1,5 +1,5 @@
 import express from 'express';
-import {getPrivatePostById, getPrivatePostList, postPrivatePost} from '../controllers/privateChatController.mjs'
+import {getPrivatePostById, getPrivatePostList, postPrivatePost, updateReadStatus} from '../controllers/privateChatController.mjs'
 
 const router = express.Router();
 /**
@@ -121,5 +121,6 @@ const router = express.Router();
 router.get('/:sender_id/:receiver_id', getPrivatePostList);
 router.get('/:post_id', getPrivatePostById);
 router.post('', postPrivatePost);
+router.put('/:sender_id/:receiver_id', updateReadStatus);
 
 export default router;

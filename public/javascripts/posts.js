@@ -46,21 +46,30 @@ function constructChatMessage(sender, message, status, dateTime) {
 
 }
 
-async function renderChats(chatlist) {
+async function renderChats(chatlist, isPrivate) {
 
     let messageBoard = document.getElementById("message-board")
 
     for (const msgData of chatlist) {
 
+        let username =  ""
+
+        if (isPrivate){
+          username = msgData.Sender.username;
+        }
+        else{
+          username = msgData.user.username;
+        }
         
         let messageElement = constructChatMessage(
-            msgData.user.username,
+            username,
             msgData.content,
             msgData.status,
             msgData.createdAt
         );
 
         messageBoard.appendChild(messageElement);
+        messageBoard.scrollTop = messageBoard.scrollHeight;
     }
 }
 
