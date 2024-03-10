@@ -167,6 +167,7 @@ html(lang='en')
           updateValue: "offline"
         }
 
+
         await fetch(`/users/${userId}`, {
           method: 'PUT',
           headers: {
@@ -176,6 +177,7 @@ html(lang='en')
         }).then(response=> response.json()).then((data)=>{
           console.log(data.message)
         })
+
         window.location.href = `/`;
       }
 

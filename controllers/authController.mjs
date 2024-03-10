@@ -2,6 +2,7 @@ import * as userService from "../services/userService.mjs";
 import { ifUserExist, changeOnlineStatus } from "../models/User.model.mjs";
 import passport from "../config/passportConfig.mjs";
 import jwt from "jsonwebtoken";
+import { io } from "../config/socketConfig.mjs"
 
 export function showLogin(req, res) {
   res.render("Login");
@@ -90,4 +91,9 @@ export async function tokenResolve(req, res) {
         success: true,
         user_id: req.user.data[0].user_id
     });
+}
+
+export async function logout(req, res){
+    io.emit("status_update");
+
 }
