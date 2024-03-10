@@ -7,6 +7,7 @@ import {User} from './models/User.model.mjs'
 import {Post} from './models/Post.model.mjs'
 import {Status} from './models/Status.model.mjs'
 import socketConfig from './config/socketConfig.mjs'
+import passport from './config/passportConfig.mjs'
 import authRoutes from './routes/authRoutes.mjs'
 import userRoutes from './routes/userRoutes.mjs'
 import postRoutes from './routes/postRoutes.mjs'
@@ -15,8 +16,7 @@ import pageRoutes from './routes/pageRoutes.mjs'
 import statusRoutes from './routes/statusRoutes.mjs'
 import DatabaseAdapter from './config/DatabaseAdapter.mjs'
 import { createServer } from 'node:http';
-// import { fileURLToPath } from 'node:url';
-// import { dirname, join } from 'node:path';
+import cookieParser from 'cookie-parser';
 
 
 const swaggerOptions = {
@@ -43,6 +43,9 @@ socketConfig(server);
 app.use(express.static(__dirname + '/public'));
 app.use(express.json());  // parse json request  
 app.use(express.urlencoded({ extended: true }));
+
+app.use(passport.initialize());
+app.use(cookieParser());
 
 // set the view and pug engine
 app.set('views', path.join(__dirname, 'views'));

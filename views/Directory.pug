@@ -39,6 +39,7 @@ html(lang='en')
             'Content-Type': 'application/json',
           },
         }).then(response => response.json()).then((data) => {
+          console.log(data)
           username = data.data[0].username;
           renderMyStatus(username, data.data[0].status)
         })
@@ -186,6 +187,7 @@ html(lang='en')
           updateValue: "offline"
         }
 
+
         await fetch(`/users/${userId}`, {
           method: 'PUT',
           headers: {
@@ -195,13 +197,9 @@ html(lang='en')
         }).then(response=> response.json()).then((data)=>{
           console.log(data.message)
         })
+
         window.location.href = `/`;
       }
-      //- window.addEventListener('beforeunload', async function(event) {
-      //- console.log('Browser is closing');
-      //- await logout()
-      //- });
-        
 
 
     

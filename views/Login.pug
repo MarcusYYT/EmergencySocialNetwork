@@ -26,14 +26,12 @@ script.
 
   }).then(response => response.json()
   ).then(async (data)=>{
-    if(data.code===200){
+    if (data.success && data.token) {
+      document.cookie = `token=${data.token};max-age=3600;path=/`;
       window.location.href = `/directory/${data.user_id}`;
     }
-    else if(data.code===404){
-      togglePopUp()
-    }
     else{
-      alert(data.message)
+      alert(data.message);
     }
   });
   }
@@ -62,9 +60,10 @@ script.
                 body: JSON.stringify({ username: username, password:password }),
   }).then(response => response.json()
   ).then((data)=>{
-    if(data.success===true){
+    if(data.success && data.token){
         alert(data.message)
         console.log(data.user_id);
+        document.cookie = `token=${data.token};max-age=3600;path=/`;
         window.location.href = `/directory/${data.user_id}`;
     } else {
         alert(data.message)
