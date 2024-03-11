@@ -60,7 +60,7 @@ router.post('/sockets', async (req, res) => {
     } else if (operation === 'register'){
         const userId = req.body.user_id;
         registerNewSocket(userId, socketId).then(()=>{
-            res.status(200).json({success: true, message:`regoister user ${userId} successful`});
+            res.status(200).json({success: true, message:`register user ${userId} successful`});
         })
     }
 })
