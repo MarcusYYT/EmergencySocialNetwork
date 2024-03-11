@@ -80,10 +80,14 @@ export async function isUsernameValid(username) {
 
 export async function changeOnlineStatus(id, status){
   let returnJson = {success: null, message:"initial message"}
+  try{
   await userModel.changeOnlineStatus(id, status).then((res)=>{
     returnJson.success = true;
-    returnJson.message = "Change online status successfull"
+    returnJson.message = `Change online for user ${id} status successfull`
   });
+  } catch (err){
+    console.log(err)
+  }
   return returnJson;
 }
 
