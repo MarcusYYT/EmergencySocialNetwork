@@ -18,14 +18,13 @@ export default function (server) {
         })
         
         socket.on("disconnect", async () => {
-
+            var user_id = socketToUser.get(socket.id);
+            socketToUser.delete(socket.id);
             setTimeout(async ()=>{
                 console.log(socketToUser)
-                var user_id = socketToUser.get(socket.id);
-                socketToUser.delete(socket.id);
                 const user_ids = Array.from(socketToUser.values());
                 if (!user_ids.includes(user_id)) {
-                    await userService.changeOnlineStatus(Number(socketToUser.get(socket.id)), "Offline").then((res)=>{
+                    await userService.changeOnlineStatus(user_id, "offline").then((res)=>{
                         console.log(res);
                         io.emit("status_update");
                     })
@@ -34,9 +33,6 @@ export default function (server) {
                     console.log(`user ${user_id} stays connected`);
                 }
             },1000)
-
-
-
         });
         socket.on("postData", (postData) => {
             io.emit("postData", postData);
