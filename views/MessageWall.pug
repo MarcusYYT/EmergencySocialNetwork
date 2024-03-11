@@ -27,7 +27,6 @@ script.
     window.location.href = `/directory/${user_id}`
   }
 
-  socket.emit('registered', #{user_id});
 
   function postChatMessage(){
     let textArea = document.getElementById("message")
@@ -71,6 +70,19 @@ script.
          .catch(error => {
              console.error('Error fetching data:', error);
          });
+     await fetch(`/sockets`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({user_id: #{user_id}, socket_id: socket.id, operation:'register'})})
+            .then(response => response.json())
+            .then(data => {
+                console.log(data);
+            })
+            .catch(error => {
+                console.error('Error creating socket room:', error);
+            });
   }
 
   async function logout(){

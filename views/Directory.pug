@@ -43,6 +43,20 @@ html(lang='en')
           username = data.data[0].username;
           renderMyStatus(username, data.data[0].status)
         })
+
+        await fetch(`/sockets`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({user_id: #{user_id}, socket_id: socket.id, operation:'register'})})
+            .then(response => response.json())
+            .then(data => {
+                console.log(data);
+            })
+            .catch(error => {
+                console.error('Error creating socket room:', error);
+            });
       }
 
       async function getUsers(){
@@ -164,8 +178,6 @@ html(lang='en')
         renderMyStatus(username, selectedValue);       
       }
 
-
-      socket.emit('registered', #{user_id});
       socket.on("status_update", async ()=> { 
         await getUsers().then(response => response.json()).then(async (data)=>{
             console.log("data is")

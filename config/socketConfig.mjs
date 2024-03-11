@@ -5,18 +5,12 @@ import * as userService from '../services/userService.mjs';
 import * as timers from "timers";
 
 export let io;
+var socketToUser = new Map();
 export default function (server) {
     io = new Server(server);
-    let socketToUser = new Map();
 
     io.on("connection", (socket) => {
         console.log(`User connected. Socket_id: ${socket.id}`);
-
-        socket.on("registered", (userId) => {
-            console.log(`User ${userId} registered.`);
-            socketToUser.set(socket.id, userId);
-            io.emit("status_update");
-        })
         
         socket.on("disconnect", async () => {
             var user_id = socketToUser.get(socket.id);
@@ -44,3 +38,8 @@ export default function (server) {
 
     });
 };
+
+export async function registerNewSocket(user_id, socket_id){
+    socketToUser.set(socket_id, user_id);
+    io.emit("status_update");
+}
