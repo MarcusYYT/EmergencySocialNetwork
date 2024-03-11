@@ -62,12 +62,19 @@ script.
                 console.error('Error fetching data:', error);
             });
 
-            await fetch(`/privatePosts/${senderId}/${receiverId}`, {
-                method: 'PUT',
-                headers: {
+        await fetch(`/sockets`, {
+            method: 'POST',
+            headers: {
                 'Content-Type': 'application/json',
-                }
-            })  
+            },
+            body: JSON.stringify({sender_id: senderId, receiver_id: receiverId, socket_id: socket.id})})
+            .then(response => response.json())
+            .then(data => {
+                console.log(data);
+            })
+            .catch(error => {
+                console.error('Error creating socket room:', error);
+            });
     }
 
     function routeToDirectory(){

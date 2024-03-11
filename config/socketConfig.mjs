@@ -11,6 +11,7 @@ export default function (server) {
 
     io.on("connection", (socket) => {
         console.log(`User connected. Socket_id: ${socket.id}`);
+
         socket.on("registered", (userId) => {
             console.log(`User ${userId} registered.`);
             socketToUser.set(socket.id, userId);
@@ -40,5 +41,6 @@ export default function (server) {
             postService.createNewPost(postData.userId, postData.content, postData.status);
             //   chatMsgModel.saveOneMessage(msg.userId, msg.dateTime, msg.message);
         });
+
     });
 };

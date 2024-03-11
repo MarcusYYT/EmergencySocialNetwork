@@ -1,5 +1,6 @@
 import express from 'express';
 import passport from '../config/passportConfig.mjs';
+import { io } from "../config/socketConfig.mjs"
 
 const router = express.Router();
 router.get('/', (req, res) => {
@@ -40,6 +41,20 @@ router.get('/test', (req, res) => {
 })
 router.get('/socket', (req, res) => {
     res.render('socketTest');
+})
+
+router.post('/sockets', async (req, res) => {
+    const senderId = req.body.sender_id;
+    const receiverId = req.body.receiver_id;
+    const socketId = req.body.socket_id;
+    const socket = io.sockets.sockets.get(socketId);
+    const roomName = [senderId, receiverId].sort().join('_');
+    if (socket) {
+        socket.join(roomName);
+        res.status(200).json({success: true, message: `join room ${roomName} successfully`})
+    } else {
+        res.status(500).json({success: false, message: `join room ${roomName} with error`})
+    }
 })
 
 export default router;
