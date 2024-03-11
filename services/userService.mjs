@@ -11,12 +11,12 @@ let saltRounds = 10;
  * @param {string} password The password passed from the frontend
  */
 export async function createNewUser(username, password) {
-  let returnJson = {success: null, user_id: -1, message: "initial message"};
+  let returnJson = {success: false, user_id: -1, message: "Create user failed"};
   await bcrypt.hash(password, saltRounds).then(async (res) => {
     await userModel.createUser(username, res).then((user)=>{
       returnJson.success = true;
       returnJson.user_id = user.user_id
-      returnJson.message = "Create user successfulS"
+      returnJson.message = "Create user successfully."
     });
 
   });
@@ -64,14 +64,29 @@ export async function getUserList(){
 }
 
 /**
- * This function will check if the user name is in the ban list
+ * This function will check if the user name is in the ban list and less than 3 characters
  * @async
  * @param {string} username 
  * @returns True if the username is valid ,false ifnthe username is not valid
  */
 export async function isUsernameValid(username) {
+  username = username.toLowerCase();
   const banList = await getUsernameBanList();
-  if (banList.includes(username)) {
+  if (username.length < 3 || banList.includes(username)) {
+    return false;
+  } else {
+    return true;
+  }
+}
+
+/**
+ * This function will check if the password is greater than 4 characters
+ * @async
+ * @param {string} password
+ * @returns True if the password is longer than 4, false if not
+ */
+export async function isPasswordValid(password) {
+  if (password.length <= 3) {
     return false;
   } else {
     return true;
@@ -139,16 +154,16 @@ export async function authenticate(username, enteredPassword) {
  * @returns user_id if user validates, -1 if username password mismatch, -2 if user does not exist
  */
 export async function validUser(username, enteredPassword) {
-  let ret = 0;
+  let ret = {code: 0, user_id: null};
   await userModel.getOneUser(username).then(async(res)=> {
     if (res.length > 0) {
       const user = res[0];
       const hashedPassword = user.password;
       await bcrypt.compare(enteredPassword, hashedPassword).then((isMatch) => {
-        if (isMatch == false) ret = -1; // -1 means password mismatch
-        else ret = user.user_id; // other than -1/-2, ret is user id
+        if (isMatch == false) ret = {code: 401, user_id: null}; 
+        else ret = {code: 200, user_id: user.user_id}; 
       });
-    } else ret = -2; // -2 means user not found
+    } else ret = {code: 404, user_id: null}; 
   })
   return ret;
 }

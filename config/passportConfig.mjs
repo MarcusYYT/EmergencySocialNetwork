@@ -10,12 +10,12 @@ passport.use('local-login', new LocalStrategy( {
     }, async function(req, username, password, done) {
         try {
             const authRes = await userService.validUser(username, password);
-            if (authRes == -1) {
+            if (authRes.code == 401) {
                 return done(null, false, { message: "Username and Password does not match"});
-            } else if (authRes == -2) {
+            } else if (authRes.code == 404) {
                 return done(null, false, { message: "User does not exist"});
-            } else {
-                const user = { user_id: authRes, username: username};
+            } else if (authRes.code == 200) {
+                const user = { user_id: authRes.user_id, username: username};
                 return done(null, user);
             }
         } catch (err) {
