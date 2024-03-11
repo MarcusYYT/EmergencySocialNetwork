@@ -1,4 +1,5 @@
 import * as postService from '../services/postService.mjs'
+import { io } from "../config/socketConfig.mjs"
 
 export async function getPostById(req, res){
     try{
@@ -31,6 +32,7 @@ export async function postPost(req, res){
         const content = req.body.content;
         const status = req.body.status;
         await postService.createNewPost(userId, content, status).then(() =>{
+            io.emit("postData", req.body);
             res.status(201).json({ success: true, message: 'Post a new post successful' });
         })
     } catch(error) {

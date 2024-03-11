@@ -156,7 +156,19 @@ html(lang='en')
           updateAt: "status",
           updateValue: selectedValue
         }
-
+        await fetch('/status', {
+          method: 'POST', 
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({user_id: userId, status: selectedValue}),
+        }) .then(response => response.json())
+            .then(data => {
+                console.log(data);
+            })
+            .catch(error => {
+                console.error('Error push status history', error);
+            });
         const updateStatus = await fetch(`/users/${userId}`, {
           method: 'PUT',
           headers: {

@@ -29,12 +29,6 @@ export default function (server) {
                 }
             },1000)
         });
-        socket.on("postData", (postData) => {
-            io.emit("postData", postData);
-            // console.log("I received!!!!!!!!")
-            postService.createNewPost(postData.userId, postData.content, postData.status);
-            //   chatMsgModel.saveOneMessage(msg.userId, msg.dateTime, msg.message);
-        });
 
     });
 };
