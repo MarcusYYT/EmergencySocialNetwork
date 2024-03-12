@@ -118,12 +118,12 @@ const router = express.Router();
  *      201:
  *        description: Database push successful
  */
+router.get('/unread/:receiver_id', getUnreadMessageCountsForReceiver);
 router.get('/:sender_id/:receiver_id', getPrivatePostList);
 router.get('/:post_id', getPrivatePostById);
 router.post('', postPrivatePost);
 
 // need a documentation comment
 router.put('/:sender_id/:receiver_id', updateReadStatus);
-router.get('/unread/:receiver_id', getUnreadMessageCountsForReceiver);
 
 export default router;

@@ -151,7 +151,6 @@ export async function getUnreadMessageCountsForReceiver(receiverId) {
             ],
             attributes: ['sender_id', [sequelize.fn('COUNT', sequelize.col('post_id')), 'unreadCount']],
             group: ['sender_id', 'Sender.user_id', 'Sender.username'],
-            order: [['createdAt', 'DESC']]
         });
 
         // Map the results to a more readable format
@@ -162,7 +161,7 @@ export async function getUnreadMessageCountsForReceiver(receiverId) {
             },
             unreadCount: message.dataValues.unreadCount
         }));
-
+        console.log(unreadMessageCounts);
         return unreadMessageCounts;
     } catch (error) {
         console.error('Error fetching unread message counts:', error);

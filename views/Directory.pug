@@ -39,7 +39,6 @@ html(lang='en')
             'Content-Type': 'application/json',
           },
         }).then(response => response.json()).then((data) => {
-          console.log(data)
           username = data.data[0].username;
           renderMyStatus(username, data.data[0].status)
         })
@@ -159,7 +158,6 @@ html(lang='en')
       async function changeMyStatus() {
         let selectElement = document.getElementById('status');
         let selectedValue = selectElement.value;
-        console.log(selectedValue);
         const userId = #{user_id};
         const requestBody = {
           user_id: userId,
@@ -202,8 +200,6 @@ html(lang='en')
 
       socket.on("status_update", async ()=> { 
         await getUsers().then(response => response.json()).then(async (data)=>{
-            console.log("data is")
-            console.log(data);
             renderESNList(sortUsers(data.data))
         });
       })

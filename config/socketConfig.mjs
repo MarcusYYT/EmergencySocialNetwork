@@ -35,5 +35,6 @@ export default function (server) {
 
 export async function registerNewSocket(user_id, socket_id){
     socketToUser.set(socket_id, user_id);
+    console.log(socketToUser)
     io.emit("status_update");
 }
