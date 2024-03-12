@@ -1,8 +1,4 @@
 import { isUsernameValid, isPasswordValid, createNewUser } from "../../services/userService.mjs";
-import DatabaseAdapter from "../../config/DatabaseAdapter.mjs";
-// let isUsernameValid = require('../../services/userService.mjs').isUsernameValid;
-// let isPasswordValid = require('../../services/userService.mjs').isPasswordValid;
-// let validUser = require('../../services/userService.mjs').validUser;
 import {User} from "../../models/User.model.mjs";
 beforeAll(async () => {
     await User.sync();

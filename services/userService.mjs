@@ -128,37 +128,6 @@ export async function changeStatus(id, status){
   });
   return returnJson;
 }
-/**
- * Check the username and password with the information stored in database
- * @async
- * @param {string} username The username passed from the frontend
- * @param {string} enteredPassword The password entered by user from the frontend
- * @returns True if the username and password match, false if the username and password are not match or username not exist
- */
-export async function authenticate(username, enteredPassword) {
-  let ifMatch = {id: -1, code: 0, message:'initial message'};
-  await userModel.getUser(username).then (async (res)=>{
-    if (res.length > 0) {
-      const user = res[0];
-      const hashedPassword = user.password;
-      ifMatch.id = user.user_id;
-      await bcrypt.compare(enteredPassword, hashedPassword).then((isMatch)=>{
-          if (isMatch == false){
-            ifMatch.message = "Username and Password doesn't match";
-            ifMatch.code = 400;
-          } else {
-            ifMatch.message = "Login Successful"
-            ifMatch.code = 200;
-          }
-        });
-    } else {
-      console.log("User not found");
-      ifMatch.message = "User not exist"
-      ifMatch.code = 404;
-    }
-  })
-  return ifMatch;
-}
 
 /**
  * Check the username and password with the information stored in database to provide user_id
