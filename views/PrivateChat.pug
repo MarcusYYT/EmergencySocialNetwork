@@ -75,7 +75,7 @@ script.
             .catch(error => {
                 console.error('Error register socket:', error);
             });
-            
+
         await fetch(`/sockets`, {
             method: 'POST',
             headers: {
@@ -112,7 +112,27 @@ script.
             messageBoard.appendChild(messageElement);
             document.getElementById("message-board").scrollTop = messageBoard.scrollHeight;
     });
+    window.addEventListener('beforeunload', async function (event) {
+    // Call the markMessagesAsRead API
+    // Assuming you have a function to make the API request
+    try {
+        const senderId = #{senderId}
+        const receiverId = #{receiverId}
+        await fetch(`/privatePosts/${senderId}/${receiverId}`, {
+          method: 'PUT',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({}),
+          })
+        console.log('Messages marked as read');
+    } catch (error) {
+        console.error('Error marking messages as read:', error);
+    }
 
+    // Optionally, you can use the event's returnValue to show a confirmation dialog
+    // event.returnValue = 'Are you sure you want to leave?';
+    });
     async function postChatMessage(){
         let textArea = document.getElementById("message")
         let textContent = textArea.value

@@ -50,8 +50,8 @@ export async function postPrivatePost(req, res){
 
 export async function updateReadStatus(req, res){
     try{
-        const senderId = req.params.sender_id;
-        const receiverId = req.params.receiver_id;
+        const senderId = req.params.receiver_id;
+        const receiverId = req.params.sender_id;
         await privatePostService.updateReadStatus(senderId, receiverId).then((resolve)=>{
             res.status(200).json({success: resolve.success, message: resolve.message});
         })
