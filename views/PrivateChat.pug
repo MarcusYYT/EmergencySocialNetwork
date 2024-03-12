@@ -25,6 +25,39 @@ script.
     let receiverUsername = "";
     let status = "";
 
+    socket.on('connect', async function() {
+        console.log('Connected to server');
+        console.log('Socket ID:', socket.id);
+        const senderId = #{senderId};
+        const receiverId = #{receiverId};
+        await fetch(`/sockets`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({user_id: senderId, socket_id: socket.id, operation:'register'})})
+                .then(response => response.json())
+            .then(data => {
+                console.log(data);
+            })
+            .catch(error => {
+                console.error('Error register socket:', error);
+            });
+        await fetch(`/sockets`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({sender_id: senderId, receiver_id: receiverId, socket_id: socket.id, operation:'joinRoom'})})
+            .then(response => response.json())
+            .then(data => {
+                console.log(data);
+            })
+            .catch(error => {
+                console.error('Error creating socket room:', error);
+            });
+    });
+
     window.onload = async function() {
         const senderId = #{senderId}
         const senderResponse = await fetch(`/users/${senderId}`, {
@@ -60,34 +93,6 @@ script.
             })
             .catch(error => {
                 console.error('Error fetching data:', error);
-            });
-
-        await fetch(`/sockets`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({user_id: senderId, socket_id: socket.id, operation:'register'})})
-            .then(response => response.json())
-            .then(data => {
-                console.log(data);
-            })
-            .catch(error => {
-                console.error('Error register socket:', error);
-            });
-
-        await fetch(`/sockets`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({sender_id: senderId, receiver_id: receiverId, socket_id: socket.id, operation:'joinRoom'})})
-            .then(response => response.json())
-            .then(data => {
-                console.log(data);
-            })
-            .catch(error => {
-                console.error('Error creating socket room:', error);
             });
     }
 

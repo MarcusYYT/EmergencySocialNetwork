@@ -28,7 +28,24 @@ html(lang='en')
     script.
       const socket = io();
       let username = '';
-
+      socket.on('connect', async function() {
+        console.log('Connected to server');
+        console.log('Socket ID:', socket.id);
+        const userId = #{user_id};
+        await fetch(`/sockets`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({user_id: userId, socket_id: socket.id, operation:'register'})})
+                .then(response => response.json())
+            .then(data => {
+                console.log(data);
+            })
+            .catch(error => {
+                console.error('Error register socket:', error);
+            });
+      })
       
 
       window.onload = async function() {
@@ -42,20 +59,6 @@ html(lang='en')
           username = data.data[0].username;
           renderMyStatus(username, data.data[0].status)
         })
-
-        await fetch(`/sockets`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({user_id: #{user_id}, socket_id: socket.id, operation:'register'})})
-            .then(response => response.json())
-            .then(data => {
-                console.log(data);
-            })
-            .catch(error => {
-                console.error('Error creating socket room:', error);
-            });
           await fetch(`/privatePosts/unread/${userId}`, {
             method: 'GET',
             headers: {
