@@ -57,11 +57,20 @@ html(lang='en')
             .catch(error => {
                 console.error('Error creating socket room:', error);
             });
+          await fetch(`/privatePosts/unread/${userId}`, {
+            method: 'GET',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+          }).then(response => response.json()).then((data) => {
+            console.log('unread message status: ')
+            console.log(data)
+            // implement to display the notification
+          })
       }
 
       async function getUsers(){
         return await fetch('/users')
-   
       }
 
       function sortUsers(data){
@@ -144,6 +153,7 @@ html(lang='en')
           userdiv.appendChild(statusField);
           directory.appendChild(userdiv);
         }
+
       }
 
       async function changeMyStatus() {

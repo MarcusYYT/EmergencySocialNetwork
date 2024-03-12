@@ -52,11 +52,24 @@ export async function updateReadStatus(req, res){
     try{
         const senderId = req.params.sender_id;
         const receiverId = req.params.receiver_id;
-        // current user become receiver when checking new message from private chate
-        await privatePostService.updateReadStatus(receiverId, senderId).then((resolve)=>{
+        await privatePostService.updateReadStatus(senderId, receiverId).then((resolve)=>{
             res.status(200).json({success: resolve.success, message: resolve.message});
         })
     } catch(error){
         res.status(500).json({ message: 'Error updating user', error: error.message });
+    }
+}
+
+export async function getUnreadMessageCountsForReceiver(req, res){
+    try{
+        const receiverId = parseInt(req.params.receiver_id);
+        if (isNaN(receiverId)) {
+            return res.status(400).send({ error: 'Invalid receiver ID' });
+        }
+        await privatePostService.getUnreadMessageCountsForReceiver(receiverId).then((resolve)=>{
+            res.status(200).json({success: true, data: resolve, message:`get all unread message for ${receiverId} successful`})
+        })
+    } catch (err){
+        res.status(500).json({ message: 'Error fetching unread message', error: error.message });
     }
 }

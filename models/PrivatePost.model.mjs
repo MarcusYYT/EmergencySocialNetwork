@@ -59,7 +59,7 @@ export async function createPost(senderId, receiverId, content, status) {
     return await PrivatePost.create({
         sender_id: senderId,
         receiver_id: receiverId,
-        sender_read: false,
+        sender_read: true,
         receiver_read: false,
         content: content,
         status: status
@@ -108,27 +108,64 @@ export async function senderRead(postId) {
     })
 }
 
-// /**
-//  * Mark the reader as read
-//  * @param {integer} postId post_id
-//  */
-// export async function readerRead(postId) {
-//     return await PrivatePost.update({reader_read: true}, {
-//         where: {
-//             post_id: postId
-//         }
-//     })
-// }
 
 /**
- * Mark the reader as read
- * @param {integer} postId post_id
+ * Mark all messages as read in a private chat room between a specific sender and receiver.
+ * @param {number} senderId - The ID of the sender.
+ * @param {number} receiverId - The ID of the receiver.
+ * @returns {Promise<number>} A promise that resolves with the number of affected rows.
  */
-export async function readerRead(senderId, receiverId) {
-    return await PrivatePost.update({sender_read: true, receiver_read: true}, {
-        where: {
-            sender_id: senderId,
-            receiver_id: receiverId
-        }
-    })
+export async function markMessagesAsRead(senderId, receiverId) {
+    try {
+        const [affectedRows] = await PrivatePost.update(
+            { receiver_read: true },
+            {
+                where: {
+                    sender_id: senderId,
+                    receiver_id: receiverId,
+                    receiver_read: false
+                }
+            }
+        );
+        return affectedRows;
+    } catch (error) {
+        console.error('Error marking messages as read:', error);
+        throw error;
+    }
+}
+
+/**
+ * Get all unread messages for a specific receiver, grouped by the sender.
+ * @param {number} receiverId - The ID of the receiver.
+ * @returns {Promise<Object>} A promise that resolves with an object where keys are sender IDs and values are arrays of unread messages from that sender.
+ */
+export async function getUnreadMessageCountsForReceiver(receiverId) {
+    try {
+        const unreadMessages = await PrivatePost.findAll({
+            where: {
+                receiver_id: receiverId,
+                receiver_read: false
+            },
+            include: [
+                { model: User, as: 'Sender', attributes: ['user_id', 'username'] }
+            ],
+            attributes: ['sender_id', [sequelize.fn('COUNT', sequelize.col('post_id')), 'unreadCount']],
+            group: ['sender_id', 'Sender.user_id', 'Sender.username'],
+            order: [['createdAt', 'DESC']]
+        });
+
+        // Map the results to a more readable format
+        const unreadMessageCounts = unreadMessages.map(message => ({
+            sender: {
+                id: message.Sender.user_id,
+                username: message.Sender.username
+            },
+            unreadCount: message.dataValues.unreadCount
+        }));
+
+        return unreadMessageCounts;
+    } catch (error) {
+        console.error('Error fetching unread message counts:', error);
+        throw error;
+    }
 }
