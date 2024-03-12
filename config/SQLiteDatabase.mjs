@@ -7,6 +7,7 @@ export default class SQLiteDatabase extends DatabaseInterface {
         this.sequelize = new Sequelize({
             dialect: 'sqlite',
             storage: 'tempdb.sqlite',
+            logging: false
         });
     }
 
