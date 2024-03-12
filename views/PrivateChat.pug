@@ -20,7 +20,6 @@ script(src='https://cdn.socket.io/4.7.4/socket.io.min.js')
 script.
 
     const socket = io();
-    socket.emit('registered', #{senderId});
     
     let senderUsername = "";
     let receiverUsername = "";
@@ -37,7 +36,20 @@ script.
             console.log(data.data[0].username);
             senderUsername = data.data[0].username;
             status = data.data[0].status;
-        })   
+        })
+        await fetch(`/sockets`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({user_id: senderId, socket_id: socket.id, operation:'register'})})
+            .then(response => response.json())
+            .then(data => {
+                console.log(data);
+            })
+            .catch(error => {
+                console.error('Error creating socket room:', error);
+            });
 
         const receiverId = #{receiverId}
         const receiverResponse = await fetch(`/users/${receiverId}`, {
@@ -61,7 +73,6 @@ script.
             .catch(error => {
                 console.error('Error fetching data:', error);
             });
-
         await fetch(`/sockets`, {
             method: 'POST',
             headers: {
@@ -117,8 +128,6 @@ script.
             dateTime: new Date().toLocaleString(),
             content: textContent
         };
-        //- socket.emit("postData", postData);
-        //- console.log(postData);
 
         await fetch('/privatePosts', {
             method: 'POST',
