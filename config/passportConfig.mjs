@@ -9,7 +9,7 @@ passport.use('local-login', new LocalStrategy( {
         passReqToCallback: true
     }, async function(req, username, password, done) {
         try {
-            const authRes = await userService.validUser(username, password);
+            const authRes = await userService.authenticate(username, password);
             if (authRes == -1) {
                 return done(null, false, { message: "Username and Password does not match"});
             } else if (authRes == -2) {

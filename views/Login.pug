@@ -29,8 +29,7 @@ script.
     if (data.success && data.token) {
       document.cookie = `token=${data.token};max-age=3600;path=/`;
       window.location.href = `/directory/${data.user_id}`;
-    }
-    else{
+    } else{
       alert(data.message);
     }
   });

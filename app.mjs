@@ -1,3 +1,4 @@
+import fs from 'fs'
 import express from 'express'
 import path from 'path'
 import swaggerJSDoc from 'swagger-jsdoc'
@@ -73,9 +74,21 @@ app.use('/api-docs', swaggerUI.serve, swaggerUI.setup(swaggerSpec));
 //     // await User.sync()
 //     // await Post.sync()
 // });
+function cleanUpDatabase() {
+  fs.unlink('./tempdb.sqlite', (err) => {
+      if (err) {
+          console.error('Failed to delete database file:', err);
+      } else {
+          console.log('Database file deleted successfully.');
+      }
+  });
+}
 
 server.listen(port, async () => {
   console.log(`Server running at http://localhost:${port}`);
+  if(process.env.NODE_ENV === 'test'){
+    cleanUpDatabase()
+  }
   const database = DatabaseAdapter.createDatabase();
   await database.connect();
   // await Status.sync()

@@ -6,14 +6,14 @@ export default class SQLiteDatabase extends DatabaseInterface {
         super();
         this.sequelize = new Sequelize({
             dialect: 'sqlite',
-            storage: ':memory:',
+            storage: 'tempdb.sqlite',
         });
     }
 
     async connect() {
         try {
             await this.sequelize.authenticate();
-            console.log('Connection to SQLite in-memory database has been established successfully.');
+            console.log('Connecting to SQLite in-memory database.');
         } catch (error) {
             console.error('Unable to connect to the SQLite database:', error);
         }
