@@ -1,5 +1,5 @@
 import * as privatePostService from '../services/privatePostService.mjs'
-import { io } from "../config/socketConfig.mjs"
+import { io, getSocketIdByUserId} from "../config/socketConfig.mjs"
 
 export async function getPrivatePostById(req, res){
     try{
@@ -37,9 +37,15 @@ export async function postPrivatePost(req, res){
 
         //const status = req.body.status;
         //await privatePostService.createNewPrivatePost(userId, content, status).then(() =>{
-        await privatePostService.createPrivatePost(senderId, receiverId, content, status).then(() =>{
+        await privatePostService.createPrivatePost(senderId, receiverId, content, status).then(async () =>{
             const roomName = [senderId, receiverId].sort().join('_');
             io.to(roomName).emit("postPrivatePost", req.body);
+            await getSocketIdByUserId(receiverId).then((socketId)=>{
+                console.log(socketId);
+                if(socketId != null){
+                    io.to(socketId).emit('newMessage', { sender: senderId, message:content });
+                }
+            })
             console.log(`sent messsage to  ${roomName}`);
             res.status(201).json({ success: true, message: 'Post a new post successful' });
         })

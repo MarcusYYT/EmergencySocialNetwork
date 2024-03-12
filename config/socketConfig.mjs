@@ -38,3 +38,8 @@ export async function registerNewSocket(user_id, socket_id){
     console.log(socketToUser)
     io.emit("status_update");
 }
+
+export async function getSocketIdByUserId(userId) {
+    const entry = Array.from(socketToUser.entries()).find(([socketId, storedUserId]) => storedUserId === userId);
+    return entry ? entry[0] : null; // Return the socket ID if found, otherwise return null
+}

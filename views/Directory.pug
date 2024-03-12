@@ -207,6 +207,11 @@ html(lang='en')
         });
       })
 
+      socket.on("newMessage", async (res) => {
+        console.log(res);
+        alert(`${res.sender} sent you a new message`)
+      })
+
       function newPost() {
         const user_id = #{user_id};
         window.location.href = `/messageWall/${user_id}`;
