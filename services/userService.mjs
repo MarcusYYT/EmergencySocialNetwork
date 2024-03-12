@@ -12,14 +12,28 @@ let saltRounds = 10;
  */
 export async function createNewUser(username, password) {
   let returnJson = {success: false, user_id: -1, message: "Create user failed"};
-  await bcrypt.hash(password, saltRounds).then(async (res) => {
-    await userModel.createUser(username, res).then((user)=>{
-      returnJson.success = true;
-      returnJson.user_id = user.user_id
-      returnJson.message = "Create user successfully."
-    });
-
-  });
+  try {
+    const hashedPassword = await bcrypt.hash(password, saltRounds);
+    const user = await userModel.createUser(username, hashedPassword);
+    returnJson.success = true;
+    returnJson.user_id = user.user_id; // 假设 Sequelize model 实例有 user_id 属性
+    returnJson.message = "Create user successfully.";
+  } catch (error) {
+    console.log("Error creating user:", error);
+    if (error.name === 'SequelizeUniqueConstraintError') {
+      returnJson.message = "Username already exists.";
+    } else {
+      returnJson.message = "An unexpected error occurred.";
+    }
+  }
+  // await bcrypt.hash(password, saltRounds).then(async (res) => {
+  //   await userModel.createUser(username, res).then((user)=>{
+  //     returnJson.success = true;
+  //     returnJson.user_id = user.user_id
+  //     returnJson.message = "Create user successfully."
+  //   });
+  //
+  // });
   return returnJson;
 }
 

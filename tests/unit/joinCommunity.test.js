@@ -1,8 +1,12 @@
 import { isUsernameValid, isPasswordValid, createNewUser } from "../../services/userService.mjs";
+import DatabaseAdapter from "../../config/DatabaseAdapter.mjs";
 // let isUsernameValid = require('../../services/userService.mjs').isUsernameValid;
 // let isPasswordValid = require('../../services/userService.mjs').isPasswordValid;
 // let validUser = require('../../services/userService.mjs').validUser;
-
+import {User} from "../../models/User.model.mjs";
+beforeAll(async () => {
+    await User.sync();
+})
 
 describe('Username should be at least 3 characters long', () => {
     test('Username with 4 characters should be true', async () => {
@@ -46,8 +50,8 @@ describe('Password should be at least 4 characters long', () => {
   });
 
   describe('Username should not already exist in database', () => {
+
     test('Username is not in the database should be true', async () => {
-      // 这个测试用例看起来是正确的
       expect(await createNewUser('Mellon', 'password')).toMatchObject({
         success: true, 
         user_id: expect.any(Number), 
@@ -56,13 +60,11 @@ describe('Password should be at least 4 characters long', () => {
     });
   
     test('Username is in the database should be false', async () => {
-      // 修改这里使用 .toEqual 或者 .toMatchObject
-      expect(await createNewUser('hihi', 'hihi')).toEqual({
+      expect(await createNewUser('Mellon', 'hihi')).toMatchObject({
         success: false, 
-        user_id: -1, 
-        message: "Create user failed"
+        user_id: expect.any(Number),
+        message: "Username already exists."
       });
-      // 或者如果有多次调用 createNewUser 的情况，确保它的行为是你期望的
     });
   });
   

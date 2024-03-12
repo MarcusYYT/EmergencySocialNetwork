@@ -11,7 +11,8 @@ export const User = sequelize.define('user', {
     },
     username: {
         type: DataTypes.STRING,
-        allowNull:false
+        allowNull:false,
+        unique: true
     },
     password: {
         type: DataTypes.STRING,
@@ -36,6 +37,16 @@ export const User = sequelize.define('user', {
  */
 export async function createUser(username, password){
     return await User.create({ username: username, password: password, status:"place_holder", online_status:"online"});
+    // try {
+    //     return await User.create({
+    //         username: username,
+    //         password: password,
+    //         status: "place_holder",
+    //         online_status: "online"
+    //     });
+    // } catch (error) {
+    //     console.log("Error creating user:", error);
+    // }
 }
 
 /**
