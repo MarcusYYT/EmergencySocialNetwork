@@ -25,6 +25,39 @@ script.
     let receiverUsername = "";
     let status = "";
 
+    socket.on('connect', async function() {
+        console.log('Connected to server');
+        console.log('Socket ID:', socket.id);
+        const senderId = #{senderId};
+        const receiverId = #{receiverId};
+        await fetch(`/sockets`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({user_id: senderId, socket_id: socket.id, operation:'register'})})
+                .then(response => response.json())
+            .then(data => {
+                console.log(data);
+            })
+            .catch(error => {
+                console.error('Error register socket:', error);
+            });
+        await fetch(`/sockets`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({sender_id: senderId, receiver_id: receiverId, socket_id: socket.id, operation:'joinRoom'})})
+            .then(response => response.json())
+            .then(data => {
+                console.log(data);
+            })
+            .catch(error => {
+                console.error('Error creating socket room:', error);
+            });
+    });
+
     window.onload = async function() {
         const senderId = #{senderId}
         const senderResponse = await fetch(`/users/${senderId}`, {
@@ -37,19 +70,7 @@ script.
             senderUsername = data.data[0].username;
             status = data.data[0].status;
         })
-        await fetch(`/sockets`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({user_id: senderId, socket_id: socket.id, operation:'register'})})
-            .then(response => response.json())
-            .then(data => {
-                console.log(data);
-            })
-            .catch(error => {
-                console.error('Error creating socket room:', error);
-            });
+        
 
         const receiverId = #{receiverId}
         const receiverResponse = await fetch(`/users/${receiverId}`, {
@@ -72,19 +93,6 @@ script.
             })
             .catch(error => {
                 console.error('Error fetching data:', error);
-            });
-        await fetch(`/sockets`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({sender_id: senderId, receiver_id: receiverId, socket_id: socket.id, operation:'joinRoom'})})
-            .then(response => response.json())
-            .then(data => {
-                console.log(data);
-            })
-            .catch(error => {
-                console.error('Error creating socket room:', error);
             });
     }
 
@@ -109,7 +117,27 @@ script.
             messageBoard.appendChild(messageElement);
             document.getElementById("message-board").scrollTop = messageBoard.scrollHeight;
     });
+    window.addEventListener('beforeunload', async function (event) {
+    // Call the markMessagesAsRead API
+    // Assuming you have a function to make the API request
+    try {
+        const senderId = #{senderId}
+        const receiverId = #{receiverId}
+        await fetch(`/privatePosts/${senderId}/${receiverId}`, {
+          method: 'PUT',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({}),
+          })
+        console.log('Messages marked as read');
+    } catch (error) {
+        console.error('Error marking messages as read:', error);
+    }
 
+    // Optionally, you can use the event's returnValue to show a confirmation dialog
+    // event.returnValue = 'Are you sure you want to leave?';
+    });
     async function postChatMessage(){
         let textArea = document.getElementById("message")
         let textContent = textArea.value

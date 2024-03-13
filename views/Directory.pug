@@ -17,18 +17,35 @@ html(lang='en')
       form#status-form(action="") 
         #status-options
           label(for='status') Change my status:
-          select#status(name='status')
+          select#status(name='status').form-select.form-select-sm
             option(value='OK') OK 
             option(value='help') Help
             option(value='emergency') Emergency
-        button.btn.btn-primary(type='button' onclick='changeMyStatus()') Submit
+        button#change-status-btn.btn.btn-primary(type='button' onclick='changeMyStatus()') Submit
     #directory-wrapper
       h1#directory-header ESN Directory
       #directory.container.text-left
     script.
       const socket = io();
       let username = '';
-
+      socket.on('connect', async function() {
+        console.log('Connected to server');
+        console.log('Socket ID:', socket.id);
+        const userId = #{user_id};
+        await fetch(`/sockets`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({user_id: userId, socket_id: socket.id, operation:'register'})})
+                .then(response => response.json())
+            .then(data => {
+                console.log(data);
+            })
+            .catch(error => {
+                console.error('Error register socket:', error);
+            });
+      })
       
 
       window.onload = async function() {
@@ -39,29 +56,13 @@ html(lang='en')
             'Content-Type': 'application/json',
           },
         }).then(response => response.json()).then((data) => {
-          console.log(data)
           username = data.data[0].username;
           renderMyStatus(username, data.data[0].status)
         })
-
-        await fetch(`/sockets`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({user_id: #{user_id}, socket_id: socket.id, operation:'register'})})
-            .then(response => response.json())
-            .then(data => {
-                console.log(data);
-            })
-            .catch(error => {
-                console.error('Error creating socket room:', error);
-            });
       }
 
       async function getUsers(){
         return await fetch('/users')
-   
       }
 
       function sortUsers(data){
@@ -88,18 +89,26 @@ html(lang='en')
         return online.concat(offline)
       }
 
-      function renderESNList(list) {
+      function renderESNList(list, unread) {
         const userId = #{user_id}
         let directory = document.getElementById("directory");
         while(directory.firstChild){
           directory.removeChild(directory.lastChild);
         }
+        let userToUnreadCount = new Map();
+        for(let i = 0; i < unread.length; i++){
+          console.log(unread.unreadCount)
+          userToUnreadCount.set(unread[i].sender.id, unread[i].unreadCount);
+        }
       
         for (let i = 0; i < list.length; i++) {
+
           let directory = document.getElementById("directory");
-          let userdiv = document.createElement("div");
-          userdiv.setAttribute("class", "directory-user row gx-1 justify-content-between");
-          userdiv.addEventListener("click", () => {routeToPrivateChat(userId, list[i].user_id)})
+          let userDiv = document.createElement("div");
+          userDiv.setAttribute("class", "directory-user row gx-1 justify-content-between");
+          userDiv.addEventListener("click", () => {routeToPrivateChat(userId, list[i].user_id)})
+
+          
 
           let usernameField = document.createElement("p");
           usernameField.setAttribute("class", "usernameField col-10");
@@ -111,7 +120,6 @@ html(lang='en')
 
           let onlineStatusFieldImage = document.createElement("i");
           onlineStatusFieldImage.setAttribute("class", "bi bi-record-fill");
-        
 
           if (list[i].online_status === "online") {
             onlineStatusField.classList.add("online");
@@ -137,19 +145,35 @@ html(lang='en')
             statusFieldImage.setAttribute("class", "bi bi-exclamation-circle-fill");
           }
 
-          statusField.appendChild(statusFieldImage);
 
-          userdiv.appendChild(onlineStatusField);
-          userdiv.appendChild(usernameField);
-          userdiv.appendChild(statusField);
-          directory.appendChild(userdiv);
+          statusField.appendChild(statusFieldImage);
+          userDiv.appendChild(onlineStatusField);
+          userDiv.appendChild(usernameField);
+          
+
+          if(userToUnreadCount.has(list[i].user_id)){
+            console.log(userToUnreadCount)
+            let count = userToUnreadCount.get((list[i].user_id))
+            let countDisplayValue = count;
+            let unReadField = document.createElement("div");
+            unReadField.setAttribute("class", "unReadField position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger");
+
+            let unReadCount = document.createTextNode(countDisplayValue)
+            unReadField.appendChild(unReadCount)
+            userDiv.appendChild(unReadField);
+          }
+
+          userDiv.appendChild(statusField);
+
+          directory.appendChild(userDiv);
         }
+
       }
+
 
       async function changeMyStatus() {
         let selectElement = document.getElementById('status');
         let selectedValue = selectElement.value;
-        console.log(selectedValue);
         const userId = #{user_id};
         const requestBody = {
           user_id: userId,
@@ -182,8 +206,19 @@ html(lang='en')
               if(fetchUser.ok){
                 const data = await fetchUser.json();
                 console.log(data)
-                renderESNList(sortUsers(data.data))
-               
+
+                await fetch(`/privatePosts/unread/${userId}`, {
+                  method: 'GET',
+                  headers: {
+                    'Content-Type': 'application/json',
+                  },
+                  }).then(response => response.json()).then((unRead) => {
+                    console.log('unread message status: ')
+                    console.log(unRead)
+                    // implement to display the notification
+                    renderESNList(sortUsers(data.data),unRead.data)
+                })
+              
               }
           }
          
@@ -191,11 +226,25 @@ html(lang='en')
       }
 
       socket.on("status_update", async ()=> { 
+        const userId = #{user_id}
         await getUsers().then(response => response.json()).then(async (data)=>{
-            console.log("data is")
-            console.log(data);
-            renderESNList(sortUsers(data.data))
+          await fetch(`/privatePosts/unread/${userId}`, {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          }).then(response => response.json()).then((unRead) => {
+            console.log('unread message status: ')
+            console.log(unRead)
+            // implement to display the notification
+            renderESNList(sortUsers(data.data),unRead.data)
+          })
+
         });
+      })
+
+      socket.on("newMessage", async (res) => {
+        alert(`${res.senderName} sent you a new message`)
       })
 
       function newPost() {
