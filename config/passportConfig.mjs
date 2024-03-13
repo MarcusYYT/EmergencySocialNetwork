@@ -4,24 +4,24 @@ import * as userService from "../services/userService.mjs";
 import LocalStrategy from "passport-local";
 
 passport.use('local-login', new LocalStrategy( {
-        usernameField: 'username',
-        passwordField: 'password',
-        passReqToCallback: true
-    }, async function(req, username, password, done) {
-        try {
-            const authRes = await userService.validUser(username, password);
-            if (authRes.code == 401) {
-                return done(null, false, { message: "Username and Password does not match"});
-            } else if (authRes.code == 404) {
-                return done(null, false, { message: "User does not exist"});
-            } else if (authRes.code == 200) {
-                const user = { user_id: authRes.user_id, username: username};
-                return done(null, user);
-            }
-        } catch (err) {
-            return done(err);
+    usernameField: 'username',
+    passwordField: 'password',
+    passReqToCallback: true
+}, async function(req, username, password, done) {
+    try {
+        const authRes = await userService.validUser(username, password);
+        if (authRes.code == 401) {
+            return done(null, false, { code: 401, message: "Username and Password does not match"});
+        } else if (authRes.code == 404) {
+            return done(null, false, { code: 404, message: "User does not exist"});
+        } else if (authRes.code == 200) {
+            const user = { user_id: authRes.user_id, username: username};
+            return done(null, user);
         }
-    })
+    } catch (err) {
+        return done(err);
+    }
+})
 );
 
 const cookieExtractor = (req) => {

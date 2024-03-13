@@ -52,10 +52,14 @@ export async function login(req, res) {
         if (err) {
             return res.status(500).json({ success: false, message: err.message });
         }
-        changeOnlineStatus(user.user_id, "online")
-
-        const token = jwt.sign({ user_id: user.user_id }, process.env.JWT_SECRET_KEY || 'sb1sb1', { expiresIn: '1h' });
-        res.status(200).json({ success: true, user_id: user.user_id, token, message: 'Login successful' });
+        if (!user) {
+            const statusCode = info.code || 401; 
+            return res.status(statusCode).json({ success: false, message: info.message });
+        } else {
+            changeOnlineStatus(user.user_id, "online")
+            const token = jwt.sign({ user_id: user.user_id }, process.env.JWT_SECRET_KEY || 'sb1sb1', { expiresIn: '1h' });
+            res.status(200).json({ success: true, user_id: user.user_id, token, message: 'Login successful' });
+        }
     })(req, res);
 }
 
