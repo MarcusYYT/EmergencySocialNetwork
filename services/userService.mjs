@@ -13,10 +13,14 @@ let saltRounds = 10;
 export async function createNewUser(username, password) {
   let returnJson = {success: false, user_id: -1, message: "Create user failed"};
   try {
+    if (await userModel.ifUserExist(username)) {
+      returnJson.message = "Username already exists.";
+      return returnJson;
+    }
     const hashedPassword = await bcrypt.hash(password, saltRounds);
     const user = await userModel.createUser(username, hashedPassword);
     returnJson.success = true;
-    returnJson.user_id = user.user_id; // 假设 Sequelize model 实例有 user_id 属性
+    returnJson.user_id = user.user_id;
     returnJson.message = "Create user successfully.";
   } catch (error) {
     console.log("Error creating user:", error);
