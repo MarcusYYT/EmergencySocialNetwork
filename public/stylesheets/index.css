@@ -274,3 +274,14 @@ span.message-sender {
 .bi-exclamation-circle-fill{
     color: rgb(244 199 0)
 }
+
+.unReadField {
+    background-color: red;
+    border-radius: 5px;
+    padding: 3px;
+    text-align: center;
+    color: white;
+    position: relative;
+    left: 15vw;
+    width: 6vw;
+}

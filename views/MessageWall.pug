@@ -54,7 +54,7 @@ script.
     // Get the user_id (assuming it's the last part of the URL)
 
     let userId = #{user_id}
-    console.log(userId); // Output: 1 (for the URL /users/1)
+
     const postData = {
       username: username, 
       user_id: userId,
@@ -62,7 +62,7 @@ script.
       dateTime: new Date().toLocaleString(),
       content: textContent
     };
-    console.log(postData)
+
       await fetch('/posts', {
             method: 'POST',
             headers: {
