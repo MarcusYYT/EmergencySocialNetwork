@@ -59,16 +59,16 @@ html(lang='en')
           username = data.data[0].username;
           renderMyStatus(username, data.data[0].status)
         })
-          await fetch(`/privatePosts/unread/${userId}`, {
-            method: 'GET',
-            headers: {
-              'Content-Type': 'application/json',
-            },
-          }).then(response => response.json()).then((data) => {
-            console.log('unread message status: ')
-            console.log(data)
-            // implement to display the notification
-          })
+          //- await fetch(`/privatePosts/unread/${userId}`, {
+          //-   method: 'GET',
+          //-   headers: {
+          //-     'Content-Type': 'application/json',
+          //-   },
+          //- }).then(response => response.json()).then((data) => {
+          //-   console.log('unread message status: ')
+          //-   console.log(data)
+          //-   // implement to display the notification
+          //- })
       }
 
       async function getUsers(){
@@ -99,14 +99,20 @@ html(lang='en')
         return online.concat(offline)
       }
 
-      function renderESNList(list) {
+      function renderESNList(list, unread) {
         const userId = #{user_id}
         let directory = document.getElementById("directory");
         while(directory.firstChild){
           directory.removeChild(directory.lastChild);
         }
+        let userToUnreadCount = new Map();
+        for(let i = 0; i < unread.length; i++){
+          console.log(unread.unreadCount)
+          userToUnreadCount.set(unread[i].sender.id, unread[i].unreadCount);
+        }
       
         for (let i = 0; i < list.length; i++) {
+
           let directory = document.getElementById("directory");
           let userdiv = document.createElement("div");
           userdiv.setAttribute("class", "directory-user row gx-1 justify-content-between");
@@ -122,7 +128,9 @@ html(lang='en')
 
           let onlineStatusFieldImage = document.createElement("i");
           onlineStatusFieldImage.setAttribute("class", "bi bi-record-fill");
-        
+
+          
+
 
           if (list[i].online_status === "online") {
             onlineStatusField.classList.add("online");
@@ -148,15 +156,28 @@ html(lang='en')
             statusFieldImage.setAttribute("class", "bi bi-exclamation-circle-fill");
           }
 
-          statusField.appendChild(statusFieldImage);
 
+          statusField.appendChild(statusFieldImage);
           userdiv.appendChild(onlineStatusField);
           userdiv.appendChild(usernameField);
+
+
+          if(userToUnreadCount.has(list[i].user_id)){
+            console.log(userToUnreadCount)
+            let unReadField = document.createElement("div");
+            unReadField.setAttribute("class", "unReadField col-1");
+            let unReadCount = document.createTextNode(userToUnreadCount.get((list[i].user_id)))
+            unReadField.appendChild(unReadCount)
+            userdiv.appendChild(unReadField);
+          }
+
+          
           userdiv.appendChild(statusField);
           directory.appendChild(userdiv);
         }
 
       }
+
 
       async function changeMyStatus() {
         let selectElement = document.getElementById('status');
@@ -202,14 +223,29 @@ html(lang='en')
       }
 
       socket.on("status_update", async ()=> { 
+        const userId = #{user_id}
         await getUsers().then(response => response.json()).then(async (data)=>{
-            renderESNList(sortUsers(data.data))
+          await fetch(`/privatePosts/unread/${userId}`, {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          }).then(response => response.json()).then((unRead) => {
+            console.log('unread message status: ')
+            console.log(unRead)
+            // implement to display the notification
+            renderESNList(sortUsers(data.data),unRead.data)
+          })
+            
+         
+
         });
       })
 
       socket.on("newMessage", async (res) => {
         console.log(res);
         alert(`${res.sender} sent you a new message`)
+        
       })
 
       function newPost() {

@@ -44,6 +44,7 @@ export async function postPrivatePost(req, res){
                 console.log(socketId);
                 if(socketId != null){
                     io.to(socketId).emit('newMessage', { sender: senderId, message:content });
+                    io.to(socketId).emit('status_update');
                 }
             })
             console.log(`sent messsage to  ${roomName}`);
