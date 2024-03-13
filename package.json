@@ -6,7 +6,7 @@
     "test": "cross-env NODE_ENV=test node app.mjs",
     "start": "node app.mjs",
     "dev": "nodemon",
-    "jtest": "node --experimental-vm-modules node_modules/.bin/jest",
+    "jtest": "node --experimental-vm-modules node_modules/.bin/jest --detectOpenHandles",
     "jtest-windows": "node --experimental-vm-modules ./node_modules/jest/bin/jest.js"
   },
   "dependencies": {
