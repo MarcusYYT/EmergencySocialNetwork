@@ -8,6 +8,7 @@ export default class MySQLDatabase extends DatabaseInterface {
         this.sequelize = new Sequelize('Emergency_Social_Network', 'root', 'sb1sb1', {
             host: '34.102.56.250',
             dialect: 'mysql',
+            logging: false
         });
     }
 

@@ -2,24 +2,30 @@ import { Sequelize } from 'sequelize';
 import DatabaseInterface from './DatabaseInterface.mjs';
 
 export default class SQLiteDatabase extends DatabaseInterface {
-    constructor() {
+    constructor(filename='tempdb.sqlite') {
         super();
         this.sequelize = new Sequelize({
             dialect: 'sqlite',
-            storage: ':memory:',
+            storage: filename,
+            logging: false
         });
     }
 
     async connect() {
         try {
             await this.sequelize.authenticate();
-            console.log('Connection to SQLite in-memory database has been established successfully.');
+            console.log('Connecting to SQLite in-memory database.');
         } catch (error) {
             console.error('Unable to connect to the SQLite database:', error);
         }
     }
 
     async disconnect() {
-        await this.sequelize.close();
+        try {
+            await this.sequelize.close();
+            console.log('Disconnected from SQLite database.');
+        } catch (error) {
+            console.error('Error disconnecting from the SQLite database:', error);
+        }
     }
 }
