@@ -2,11 +2,11 @@ import { Sequelize } from 'sequelize';
 import DatabaseInterface from './DatabaseInterface.mjs';
 
 export default class SQLiteDatabase extends DatabaseInterface {
-    constructor() {
+    constructor(filename='tempdb.sqlite') {
         super();
         this.sequelize = new Sequelize({
             dialect: 'sqlite',
-            storage: 'tempdb.sqlite',
+            storage: filename,
             logging: false
         });
     }
@@ -21,6 +21,11 @@ export default class SQLiteDatabase extends DatabaseInterface {
     }
 
     async disconnect() {
-        await this.sequelize.close();
+        try {
+            await this.sequelize.close();
+            console.log('Disconnected from SQLite database.');
+        } catch (error) {
+            console.error('Error disconnecting from the SQLite database:', error);
+        }
     }
 }
