@@ -34,6 +34,7 @@ export async function postPrivatePost(req, res){
         const receiverId = req.body.receiver_id;
         const status = req.body.status;
         const content = req.body.content;
+        const senderName = req.body.sender_name;
 
         //const status = req.body.status;
         //await privatePostService.createNewPrivatePost(userId, content, status).then(() =>{
@@ -43,7 +44,7 @@ export async function postPrivatePost(req, res){
             await getSocketIdByUserId(receiverId).then((socketId)=>{
                 console.log(socketId);
                 if(socketId != null){
-                    io.to(socketId).emit('newMessage', { sender: senderId, message:content });
+                    io.to(socketId).emit('newMessage', { sender: senderId, senderName:senderName, message:content });
                     io.to(socketId).emit('status_update');
                 }
             })
