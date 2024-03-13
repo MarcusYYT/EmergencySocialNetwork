@@ -24,3 +24,12 @@ jobs:
     - run: npm install
     - run: yarn install
     - run: npm run jtest 
+  deploy:
+    needs: build 
+    runs-on: ubuntu-latest
+    steps:
+      - name: Deploy to Render
+        run: |
+          curl -X POST -d '{}' https://api.render.com/deploy/${{ secrets.RENDER_DEPLOY_HOOK }}
+        env:
+          RENDER_DEPLOY_HOOK: ${{ secrets.RENDER_DEPLOY_HOOK }}
