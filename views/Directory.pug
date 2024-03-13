@@ -17,11 +17,11 @@ html(lang='en')
       form#status-form(action="") 
         #status-options
           label(for='status') Change my status:
-          select#status(name='status')
+          select#status(name='status').form-select.form-select-sm
             option(value='OK') OK 
             option(value='help') Help
             option(value='emergency') Emergency
-        button.btn.btn-primary(type='button' onclick='changeMyStatus()') Submit
+        button#change-status-btn.btn.btn-primary(type='button' onclick='changeMyStatus()') Submit
     #directory-wrapper
       h1#directory-header ESN Directory
       #directory.container.text-left
@@ -155,21 +155,10 @@ html(lang='en')
             console.log(userToUnreadCount)
             let count = userToUnreadCount.get((list[i].user_id))
             let countDisplayValue = count;
-            let colSize = "8"
             let unReadField = document.createElement("div");
-            unReadField.setAttribute("class", "unReadField col-1");
-
-            if (count > 9) {
-              colSize = "7"
-            }
-
-            else if(count > 99){
-              colSize = "6"
-              countDisplayValue = "99+"
-            }
+            unReadField.setAttribute("class", "unReadField position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger");
 
             let unReadCount = document.createTextNode(countDisplayValue)
-            usernameField.setAttribute("class", "usernameField col-" + colSize);
             unReadField.appendChild(unReadCount)
             userDiv.appendChild(unReadField);
           }

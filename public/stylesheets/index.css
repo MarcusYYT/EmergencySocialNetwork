@@ -184,6 +184,10 @@ h2#message-header {
     color: white;
 }
 
+#change-status-btn {
+    width: 64vw;
+}
+
 #directory-wrapper {
     background-color: #78caff;
     width: 80vw;
@@ -192,7 +196,6 @@ h2#message-header {
     position: relative;
     display: flex;
     margin: auto;
-    overflow: scroll;
     top: 2vh;
     flex-direction: column;
 }
@@ -205,10 +208,13 @@ h2#message-header {
 
 div#directory {
     padding: 0vw 10vw 5vw 10vw;
+    overflow: scroll;
+    height: 53vh;
 }
 
 .directory-user {
     display: flex;
+    position: relative;
     justify-content: space-between;
     background-color: #c5ebff;
     margin-bottom: 2vw;
@@ -284,4 +290,15 @@ span.message-sender {
     position: relative;
     left: 15vw;
     width: 6vw;
+}
+
+#status {
+    width: 27vw;
+    height: 4.5vh;
+}
+
+label {
+    display: flex;
+    align-content: center;
+    flex-wrap: wrap;
 }
