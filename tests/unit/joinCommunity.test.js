@@ -1,8 +1,26 @@
 import { isUsernameValid, isPasswordValid, createNewUser } from "../../services/userService.mjs";
 import {User} from "../../models/User.model.mjs";
+import {Post} from '../../models/Post.model.mjs'
+import {PrivatePost} from '../../models/PrivatePost.model.mjs'
+import {Status} from '../../models/Status.model.mjs'
+import DatabaseAdapter from '../../config/DatabaseAdapter.mjs'; 
+import { sync as rimrafSync } from 'rimraf';
+
+let database
 beforeAll(async () => {
-    await User.sync();
-})
+  database = DatabaseAdapter.createDatabase('unit_db.sqlite'); // Create a new instance of the database
+  await database.connect(); // Connect to the database
+  await User.sync({ force: true });
+  await Post.sync({ force: true });
+  await PrivatePost.sync({ force: true });
+  await Status.sync({ force: true });
+});
+
+afterAll(async () => {
+  await database.disconnect();// Disconnect from the database
+  await new Promise(resolve => setTimeout(resolve, 1000));
+  rimrafSync('./unit_db.sqlite');
+});
 
 describe('Username should be at least 3 characters long', () => {
     test('Username with 4 characters should be true', async () => {

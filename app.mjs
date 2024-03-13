@@ -75,7 +75,8 @@ app.use('/api-docs', swaggerUI.serve, swaggerUI.setup(swaggerSpec));
 //     // await Post.sync()
 // });
 function cleanUpDatabase() {
-  fs.unlink('./tempdb.sqlite', (err) => {
+  return fs.unlink('./tempdb.sqlite', (err) => {
+    console.log("The file is deleted")
       if (err) {
           console.error('Failed to delete database file:', err);
       } else {
@@ -87,7 +88,7 @@ function cleanUpDatabase() {
 server.listen(port, async () => {
   console.log(`Server running at http://localhost:${port}`);
   if(process.env.NODE_ENV === 'test'){
-    cleanUpDatabase()
+    // cleanUpDatabase()
   }
   const database = DatabaseAdapter.createDatabase();
   await database.connect();
