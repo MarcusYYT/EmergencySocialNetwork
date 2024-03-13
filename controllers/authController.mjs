@@ -45,30 +45,6 @@ export async function register(req, res) {
     }
 }
 
-export async function login2(req, res) {
-  try {
-    const username = req.body.username;
-    const password = req.body.password;
-    await userService.authenticate(username, password).then(async (resolve)=>{
-        console.log(resolve)
-        if(resolve.code === 200){
-            const payload = {
-                id: resolve.id,
-                username: username
-            };
-            const token = jwt.sign(payload, JWT_SECRET, { expiresIn: '1h' });
-            await changeOnlineStatus(resolve.id, "online")
-            res.cookie('token', token, { httpOnly: true, secure: true, maxAge: 3600000 }); // 1 hour
-            res.status(200).json({code: 200, message:resolve.message, user_id: resolve.id, token: token})
-        } 
-        else {
-            res.status(resolve.code).json({code: resolve.code, message:resolve.message})
-        }
-    });
-  } catch (error) {
-    res.status(500).send(error.message);
-  }
-}
 
 // Optimized json content. Changed code:404/200 to success:true/false to keep the consistancy of restful api format.
 export async function login(req, res) {
@@ -76,10 +52,14 @@ export async function login(req, res) {
         if (err) {
             return res.status(500).json({ success: false, message: err.message });
         }
-        changeOnlineStatus(user.user_id, "online")
-
-        const token = jwt.sign({ user_id: user.user_id }, process.env.JWT_SECRET_KEY || 'sb1sb1', { expiresIn: '1h' });
-        res.status(200).json({ success: true, user_id: user.user_id, token, message: 'Login successful' });
+        if (!user) {
+            const statusCode = info.code || 401; 
+            return res.status(statusCode).json({ success: false, message: info.message });
+        } else {
+            changeOnlineStatus(user.user_id, "online")
+            const token = jwt.sign({ user_id: user.user_id }, process.env.JWT_SECRET_KEY || 'sb1sb1', { expiresIn: '1h' });
+            res.status(200).json({ success: true, user_id: user.user_id, token, message: 'Login successful' });
+        }
     })(req, res);
 }
 

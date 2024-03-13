@@ -13,26 +13,33 @@ head
       button#signinbtn.btn.btn-primary(onclick='login()', type='button') Login
       button#registerBtn.btn.btn-primary(onclick='togglePopUp()', type='button') Register
 script.
-  async function login(){
-  let form = document.getElementById('loginForm');
-  let username = form.username.value.trim().toLowerCase();
-  let password = form.password.value.trim();
-  await fetch('/auth/login', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({ username: username, password:password }),
-
-  }).then(response => response.json()
-  ).then(async (data)=>{
-    if (data.success && data.token) {
-      document.cookie = `token=${data.token};max-age=3600;path=/`;
-      window.location.href = `/directory/${data.user_id}`;
-    } else{
-      alert(data.message);
+  async function login() {
+    let form = document.getElementById('loginForm');
+    let username = form.username.value.trim().toLowerCase();
+    let password = form.password.value.trim();
+    
+    try {
+        const response = await fetch('/auth/login', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ username: username, password: password }),
+        });
+        if (response.status === 404) {
+            togglePopUp();
+        } else {
+            const data = await response.json();
+            if (data.success && data.token) {
+                document.cookie = `token=${data.token};max-age=3600;path=/`;
+                window.location.href = `/directory/${data.user_id}`;
+            } else {
+                alert(data.message);
+            }
+        }
+    } catch (error) {
+        console.error('Login failed:', error);
     }
-  });
   }
   
   async function register() {
