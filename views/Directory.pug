@@ -10,9 +10,13 @@ html(lang='en')
     script(src='https://cdn.socket.io/4.7.4/socket.io.min.js')
     title Directory 
   body
-    .links
-      a.btn.btn-primary(onclick='newPost()') New Post
-      a.btn.btn-primary(onclick='logout()') Log Out
+    .navbar.container
+      i.bi.bi-plus-circle-fill.col.col-2(onclick='toggleHamburgerMenu()')
+      a#logout.btn.btn-primary.col.col-1(onclick='logout()') Log Out
+    #hamburgerMenu.links
+      a.navLinks(onclick='routeToAnnouncement()') Annoucement
+      a.navLinks(onclick='routeToMessageWall()') New Post
+    
     #status-wrapper 
       form#status-form(action="") 
         #status-options
@@ -247,7 +251,30 @@ html(lang='en')
         alert(`${res.senderName} sent you a new message`)
       })
 
-      function newPost() {
+      function toggleHamburgerMenu() {
+        let hamburgerMenu = document.getElementById("hamburgerMenu");
+        let overlay = document.createElement("div");
+        overlay.setAttribute("id", "overlay")
+        let body = document.getElementsByTagName("body")[0]
+        let statusWrapper = document.getElementById("status-wrapper")
+        
+        if (hamburgerMenu.style.display === "flex") {
+          hamburgerMenu.style.display = "none";
+          document.getElementById("overlay").remove()
+        } 
+        
+        else {
+          hamburgerMenu.style.display = "flex";
+          body.insertBefore(overlay, statusWrapper)
+        }
+      }
+
+      function routeToAnnouncement() {
+        const user_id = #{user_id};
+        window.location.href = `/announcements/${user_id}`;
+      }
+
+      function routeToMessageWall() {
         const user_id = #{user_id};
         window.location.href = `/messageWall/${user_id}`;
       }

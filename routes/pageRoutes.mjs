@@ -15,6 +15,7 @@ router.get('/directory/:user_id', passport.authenticate('jwt', { session: false 
         res.render('Directory', {user_id: user_id});
     }
 });
+
 router.get('/messageWall/:user_id', passport.authenticate('jwt', { session: false }), (req, res) => {
     const user_id = req.user.data[0].user_id;
     if (user_id != req.params.user_id) {
@@ -33,6 +34,16 @@ router.get('/privatePostsWall/:senderId/:receiverId', passport.authenticate('jwt
     }
     else {
         res.render('PrivateChat', {senderId: senderId, receiverId: receiverId});
+    }
+});
+
+router.get('/announcements/:user_id', passport.authenticate('jwt', { session: false }), (req, res) => {
+    const user_id = req.user.data[0].user_id;
+    if (user_id != req.params.user_id) {
+        res.status(401).json({message: "Unauthorized access."});
+    }
+    else {
+        res.render('Announcement', {user_id: user_id});
     }
 });
 

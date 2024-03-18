@@ -15,6 +15,7 @@ import postRoutes from './routes/postRoutes.mjs'
 import privatePostRoutes from './routes/privatePostRoutes.mjs'
 import pageRoutes from './routes/pageRoutes.mjs'
 import statusRoutes from './routes/statusRoutes.mjs'
+import announcementRoutes from './routes/announcementRoutes.mjs'
 import DatabaseAdapter from './config/DatabaseAdapter.mjs'
 import { createServer } from 'node:http';
 import cookieParser from 'cookie-parser';
@@ -59,6 +60,8 @@ app.use('/users', userRoutes);
 app.use('/posts', postRoutes);
 app.use('/status', statusRoutes)
 app.use('/privatePosts', privatePostRoutes)
+app.use('/announcements', announcementRoutes)
+
 
 // setup swagger
 const swaggerSpec = await swaggerJSDoc(swaggerOptions);

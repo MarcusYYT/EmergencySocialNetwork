@@ -12,6 +12,54 @@ a.btn.btn-primary {
     width: 95px;
 }
 
+#hamburgerMenu {
+    display: none;
+    position: fixed;
+    flex-direction: column;
+    background-color: #238EE1;
+    width: 34vw;
+    height: 100vh;
+    z-index: 4;
+    top: 0;
+}
+
+i.bi.bi-plus-circle-fill {
+    font-size: 9vw;
+    padding: 2vw;
+    color: #222529;
+}
+
+.navbar {
+    position: relative;
+    flex-wrap: wrap;
+    align-items: center;
+    height: 8vh;
+    top: -0.5vh;
+}
+
+a.navLinks {
+    color: white;
+    text-decoration: none;
+    background-color: #0d6efd;
+    height: 6vh;
+    margin: 0;
+    font-size: 4.5vw;
+    align-items: center;
+    border-bottom: 2px solid #0703325c;
+    flex-wrap: wrap;
+    display: flex;
+    justify-content: center;
+    top: 9vh;
+    position: relative;
+}
+
+i.bi.bi-plus-circle-fill {
+    font-size: 9vw;
+    padding: 2vw;
+    color: #004bb8;
+    z-index: 5;
+}
+
 .links {
     display: flex;
     justify-content: right;
@@ -192,7 +240,7 @@ h2#message-header {
     background-color: #78caff;
     width: 80vw;
     border-radius: 15px;
-    height: 65vh;
+    height: 61vh;
     position: relative;
     display: flex;
     margin: auto;
