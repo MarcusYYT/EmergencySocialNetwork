@@ -29,7 +29,7 @@ const swaggerOptions = {
       version: '1.0.0',
     },
   },
-  apis: ['./routes/*.mjs'],
+  apis: ['./routes/*.js'],
 };
 
 // get the root folder for the project
