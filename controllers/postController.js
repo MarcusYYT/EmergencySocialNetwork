@@ -1,5 +1,5 @@
-import * as postService from '../services/postService.mjs'
-import { io } from "../config/socketConfig.mjs"
+import * as postService from '../services/postService.js'
+import { io } from "../config/socketConfig.js"
 
 export async function getPostById(req, res){
     try{

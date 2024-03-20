@@ -1,6 +1,6 @@
 import express from 'express';
 const router = express.Router();
-import {getUserById, getUserList, updateUser} from '../controllers/userController.mjs'
+import {getUserById, getUserList, updateUser} from '../controllers/userController.js'
 
 /**
  * @swagger

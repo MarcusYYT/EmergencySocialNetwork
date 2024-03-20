@@ -1,5 +1,5 @@
-import * as userService from '../services/userService.mjs'
-import { io } from "../config/socketConfig.mjs"
+import * as userService from '../services/userService.js'
+import { io } from "../config/socketConfig.js"
 
 export async function getUserById(req, res){
     try{

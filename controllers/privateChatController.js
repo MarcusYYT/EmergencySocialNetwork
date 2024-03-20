@@ -1,5 +1,5 @@
-import * as privatePostService from '../services/privatePostService.mjs'
-import { io, getSocketIdByUserId} from "../config/socketConfig.mjs"
+import * as privatePostService from '../services/privatePostService.js'
+import { io, getSocketIdByUserId} from "../config/socketConfig.js"
 
 export async function getPrivatePostById(req, res){
     try{

@@ -1,8 +1,8 @@
-import * as userService from "../services/userService.mjs";
-import { ifUserExist, changeOnlineStatus } from "../models/User.model.mjs";
-import passport from "../config/passportConfig.mjs";
+import * as userService from "../services/userService.js";
+import { ifUserExist, changeOnlineStatus } from "../models/User.model.js";
+import passport from "../config/passportConfig.js";
 import jwt from "jsonwebtoken";
-import { io } from "../config/socketConfig.mjs"
+import { io } from "../config/socketConfig.js"
 
 export function showLogin(req, res) {
   res.render("Login");

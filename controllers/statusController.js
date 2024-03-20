@@ -1,4 +1,4 @@
-import * as statusService from '../services/statusService.mjs'
+import * as statusService from '../services/statusService.js'
 
 export async function getStatusByUser(req, res){
     try{

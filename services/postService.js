@@ -1,4 +1,4 @@
-import * as postModel from "../models/Post.model.mjs";
+import * as postModel from "../models/Post.model.js";
 
 /**
  * TODO

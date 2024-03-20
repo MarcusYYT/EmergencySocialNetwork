@@ -1,6 +1,6 @@
 import {DataTypes} from 'sequelize'
-import { User } from './User.model.mjs'
-import DatabaseAdapter from '../config/DatabaseAdapter.mjs';
+import { User } from './User.model.js'
+import DatabaseAdapter from '../config/DatabaseAdapter.js';
 
 const sequelize = DatabaseAdapter.createDatabase().sequelize;
 

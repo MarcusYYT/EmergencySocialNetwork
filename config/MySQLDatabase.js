@@ -1,6 +1,6 @@
 // MySQL databse adapter
 import { Sequelize } from 'sequelize';
-import DatabaseInterface from './DatabaseInterface.mjs';
+import DatabaseInterface from './DatabaseInterface.js';
 
 export default class MySQLDatabase extends DatabaseInterface {
     constructor() {

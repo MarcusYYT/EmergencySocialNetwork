@@ -1,5 +1,5 @@
-import * as userModel from "../models/User.model.mjs";
-import { getUsernameBanList } from "../config/usernameBanList.mjs";
+import * as userModel from "../models/User.model.js";
+import { getUsernameBanList } from "../config/usernameBanList.js";
 import bcrypt from "bcryptjs";
 
 let saltRounds = 10;

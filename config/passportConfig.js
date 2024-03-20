@@ -1,6 +1,6 @@
 import passport from "passport";
 import { Strategy as JwtStrategy, ExtractJwt } from "passport-jwt";
-import * as userService from "../services/userService.mjs";
+import * as userService from "../services/userService.js";
 import LocalStrategy from "passport-local";
 
 passport.use('local-login', new LocalStrategy( {
