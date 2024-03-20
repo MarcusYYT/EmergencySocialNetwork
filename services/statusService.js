@@ -1,4 +1,4 @@
-import * as statusModel from "../models/Status.model.mjs";
+import * as statusModel from "../models/Status.model.js";
 
 /**
  * TODO

@@ -1,6 +1,6 @@
 import express from 'express';
-import passport from '../config/passportConfig.mjs';
-import { io,registerNewSocket } from "../config/socketConfig.mjs"
+import passport from '../config/passportConfig.js';
+import { io,registerNewSocket } from "../config/socketConfig.js"
 
 const router = express.Router();
 router.get('/', (req, res) => {

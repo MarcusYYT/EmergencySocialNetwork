@@ -1,11 +1,11 @@
 import supertest from 'supertest';
-import app from '../../app.mjs'; 
+import app from '../../app.js'; 
 import { sync as rimrafSync } from 'rimraf';
-import DatabaseAdapter from '../../config/DatabaseAdapter.mjs';
-import {User} from '../../models/User.model.mjs'
-import {Post} from '../../models/Post.model.mjs'
-import {PrivatePost} from '../../models/PrivatePost.model.mjs'
-import {Status} from '../../models/Status.model.mjs'
+import DatabaseAdapter from '../../config/DatabaseAdapter.js';
+import {User} from '../../models/User.model.js'
+import {Post} from '../../models/Post.model.js'
+import {PrivatePost} from '../../models/PrivatePost.model.js'
+import {Status} from '../../models/Status.model.js'
 
 let server;
 let database;

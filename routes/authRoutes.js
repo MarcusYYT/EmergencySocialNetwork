@@ -1,7 +1,7 @@
 import express from 'express';
-import {login, register, tokenResolve, logout} from '../controllers/authController.mjs';
-import { showLogin, showRegister } from '../controllers/authController.mjs';
-import passport from "../config/passportConfig.mjs";
+import {login, register, tokenResolve, logout} from '../controllers/authController.js';
+import { showLogin, showRegister } from '../controllers/authController.js';
+import passport from "../config/passportConfig.js";
 
 const router = express.Router();
 
