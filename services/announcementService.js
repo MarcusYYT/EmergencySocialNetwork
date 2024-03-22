@@ -1,4 +1,4 @@
-import * as announcementModel from "../models/Announcement.model.mjs";
+import * as announcementModel from "../models/Announcement.model.js";
 
 /**
  * TODO

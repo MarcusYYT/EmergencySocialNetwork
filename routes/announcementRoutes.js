@@ -1,3 +1,7 @@
+import express from 'express';
+import {getAnnouncementById, getAnnouncementList, postAnnouncement} from '../controllers/announcementController.js'
+
+const router = express.Router();
 /**
  * @swagger
  * /announcements/{announcementId}:
@@ -86,3 +90,9 @@
  *      201:
  *        description: Database push successful
  */
+
+router.get('', getAnnouncementList);
+router.get('/:post_id', getAnnouncementById);
+router.post('', postAnnouncement);
+
+export default router;
