@@ -7,6 +7,7 @@ import {PrivatePost} from "./models/PrivatePost.model.mjs";
 import {User} from './models/User.model.mjs'
 import {Post} from './models/Post.model.mjs'
 import {Status} from './models/Status.model.mjs'
+import {Announcement} from './models/Announcement.model.mjs'
 import socketConfig from './config/socketConfig.mjs'
 import passport from './config/passportConfig.mjs'
 import authRoutes from './routes/authRoutes.mjs'
@@ -96,13 +97,14 @@ server.listen(port, async () => {
   const database = DatabaseAdapter.createDatabase();
   await database.connect();
   // await Status.sync()
-  await PrivatePost.sync()
+  //await Announcement.sync()
 
   if(process.env.NODE_ENV === 'test'){
     await User.sync()
     await Post.sync()
     await PrivatePost.sync()
     await Status.sync()
+    await Announcement.sync()
   }
 });
 

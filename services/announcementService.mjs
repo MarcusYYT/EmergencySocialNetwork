@@ -1,14 +1,13 @@
-//import * as announcementModel from "../models/Announcement.model.mjs";
+import * as announcementModel from "../models/Announcement.model.mjs";
 
 /**
  * TODO
  * @param {*} userId 
  * @param {*} content 
- * @param {*} status 
  * @returns 
  */
-export async function createNewAnnouncement(userId, content, status) {
-    return await announcementModel.createAnnouncement(userId, content, status)
+export async function createNewAnnouncement(userId, content) {
+    return await announcementModel.createAnnouncement(userId, content)
   }
 
 

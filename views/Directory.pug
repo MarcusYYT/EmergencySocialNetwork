@@ -112,8 +112,6 @@ html(lang='en')
           userDiv.setAttribute("class", "directory-user row gx-1 justify-content-between");
           userDiv.addEventListener("click", () => {routeToPrivateChat(userId, list[i].user_id)})
 
-          
-
           let usernameField = document.createElement("p");
           usernameField.setAttribute("class", "usernameField col-10");
           let usernameFieldText = document.createTextNode(list[i].username);
@@ -153,7 +151,6 @@ html(lang='en')
           statusField.appendChild(statusFieldImage);
           userDiv.appendChild(onlineStatusField);
           userDiv.appendChild(usernameField);
-          
 
           if(userToUnreadCount.has(list[i].user_id)){
             console.log(userToUnreadCount)
@@ -171,7 +168,6 @@ html(lang='en')
 
           directory.appendChild(userDiv);
         }
-
       }
 
 

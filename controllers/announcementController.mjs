@@ -1,4 +1,4 @@
-//import * as announcementService from '../services/announcementService.mjs'
+import * as announcementService from '../services/announcementService.mjs'
 import { io } from "../config/socketConfig.mjs"
 
 export async function getAnnouncementById(req, res){

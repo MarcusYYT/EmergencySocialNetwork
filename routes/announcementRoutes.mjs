@@ -1,5 +1,5 @@
 import express from 'express';
-//import {getAnnouncementById, getAnnouncementList, postAnnouncement} from '../controllers/announcementController.mjs'
+import {getAnnouncementById, getAnnouncementList, postAnnouncement} from '../controllers/announcementController.mjs'
 
 const router = express.Router();
 /**
@@ -98,8 +98,8 @@ const router = express.Router();
  *      201:
  *        description: Database push successful
  */
-//router.get('', getAnnouncementList);
-//router.get('/:announcement_id', getAnnouncementById);
-//router.post('', postAnnouncement);
+router.get('', getAnnouncementList);
+router.get('/:announcement_id', getAnnouncementById);
+router.post('', postAnnouncement);
 
 export default router;
