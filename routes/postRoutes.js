@@ -1,13 +1,13 @@
 import express from 'express';
-import {getPrivatePostById, getPrivatePostList, postPrivatePost, updateReadStatus, getUnreadMessageCountsForReceiver} from '../controllers/privateChatController.mjs'
+import {getPostById, getPostList, postPost} from '../controllers/postController.js'
 
 const router = express.Router();
 /**
  * @swagger
- * /privatePosts/{postId}:
+ * /posts/{postId}:
  *  get:
  *    tags:
- *      - Private Post
+ *      - Post
  *    summary: fetch a post object by the postId
  *    parameters:
  *      - in: path
@@ -32,9 +32,7 @@ const router = express.Router();
  *                    properties: 
  *                      post_Id:
  *                        type: integer
- *                      sender_id:
- *                        type: integer
- *                      reciever_id:
+ *                      user_id:
  *                        type: integer
  *                      time:
  *                        type: date-time
@@ -48,22 +46,11 @@ const router = express.Router();
  *        description: post not found
  * 
  * 
- * /privatePosts/{senderId}/{receiverId}:
+ * /posts:
  *  get:
  *    tags:
- *      - Private Post 
+ *      - Post 
  *    summary: fetch a list of all post objects
- *    parameters:
- *      - in: path
- *        name: senderId
- *        schema:
- *          type: integer
- *        description: Numeric ID of the sender of the posts to get.
- *      - in: path
- *        name: receiverId
- *        schema:
- *          type: integer
- *        description: Numeric ID of the reciever of posts to get.
  *    responses:
  *      200:
  *        description: Successful return the post list.
@@ -81,9 +68,7 @@ const router = express.Router();
  *                    properties: 
  *                      post_Id:
  *                        type: integer
- *                      sender_id:
- *                        type: integer
- *                      reciever_id:
+ *                      user_id:
  *                        type: integer
  *                      time:
  *                        type: date-time
@@ -93,12 +78,9 @@ const router = express.Router();
  *                        type: string
  *                message: 
  *                  type: string
- *
- * 
- * /privatePosts:
  *  post:
  *    tags:
- *      - Private Post 
+ *      - Post 
  *    summary: Posh a new post into database
  *    requestBody:
  *      content:
@@ -106,11 +88,9 @@ const router = express.Router();
  *          schema:
  *            type: object
  *            properties:
- *              sender_id:         
+ *              user_id:         
  *                type: integer
- *              reciever_id:         
- *                type: integer
- *              sender_status:
+ *              user_status:
  *                type: string
  *              content:          
  *                type: string
@@ -118,12 +98,8 @@ const router = express.Router();
  *      201:
  *        description: Database push successful
  */
-router.get('/unread/:receiver_id', getUnreadMessageCountsForReceiver);
-router.get('/:sender_id/:receiver_id', getPrivatePostList);
-router.get('/:post_id', getPrivatePostById);
-router.post('', postPrivatePost);
-
-// need a documentation comment
-router.put('/:sender_id/:receiver_id', updateReadStatus);
+router.get('', getPostList);
+router.get('/:post_id', getPostById);
+router.post('', postPost);
 
 export default router;

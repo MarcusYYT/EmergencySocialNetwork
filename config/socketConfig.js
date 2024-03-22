@@ -1,7 +1,7 @@
 import { Server } from 'socket.io';
 // const chatMsgModel = require("../models/ChatMsgModel");
-import * as postService from '../services/postService.mjs';
-import * as userService from '../services/userService.mjs';
+import * as postService from '../services/postService.js';
+import * as userService from '../services/userService.js';
 import * as timers from "timers";
 
 export let io;

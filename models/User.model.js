@@ -1,5 +1,5 @@
 import {DataTypes} from 'sequelize'
-import DatabaseFactory from '../config/DatabaseAdapter.mjs';
+import DatabaseFactory from '../config/DatabaseAdapter.js';
 
 const sequelize = DatabaseFactory.createDatabase().sequelize;
 

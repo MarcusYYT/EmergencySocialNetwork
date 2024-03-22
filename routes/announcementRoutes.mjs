@@ -1,105 +1,88 @@
-import express from 'express';
-import {getAnnouncementById, getAnnouncementList, postAnnouncement} from '../controllers/announcementController.mjs'
-
-const router = express.Router();
 /**
  * @swagger
- * /posts/{postId}:
+ * /announcements/{announcementId}:
  *  get:
  *    tags:
- *      - Post
- *    summary: fetch a post object by the postId
+ *      - Announcement
+ *    summary: Fetch an announcement object by the announcementId
  *    parameters:
  *      - in: path
- *        name: postId
+ *        name: announcementId
  *        type: integer
  *        required: true
- *        description: Numeric ID of the post to get.
+ *        description: Numeric ID of the announcement to get.
  *    responses:
  *      200:
- *        description: Successful return the post.
+ *        description: Successfully returns the announcement.
  *        content:
  *          application/json:
  *            schema:
  *              type: object
  *              properties:
- *                code:         
+ *                code:
  *                  type: integer
- *                data:          
- *                  type: array
- *                  items:
- *                    type: object
- *                    properties: 
- *                      post_Id:
- *                        type: integer
- *                      user_id:
- *                        type: integer
- *                      time:
- *                        type: date-time
- *                      user_status:
- *                        type: string
- *                      content:
- *                        type: string
+ *                data:
+ *                  type: object
+ *                  properties: 
+ *                    announcement_id:
+ *                      type: integer
+ *                    user_id:
+ *                      type: integer
+ *                    time:
+ *                      type: date-time
+ *                    content:
+ *                      type: string
  *                message: 
  *                  type: string
  *      404:
- *        description: post not found
+ *        description: Announcement not found
  * 
  * 
- * /posts:
+ * /announcements:
  *  get:
  *    tags:
- *      - Post 
- *    summary: fetch a list of all post objects
+ *      - Announcement
+ *    summary: Fetch a list of all announcement objects
  *    responses:
  *      200:
- *        description: Successful return the post list.
+ *        description: Successfully returns the announcement list.
  *        content:
  *          application/json:
  *            schema:
  *              type: object
  *              properties:
- *                code:         
+ *                code:
  *                  type: integer
- *                data:          
+ *                data:
  *                  type: array
  *                  items:
  *                    type: object
  *                    properties: 
- *                      post_Id:
+ *                      announcement_id:
  *                        type: integer
  *                      user_id:
  *                        type: integer
  *                      time:
  *                        type: date-time
- *                      user_status:
- *                        type: string
  *                      content:
  *                        type: string
  *                message: 
  *                  type: string
  *  post:
  *    tags:
- *      - Post 
- *    summary: Posh a new post into database
+ *      - Announcement
+ *    summary: Post a new announcement into the database
  *    requestBody:
  *      content:
  *        application/json:
  *          schema:
  *            type: object
  *            properties:
- *              user_id:         
+ *              user_id:
  *                type: integer
- *              user_status:
- *                type: string
- *              content:          
+ *              content:
  *                type: string
  *    responses:
  *      201:
  *        description: Database push successful
  */
-router.get('', getAnnouncementList);
-router.get('/:announcement_id', getAnnouncementById);
-router.post('', postAnnouncement);
-
-export default router;

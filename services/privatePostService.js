@@ -1,4 +1,4 @@
-import * as privatePostModel from "../models/PrivatePost.model.mjs";
+import * as privatePostModel from "../models/PrivatePost.model.js";
 
 /**
  * TODO

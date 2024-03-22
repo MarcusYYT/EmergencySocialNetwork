@@ -1,4 +1,7 @@
 export default {
     transform: {},
-    testEnvironment: 'node'
+    testEnvironment: 'node',
+    collectCoverage: true,
+    coverageDirectory: "./coverage",
+    coverageReporters: ["json", "html", "text"]
   };

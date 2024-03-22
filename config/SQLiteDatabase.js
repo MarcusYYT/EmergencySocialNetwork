@@ -1,5 +1,5 @@
 import { Sequelize } from 'sequelize';
-import DatabaseInterface from './DatabaseInterface.mjs';
+import DatabaseInterface from './DatabaseInterface.js';
 
 export default class SQLiteDatabase extends DatabaseInterface {
     constructor(filename='tempdb.sqlite') {

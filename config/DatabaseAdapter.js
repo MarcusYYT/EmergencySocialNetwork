@@ -1,5 +1,5 @@
-import MySQLDatabase from './MySQLDatabase.mjs';
-import SQLiteDatabase from './SQLiteDatabase.mjs';
+import MySQLDatabase from './MySQLDatabase.js';
+import SQLiteDatabase from './SQLiteDatabase.js';
 
 export default class DatabaseAdapter {
     static createDatabase(filename) {
