@@ -240,7 +240,7 @@ h2#message-header {
     background-color: #78caff;
     width: 80vw;
     border-radius: 15px;
-    height: 61vh;
+    height: 67vh;
     position: relative;
     display: flex;
     margin: auto;
@@ -258,6 +258,10 @@ div#directory {
     padding: 0vw 10vw 5vw 10vw;
     overflow: scroll;
     height: 53vh;
+}
+
+.status-item {
+    margin-bottom: 5px;
 }
 
 .directory-user {
@@ -309,12 +313,15 @@ span.message-sender {
     margin-top: 1vh;
 }
 
-#status-options {
+#status-dropdown{
+    min-width: 141px;
+}
+
+.status-options {
     display: flex;
     justify-content: space-between;
-    width: 63vw;
-    margin: auto;
-    margin-bottom: 2vh;
+    width: 130px;
+    align-items: center;
 }
 
 .bi-bandaid-fill{

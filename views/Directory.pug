@@ -8,6 +8,7 @@ html(lang='en')
     link(rel='stylesheet', type='text/css', href='/stylesheets/index.css')
     script(src='/javascripts/directory.js')
     script(src='https://cdn.socket.io/4.7.4/socket.io.min.js')
+    script(src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js")
     title Directory 
   body
     .navbar.container
@@ -16,16 +17,20 @@ html(lang='en')
     #hamburgerMenu.links
       a.navLinks(onclick='routeToAnnouncement()') Annoucement
       a.navLinks(onclick='routeToMessageWall()') New Post
-    
-    #status-wrapper 
-      form#status-form(action="") 
-        #status-options
-          label(for='status') Change my status:
-          select#status(name='status').form-select.form-select-sm
-            option(value='OK') OK 
-            option(value='help') Help
-            option(value='emergency') Emergency
-        button#change-status-btn.btn.btn-primary(type='button' onclick='changeMyStatus()') Submit
+    #status-wrapper.dropdown
+      button#status-list.btn.btn-primary.dropdown-toggle(type='button' data-bs-toggle='dropdown' aria-expanded='false')
+        | Change Status
+      #dropdown-wrapper
+        ul.dropdown-menu#status-dropdown
+          li#ok-status.status-options
+            p.status-item.dropdown-item OK
+            i.bi.bi-check-circle-fill
+          li#help-status.status-options
+            p.status-item.dropdown-item Help
+            i.bi.bi-exclamation-circle-fill
+          li#emergency-status.status-options
+            p.status-item.dropdown-item Emergency
+            i.bi.bi-bandaid-fill
     #directory-wrapper
       h1#directory-header ESN Directory
       #directory.container.text-left
@@ -54,6 +59,7 @@ html(lang='en')
 
       window.onload = async function() {
         const userId = #{user_id}
+        addEventListenerstoStatus();
         const response = await fetch(`/users/${userId}`, {
           method: 'GET',
           headers: {
@@ -170,10 +176,18 @@ html(lang='en')
         }
       }
 
+      
+      function addEventListenerstoStatus(){
+          let okStatus = document.getElementById("ok-status");
+          let helpStatus = document.getElementById("help-status");
+          let emergencyStatus = document.getElementById("emergency-status");
 
-      async function changeMyStatus() {
-        let selectElement = document.getElementById('status');
-        let selectedValue = selectElement.value;
+          okStatus.addEventListener("click", () => {changeMyStatus("OK")})
+          helpStatus.addEventListener("click", () => {changeMyStatus("help")})
+          emergencyStatus.addEventListener("click", () => {changeMyStatus("emergency")})
+      }
+
+      async function changeMyStatus(selectedValue) {
         const userId = #{user_id};
         const requestBody = {
           user_id: userId,
