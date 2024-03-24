@@ -27,7 +27,7 @@ export default function (server) {
                 } else {
                     console.log(`user ${user_id} stays connected`);
                 }
-            },1000)
+            },2000)
         });
 
     });
