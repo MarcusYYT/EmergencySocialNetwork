@@ -11,7 +11,7 @@ head
   a.btn.btn-primary(onclick='routeToDirectory()') Back
 #post-wrapper
   h2#message-header Announcements
-  form.search-form.input-group.mb-3(onsubmit="submitSearch()")
+  form.search-form.input-group.mb-3(onsubmit="submitSearch()" onchange="searchFinished()")
     input.search-input.form-control(type='text', name='search', placeholder='Search...')
   #message-board.list-group
   form#post-form(method='POST')
@@ -78,6 +78,401 @@ script.
             });
   }
 
+  function filterStopWords(userInput){
+    const stopWords = [
+      "a","able","about","across","after","all","almost","also","am","among","an","and","any","are","as","at","be",
+      "because","been","but","by","can","cannot","could","dear","did","do","does","either","else","ever","every",
+      "for","from","get","got","had","has","have","he","her","hers","him","his","how","however","i","if","in",
+      "into","is","it","its","just","least","let","like","likely","may","me","might","most","must","my","neither",
+      "no","nor","not","of","off","often","on","only","or","other","our","own","rather","said","say","says","she",
+      "should","since","so","some","than","that","the","their","them","then","there","these","they","this","tis",
+      "to","too","twas","us","wants","was","we","were","what","when","where","which","while","who","whom","why",
+      "will","with","would","yet","you","your"
+    ];
+
+
+    let userInputWordArray = userInput.split(/\s+/);
+
+    let filteredInput = userInput;
+
+    for(word of userInputWordArray){
+
+      console.log("word = " + word)
+      if (stopWords.includes(word)) {
+        filteredInput = filteredInput.replace(word, "")
+        console.log("after: " + userInput)
+      } 
+    }
+
+    return filteredInput
+  }
+
+  function submitSearch(){
+    event.preventDefault()
+
+    let searchInput = document.getElementsByClassName('search-input')[0];
+    let searchValue = searchInput.value;
+
+    let filteredSearchValue = filterStopWords(searchValue)
+    console.log(searchValue)
+    console.log(filteredSearchValue)
+
+    let mockdata = [
+          {
+              "announcement_id": 1,
+              "user_id": 37,
+              "content": "hi",
+              "createdAt": "2024-03-22T05:05:52.000Z",
+              "updatedAt": "2024-03-22T05:05:52.000Z",
+              "user": {
+                  "username": "hihi"
+              }
+          },
+          {
+              "announcement_id": 2,
+              "user_id": 37,
+              "content": "wait",
+              "createdAt": "2024-03-22T05:06:16.000Z",
+              "updatedAt": "2024-03-22T05:06:16.000Z",
+              "user": {
+                  "username": "hihi"
+              }
+          },
+          {
+              "announcement_id": 3,
+              "user_id": 37,
+              "content": "po",
+              "createdAt": "2024-03-22T05:09:34.000Z",
+              "updatedAt": "2024-03-22T05:09:34.000Z",
+              "user": {
+                  "username": "hihi"
+              }
+          },
+          {
+              "announcement_id": 4,
+              "user_id": 37,
+              "content": "popo",
+              "createdAt": "2024-03-22T05:09:39.000Z",
+              "updatedAt": "2024-03-22T05:09:39.000Z",
+              "user": {
+                  "username": "hihi"
+              }
+          },
+          {
+              "announcement_id": 5,
+              "user_id": 37,
+              "content": "yo",
+              "createdAt": "2024-03-22T05:09:43.000Z",
+              "updatedAt": "2024-03-22T05:09:43.000Z",
+              "user": {
+                  "username": "hihi"
+              }
+          },
+          {
+              "announcement_id": 6,
+              "user_id": 37,
+              "content": "rer",
+              "createdAt": "2024-03-22T19:42:48.000Z",
+              "updatedAt": "2024-03-22T19:42:48.000Z",
+              "user": {
+                  "username": "hihi"
+              }
+          },
+          {
+              "announcement_id": 7,
+              "user_id": 37,
+              "content": "hi",
+              "createdAt": "2024-03-22T20:15:53.000Z",
+              "updatedAt": "2024-03-22T20:15:53.000Z",
+              "user": {
+                  "username": "hihi"
+              }
+          },
+          {
+              "announcement_id": 8,
+              "user_id": 37,
+              "content": "hihi",
+              "createdAt": "2024-03-22T20:15:56.000Z",
+              "updatedAt": "2024-03-22T20:15:56.000Z",
+              "user": {
+                  "username": "hihi"
+              }
+          },
+          {
+              "announcement_id": 9,
+              "user_id": 37,
+              "content": "popo",
+              "createdAt": "2024-03-24T04:19:57.000Z",
+              "updatedAt": "2024-03-24T04:19:57.000Z",
+              "user": {
+                  "username": "hihi"
+              }
+          },
+          {
+              "announcement_id": 10,
+              "user_id": 51,
+              "content": "popo",
+              "createdAt": "2024-03-24T04:20:45.000Z",
+              "updatedAt": "2024-03-24T04:20:45.000Z",
+              "user": {
+                  "username": "popo"
+              }
+          },
+          {
+              "announcement_id": 11,
+              "user_id": 51,
+              "content": "popo",
+              "createdAt": "2024-03-24T04:20:45.000Z",
+              "updatedAt": "2024-03-24T04:20:45.000Z",
+              "user": {
+                  "username": "popo"
+              }
+          },
+          {
+              "announcement_id": 1,
+              "user_id": 37,
+              "content": "hi",
+              "createdAt": "2024-03-22T05:05:52.000Z",
+              "updatedAt": "2024-03-22T05:05:52.000Z",
+              "user": {
+                  "username": "hihi"
+              }
+          },
+          {
+              "announcement_id": 2,
+              "user_id": 37,
+              "content": "wait",
+              "createdAt": "2024-03-22T05:06:16.000Z",
+              "updatedAt": "2024-03-22T05:06:16.000Z",
+              "user": {
+                  "username": "hihi"
+              }
+          },
+          {
+              "announcement_id": 3,
+              "user_id": 37,
+              "content": "po",
+              "createdAt": "2024-03-22T05:09:34.000Z",
+              "updatedAt": "2024-03-22T05:09:34.000Z",
+              "user": {
+                  "username": "hihi"
+              }
+          },
+          {
+              "announcement_id": 4,
+              "user_id": 37,
+              "content": "popo",
+              "createdAt": "2024-03-22T05:09:39.000Z",
+              "updatedAt": "2024-03-22T05:09:39.000Z",
+              "user": {
+                  "username": "hihi"
+              }
+          },
+          {
+              "announcement_id": 5,
+              "user_id": 37,
+              "content": "yo",
+              "createdAt": "2024-03-22T05:09:43.000Z",
+              "updatedAt": "2024-03-22T05:09:43.000Z",
+              "user": {
+                  "username": "hihi"
+              }
+          },
+          {
+              "announcement_id": 6,
+              "user_id": 37,
+              "content": "rer",
+              "createdAt": "2024-03-22T19:42:48.000Z",
+              "updatedAt": "2024-03-22T19:42:48.000Z",
+              "user": {
+                  "username": "hihi"
+              }
+          },
+          {
+              "announcement_id": 7,
+              "user_id": 37,
+              "content": "hi",
+              "createdAt": "2024-03-22T20:15:53.000Z",
+              "updatedAt": "2024-03-22T20:15:53.000Z",
+              "user": {
+                  "username": "hihi"
+              }
+          },
+          {
+              "announcement_id": 8,
+              "user_id": 37,
+              "content": "hihi",
+              "createdAt": "2024-03-22T20:15:56.000Z",
+              "updatedAt": "2024-03-22T20:15:56.000Z",
+              "user": {
+                  "username": "hihi"
+              }
+          },
+          {
+              "announcement_id": 9,
+              "user_id": 37,
+              "content": "popo",
+              "createdAt": "2024-03-24T04:19:57.000Z",
+              "updatedAt": "2024-03-24T04:19:57.000Z",
+              "user": {
+                  "username": "hihi"
+              }
+          },
+          {
+              "announcement_id": 10,
+              "user_id": 51,
+              "content": "popo",
+              "createdAt": "2024-03-24T04:20:45.000Z",
+              "updatedAt": "2024-03-24T04:20:45.000Z",
+              "user": {
+                  "username": "popo"
+              }
+          },
+          {
+              "announcement_id": 11,
+              "user_id": 51,
+              "content": "popo",
+              "createdAt": "2024-03-24T04:20:45.000Z",
+              "updatedAt": "2024-03-24T04:20:45.000Z",
+              "user": {
+                  "username": "popo"
+              }
+          }, {
+              "announcement_id": 1,
+              "user_id": 37,
+              "content": "hi",
+              "createdAt": "2024-03-22T05:05:52.000Z",
+              "updatedAt": "2024-03-22T05:05:52.000Z",
+              "user": {
+                  "username": "hihi"
+              }
+          },
+          {
+              "announcement_id": 2,
+              "user_id": 37,
+              "content": "wait",
+              "createdAt": "2024-03-22T05:06:16.000Z",
+              "updatedAt": "2024-03-22T05:06:16.000Z",
+              "user": {
+                  "username": "hihi"
+              }
+          },
+          {
+              "announcement_id": 3,
+              "user_id": 37,
+              "content": "po",
+              "createdAt": "2024-03-22T05:09:34.000Z",
+              "updatedAt": "2024-03-22T05:09:34.000Z",
+              "user": {
+                  "username": "hihi"
+              }
+          },
+          {
+              "announcement_id": 4,
+              "user_id": 37,
+              "content": "popo",
+              "createdAt": "2024-03-22T05:09:39.000Z",
+              "updatedAt": "2024-03-22T05:09:39.000Z",
+              "user": {
+                  "username": "hihi"
+              }
+          },
+          {
+              "announcement_id": 5,
+              "user_id": 37,
+              "content": "yo",
+              "createdAt": "2024-03-22T05:09:43.000Z",
+              "updatedAt": "2024-03-22T05:09:43.000Z",
+              "user": {
+                  "username": "hihi"
+              }
+          },
+          {
+              "announcement_id": 6,
+              "user_id": 37,
+              "content": "rer",
+              "createdAt": "2024-03-22T19:42:48.000Z",
+              "updatedAt": "2024-03-22T19:42:48.000Z",
+              "user": {
+                  "username": "hihi"
+              }
+          },
+          {
+              "announcement_id": 7,
+              "user_id": 37,
+              "content": "hi",
+              "createdAt": "2024-03-22T20:15:53.000Z",
+              "updatedAt": "2024-03-22T20:15:53.000Z",
+              "user": {
+                  "username": "hihi"
+              }
+          },
+          {
+              "announcement_id": 8,
+              "user_id": 37,
+              "content": "hihi",
+              "createdAt": "2024-03-22T20:15:56.000Z",
+              "updatedAt": "2024-03-22T20:15:56.000Z",
+              "user": {
+                  "username": "hihi"
+              }
+          },
+          {
+              "announcement_id": 9,
+              "user_id": 37,
+              "content": "popo",
+              "createdAt": "2024-03-24T04:19:57.000Z",
+              "updatedAt": "2024-03-24T04:19:57.000Z",
+              "user": {
+                  "username": "hihi"
+              }
+          },
+          {
+              "announcement_id": 10,
+              "user_id": 51,
+              "content": "popo",
+              "createdAt": "2024-03-24T04:20:45.000Z",
+              "updatedAt": "2024-03-24T04:20:45.000Z",
+              "user": {
+                  "username": "popo"
+              }
+          },
+          {
+              "announcement_id": 11,
+              "user_id": 51,
+              "content": "popo",
+              "createdAt": "2024-03-24T04:20:45.000Z",
+              "updatedAt": "2024-03-24T04:20:45.000Z",
+              "user": {
+                  "username": "popo"
+              }
+          }
+
+    ]
+    console.log(`/search?q=${filteredSearchValue}&domain=announcement`)
+
+    renderSearchedAnnouncements(mockdata)
+
+  }
+
+  async function searchFinished(){
+
+        let searchInput = document.getElementsByClassName('search-input')[0];
+        let searchValue = searchInput.value;
+
+        if (searchValue === ""){
+          await fetch('/announcements')
+            .then(response => response.json())
+            .then(data => {
+                console.log(data);
+                renderAnnouncements(data.data)
+            })
+            .catch(error => {
+                console.error('Error fetching data:', error);
+            });
+        }
+      }
+
   window.onload = async function() {
     const userId = #{user_id}
     const response = await fetch(`/users/${userId}`, {
@@ -94,7 +489,7 @@ script.
          .then(response => response.json())
          .then(data => {
              console.log(data);
-             renderAnnouncements(data.data, false)
+             renderAnnouncements(data.data)
          })
          .catch(error => {
              console.error('Error fetching data:', error);

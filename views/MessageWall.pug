@@ -104,6 +104,15 @@ script.
          });
   }
 
+  function submitSearch(){
+    event.preventDefault()
+
+    let searchInput = document.getElementsByClassName('search-input')[0];
+    let searchValue = searchInput.value;
+    console.log(searchValue)
+    console.log(`/search?q=${searchValue}&domain=message_wall`)
+  }
+
   async function logout(){
     const userId = #{user_id};
     const requestBody = {

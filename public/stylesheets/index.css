@@ -380,7 +380,11 @@ option{
     font-size: 3.5vw;
 }
 
-input#search-input {
+input#directory-search-input {
     height: 4.5vh;
     border-radius: 0px 15px 15px 0px;
+}
+
+div#show-more {
+    font-weight: bold;
 }

@@ -84,3 +84,4 @@
  *      400:
  *        description: Invalid search query or domain.
  */
+
