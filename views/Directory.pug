@@ -15,8 +15,13 @@ html(lang='en')
       i.bi.bi-plus-circle-fill.col.col-2(onclick='toggleHamburgerMenu()')
       a#logout.btn.btn-primary.col.col-1(onclick='logout()') Log Out
     #hamburgerMenu.links
-      a.navLinks(onclick='routeToAnnouncement()') Annoucement
+      a.navLinks(onclick='routeToAnnouncement()') Annoucements
       a.navLinks(onclick='routeToMessageWall()') New Post
+    form#directory-search-form.input-group.mb-3(onsubmit="submitSearch()")
+        select#search-select.form-select-sm
+          option(value='User') User
+          option(value='Status') Status
+        input#search-input.form-control(type='text', name='search', placeholder='Search...')
     #status-wrapper.dropdown
       button#status-list.btn.btn-primary.dropdown-toggle(type='button' data-bs-toggle='dropdown' aria-expanded='false')
         | Change Status
@@ -55,8 +60,23 @@ html(lang='en')
                 console.error('Error register socket:', error);
             });
       })
-      
 
+      function submitSearch(){
+        event.preventDefault()
+        console.log("ff")
+        let selectElement = document.getElementById('search-select');
+        let selectedValue = selectElement.value;
+
+        let searchInput = document.getElementById('search-input');
+        let searchValue = searchInput.value;
+
+        console.log(selectedValue)
+        console.log(searchValue)
+
+        console.log(`/search?q=${searchValue}&domain=${selectedValue}`)
+
+      }
+  
       window.onload = async function() {
         const userId = #{user_id}
         addEventListenerstoStatus();

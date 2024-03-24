@@ -200,15 +200,10 @@ form#post-form {
     margin-bottom: 5vw;
 }
 
-#directory-header {
-    text-align: center;
-    padding: 15px;
-}
-
 div#message-board {
     background-color: white;
     width: 85vw;
-    margin: 3vw;
+    margin: 0 3vw 3vw 3vw;
     border-radius: 15px;
     overflow: scroll;
     height: 75vh;
@@ -228,8 +223,9 @@ button#post-btn {
 
 h2#message-header {
     margin-top: 1.5vh;
-    font-size: 5vw;
+    font-size: 8vw;
     color: white;
+    margin-bottom: 1vh;
 }
 
 #change-status-btn {
@@ -240,7 +236,7 @@ h2#message-header {
     background-color: #78caff;
     width: 80vw;
     border-radius: 15px;
-    height: 67vh;
+    height: 62vh;
     position: relative;
     display: flex;
     margin: auto;
@@ -356,4 +352,35 @@ label {
     display: flex;
     align-content: center;
     flex-wrap: wrap;
+}
+
+#directory-search-form {
+    width: 80vw;
+    margin: auto;
+}
+
+.search-form {
+    width: 85vw;
+}
+
+.search-input {
+    border-radius: 15px;
+}
+
+select#search-select {
+    width: 23vw;
+    font-size: 4vw;
+    height: 4.5vh;
+    border-radius: 15px 0px 0px 15px;
+    background-color: #78caff;
+    border: none;
+}
+
+option{
+    font-size: 3.5vw;
+}
+
+input#search-input {
+    height: 4.5vh;
+    border-radius: 0px 15px 15px 0px;
 }

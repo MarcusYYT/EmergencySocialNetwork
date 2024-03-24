@@ -10,7 +10,9 @@ head
 .links
   a.btn.btn-primary(onclick='routeToDirectory()') Back
 #post-wrapper
-  h2#message-header Message Wall
+  h2#message-header Group Chats
+  form.search-form.input-group.mb-3(onsubmit="submitSearch()")
+    input.search-input.form-control(type='text', name='search', placeholder='Search...')
   #message-board.list-group
   form#post-form(method='POST')
     textarea#message(placeholder='Type your message here...' required='')
