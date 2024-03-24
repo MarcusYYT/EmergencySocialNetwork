@@ -112,6 +112,8 @@ function createShowMore(slicedArray){
 
 async function renderSearchedAnnouncements(chatlist) {
 
+    counter = 0;
+
     let messageBoard = document.getElementById("message-board")
 
     while(messageBoard.firstChild){
