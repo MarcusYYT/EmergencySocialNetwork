@@ -1,3 +1,7 @@
+import DatabaseAdapter from "../config/DatabaseAdapter.js";
+import {getPerformanceTestMode, setPerformanceTestMode} from '../app.js'
+import express from 'express';
+const router = express.Router();
 /**
  * @swagger
  * /test/performance/start:
@@ -36,3 +40,38 @@
  *       400:
  *         description: Invalid input parameters.
  */
+
+router.post('/performance/start', async (req, res) => {
+    try{
+        // setPerformanceTestMode(true);
+        DatabaseAdapter.setTestDatabaseName("tempdb.sqlite")
+        DatabaseAdapter.switchDatabase('test');
+        const database = DatabaseAdapter.getDatabase();
+        await database.authenticate();
+        await DatabaseAdapter.reinitializeModels();
+        console.log("changed to test database");
+        res.status(202).json({ message: 'Performance test started' });
+    } catch (err){
+        console.error(error);
+        res.status(500).json({ message: 'Error starting performance test' });
+    }
+});
+
+router.post('/performance/end', async (req, res) => {
+    try{
+        // setPerformanceTestMode(false);
+        let database = DatabaseAdapter.getDatabase();
+        await database.close();
+        DatabaseAdapter.switchDatabase('default');
+        database = DatabaseAdapter.getDatabase();
+        await database.authenticate();
+        await DatabaseAdapter.reinitializeModels();
+        console.log("change back to mysql database");
+        res.status(202).json({ message: 'Performance test ended' });
+    } catch (err) {
+        console.error(error);
+        res.status(500).json({ message: 'Error ending performance test' });
+    }
+});
+
+export default router;

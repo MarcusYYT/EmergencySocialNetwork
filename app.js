@@ -5,12 +5,15 @@ import swaggerJSDoc from 'swagger-jsdoc'
 import swaggerUI from 'swagger-ui-express'
 import socketConfig from './config/socketConfig.js'
 import passport from './config/passportConfig.js'
+
 import authRoutes from './routes/authRoutes.js'
 import userRoutes from './routes/userRoutes.js'
 import postRoutes from './routes/postRoutes.js'
 import privatePostRoutes from './routes/privatePostRoutes.js'
 import pageRoutes from './routes/pageRoutes.js'
 import statusRoutes from './routes/statusRoutes.js'
+import testRoute from './routes/testRoutes.js'
+
 import DatabaseAdapter from './config/DatabaseAdapter.js'
 import { createServer } from 'node:http';
 import cookieParser from 'cookie-parser';
@@ -48,13 +51,32 @@ app.use(cookieParser());
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'pug');
 
+let isPerformanceTestMode = false;
+
+export function setPerformanceTestMode(mode) {
+    isPerformanceTestMode = mode;
+}
+
+export function getPerformanceTestMode() {
+    return isPerformanceTestMode;
+}
+
+// filter non-test request
+app.use((req, res, next) => {
+    if (getPerformanceTestMode() && !req.headers['x-performance-test']) {
+        return res.status(503).send('Service temporarily unavailable due to performance testing');
+    }
+    next();
+});
+
 // Router setting
 app.use('', pageRoutes);
 app.use('/auth', authRoutes);
 app.use('/users', userRoutes);
 app.use('/posts', postRoutes);
-app.use('/status', statusRoutes)
-app.use('/privatePosts', privatePostRoutes)
+app.use('/status', statusRoutes);
+app.use('/privatePosts', privatePostRoutes);
+app.use('/test', testRoute);
 
 // setup swagger
 const swaggerSpec = await swaggerJSDoc(swaggerOptions);
@@ -77,8 +99,8 @@ function cleanUpDatabase() {
 
 server.listen(port, async () => {
   console.log(`Server running at http://localhost:${port}`);
+  cleanUpDatabase()
   if(process.env.NODE_ENV === 'test'){
-    cleanUpDatabase()
     DatabaseAdapter.setTestDatabaseName("tempdb.sqlite")
     DatabaseAdapter.setCurrentDatabase('test')
     const database = DatabaseAdapter.getDatabase();

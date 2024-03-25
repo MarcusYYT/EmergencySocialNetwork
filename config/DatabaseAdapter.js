@@ -42,16 +42,6 @@ export default class DatabaseAdapter {
 
     static switchDatabase(databaseKey) {
         this.currentDatabase = databaseKey;
-        this.reinitializeModels();
     }
 
-    static createDatabase(filename) {
-        const databaseMap = {
-            'test': () => new SQLiteDatabase(filename),
-            'default': () => new MySQLDatabase()
-        };
-
-        const DatabaseClass = databaseMap[process.env.NODE_ENV] || databaseMap['default'];
-        return DatabaseClass();
-    }
 }
