@@ -24,9 +24,9 @@ afterAll(async () => {
     rimrafSync('./unit_db.sqlite');
 });
 
-describe('Create some users', () => {
+describe('Search Users', () => {
 
-    test('Create', async () => {
+    test('Create Users', async () => {
         expect(await createNewUser('Tommy', 'password')).toMatchObject({
             success: true,
             user_id: expect.any(Number),
@@ -48,14 +48,30 @@ describe('Create some users', () => {
             message: "Create user successfully."
         });
     });
-});
-
-describe('Search Users', () => {
 
     test('Search n', async () => {
         expect(await searchUser("n")).toMatchObject({
             success: true,
-            data: expect.anything(),
+            data:  [
+                      {
+                   "createdAt": expect.anything(),
+                       "online_status": "online",
+                       "password": expect.anything(),
+                       "status": "place_holder",
+                       "updatedAt": expect.anything(),
+                       "user_id": expect.any(Number),
+                       "username": "Justin",
+                     },
+              {
+                   "createdAt": expect.anything(),
+                       "online_status": "online",
+                      "password": expect.anything(),
+                      "status": "place_holder",
+                       "updatedAt": expect.anything(),
+                       "user_id": expect.any(Number),
+                       "username": "Hakan",
+                     },
+           ],
         });
     });
 });
