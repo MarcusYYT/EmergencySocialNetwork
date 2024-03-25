@@ -81,7 +81,7 @@ function slice(array, size){
 
 let counter = 0;
 
-function renderSlicedArray(slicedArray, isPrivate){
+function renderSlicedArray(slicedArray, isPrivate, isStatus){
   console.log(counter)
   let messageBoard = document.getElementById("message-board")
 
@@ -101,15 +101,23 @@ function renderSlicedArray(slicedArray, isPrivate){
         username = msgData.user.username;
       }
 
-
-      let messageElement = constructChatMessage(
-        username,
-        msgData.content,
-        msgData.status,
-        msgData.createdAt
-      );
-
-      messageBoard.appendChild(messageElement);
+      if (isStatus) {
+        let messageElement = constructStatusMessage(
+          username,
+          msgData.status,
+          msgData.createdAt
+        );
+        messageBoard.appendChild(messageElement);
+      } 
+      else {
+        let messageElement = constructChatMessage(
+          username,
+          msgData.content,
+          msgData.status,
+          msgData.createdAt
+        );
+        messageBoard.appendChild(messageElement);
+      }
   }
 
   if(counter + 1 < slicedArray.length){
@@ -126,12 +134,12 @@ function createShowMore(slicedArray, isPrivate){
   let showMoreText = document.createTextNode("Show More...")
 
   
-  showMore.addEventListener("click", () => {renderSlicedArray(slicedArray, isPrivate)})
+  showMore.addEventListener("click", () => {renderSlicedArray(slicedArray, isPrivate, isStatus)})
   showMore.appendChild(showMoreText)
   messageBoard.appendChild(showMore)
 }
 
-async function renderSearchedPosts(chatlist, isPrivate) {
+async function renderSearchedPosts(chatlist, isPrivate, isStatus) {
 
   counter = 0;
 
@@ -147,6 +155,41 @@ async function renderSearchedPosts(chatlist, isPrivate) {
 
   console.log(slicedArray)
   
-  renderSlicedArray(slicedArray, isPrivate);    
+  renderSlicedArray(slicedArray, isPrivate, isStatus);    
 }
 
+function constructStatusMessage(sender, status, dateTime) {
+  const messageDiv = document.createElement('div');
+  messageDiv.className = 'list-group-item';
+  const messageHeader = document.createElement('div');
+  messageHeader.className = 'd-flex w-100 justify-content-between';
+  const messageUsernameHeader = document.createElement('div');
+  messageUsernameHeader.className = 'd-flex w-100 justify-content-between';
+  const senderSpan = document.createElement('span');
+  senderSpan.className = 'message-sender';
+  senderSpan.textContent = sender;
+  const dateSpan = document.createElement('span');
+  dateSpan.className = 'message-date';
+
+  dateSpan.textContent = new Date(dateTime).toLocaleString();
+
+  const statusFieldImage = document.createElement("i");
+  if (status == "OK") {
+    statusFieldImage.setAttribute("class", "bi bi-check-circle-fill");
+  }
+  else if (status == "emergency") {
+    statusFieldImage.setAttribute("class", "bi bi-bandaid-fill");
+
+  }
+  else if (status == "help") {
+    statusFieldImage.setAttribute("class", "bi bi-exclamation-circle-fill");
+  }
+
+  messageUsernameHeader.appendChild(senderSpan);
+  messageHeader.appendChild(dateSpan);
+  messageUsernameHeader.appendChild(statusFieldImage);
+
+  messageDiv.appendChild(messageUsernameHeader);
+  messageDiv.appendChild(messageHeader);
+  return messageDiv;
+}

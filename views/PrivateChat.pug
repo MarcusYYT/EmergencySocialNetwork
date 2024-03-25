@@ -61,16 +61,16 @@ script.
     });
 
     function filterStopWords(userInput){
-    const stopWords = [
-      "a","able","about","across","after","all","almost","also","am","among","an","and","any","are","as","at","be",
-      "because","been","but","by","can","cannot","could","dear","did","do","does","either","else","ever","every",
-      "for","from","get","got","had","has","have","he","her","hers","him","his","how","however","i","if","in",
-      "into","is","it","its","just","least","let","like","likely","may","me","might","most","must","my","neither",
-      "no","nor","not","of","off","often","on","only","or","other","our","own","rather","said","say","says","she",
-      "should","since","so","some","than","that","the","their","them","then","there","these","they","this","tis",
-      "to","too","twas","us","wants","was","we","were","what","when","where","which","while","who","whom","why",
-      "will","with","would","yet","you","your"
-    ];
+        const stopWords = [
+        "a","able","about","across","after","all","almost","also","am","among","an","and","any","are","as","at","be",
+        "because","been","but","by","can","cannot","could","dear","did","do","does","either","else","ever","every",
+        "for","from","get","got","had","has","have","he","her","hers","him","his","how","however","i","if","in",
+        "into","is","it","its","just","least","let","like","likely","may","me","might","most","must","my","neither",
+        "no","nor","not","of","off","often","on","only","or","other","our","own","rather","said","say","says","she",
+        "should","since","so","some","than","that","the","their","them","then","there","these","they","this","tis",
+        "to","too","twas","us","wants","was","we","were","what","when","where","which","while","who","whom","why",
+        "will","with","would","yet","you","your"
+        ];
 
 
     let userInputWordArray = userInput.split(/\s+/);
@@ -98,6 +98,10 @@ script.
     let filteredSearchValue = filterStopWords(searchValue)
     console.log(searchValue)
     console.log(filteredSearchValue)
+    let isStatus = false;
+    if (filteredSearchValue === "status" || filteredSearchValue === "Status") {
+        isStatus = true;
+    }
 
     let mockdata = [
         {
@@ -135,9 +139,49 @@ script.
             }
         }
     ]
+       let mockstatus = [
+        {
+            "post_id": 16,
+            "user_id": 45,
+            "content": "testestt",
+            "status": "help",
+            "createdAt": "2024-03-10T06:17:48.000Z",
+            "updatedAt": "2024-03-10T06:17:48.000Z",
+            "Sender": {
+                "username": "kkkkk"
+            }
+        },
+        {
+            "post_id": 17,
+            "user_id": 45,
+            "content": "testestt",
+            "status": "emergency",
+            "createdAt": "2024-03-10T06:18:48.000Z",
+            "updatedAt": "2024-03-10T06:18:48.000Z",
+            "Sender": {
+                "username": "kkkkk"
+            }
+        },
+                {
+            "post_id": 18,
+            "user_id": 45,
+            "content": "testestt",
+            "status": "emergency",
+            "createdAt": "2024-03-10T06:19:48.000Z",
+            "updatedAt": "2024-03-10T06:19:48.000Z",
+            "Sender": {
+                "username": "kkkkk"
+            }
+        }
+    ]
     console.log(`/search?q=${filteredSearchValue}&domain=private_chat`)
 
-    renderSearchedPosts(mockdata, true)
+    if (isStatus) {
+        renderSearchedPosts(mockstatus, true, isStatus)
+    }
+    else {
+        renderSearchedPosts(mockdata, true, isStatus)
+    }
 
   }
 
