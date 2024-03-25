@@ -42,6 +42,10 @@ async function renderChats(chatlist, isPrivate) {
 
   let messageBoard = document.getElementById("message-board")
 
+  while(messageBoard.firstChild){
+    messageBoard.removeChild(messageBoard.lastChild);
+  }
+
   for (const msgData of chatlist) {
 
     let username = ""
@@ -64,3 +68,85 @@ async function renderChats(chatlist, isPrivate) {
     messageBoard.scrollTop = messageBoard.scrollHeight;
   }
 }
+
+function slice(array, size){   
+
+  let slicedArray = [];
+
+  for (let i = 0; i < Math.ceil(array.length / size); i++) {
+      slicedArray.push(array.slice(i * size, i * size + size));
+  }
+  return slicedArray 
+}
+
+let counter = 0;
+
+function renderSlicedArray(slicedArray, isPrivate){
+  console.log(counter)
+  let messageBoard = document.getElementById("message-board")
+
+  let showMore = document.getElementById("show-more");
+  if(showMore){
+      showMore.remove();
+  }
+
+  for (let i = 0; i < slicedArray[counter].length; i++) {
+      let msgData = slicedArray[counter][i];
+
+      let username = "";
+      if (isPrivate) {
+        username = msgData.Sender.username;
+      }
+      else {
+        username = msgData.user.username;
+      }
+
+
+      let messageElement = constructChatMessage(
+        username,
+        msgData.content,
+        msgData.status,
+        msgData.createdAt
+      );
+
+      messageBoard.appendChild(messageElement);
+  }
+
+  if(counter + 1 < slicedArray.length){
+      createShowMore(slicedArray, isPrivate)
+      counter++;  
+  }
+}
+
+function createShowMore(slicedArray, isPrivate){
+  let messageBoard = document.getElementById("message-board")
+  let showMore = document.createElement("div");
+  showMore.setAttribute("id", "show-more")
+  showMore.setAttribute("class", "list-group-item")
+  let showMoreText = document.createTextNode("Show More...")
+
+  
+  showMore.addEventListener("click", () => {renderSlicedArray(slicedArray, isPrivate)})
+  showMore.appendChild(showMoreText)
+  messageBoard.appendChild(showMore)
+}
+
+async function renderSearchedPosts(chatlist, isPrivate) {
+
+  counter = 0;
+
+  let messageBoard = document.getElementById("message-board")
+
+  while(messageBoard.firstChild){
+      messageBoard.removeChild(messageBoard.lastChild);
+  }
+
+  const sliceSize = 10;
+  
+  let slicedArray = slice(chatlist, sliceSize)
+
+  console.log(slicedArray)
+  
+  renderSlicedArray(slicedArray, isPrivate);    
+}
+

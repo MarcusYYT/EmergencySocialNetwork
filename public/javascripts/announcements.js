@@ -39,7 +39,6 @@ async function renderAnnouncements(chatlist) {
 
         let username = msgData.user.username;
 
-
         let messageElement = constructAnnouncement(
             username,
             msgData.content,
@@ -75,7 +74,7 @@ function renderSlicedArray(slicedArray){
 
     for (let i = 0; i < slicedArray[counter].length; i++) {
 
-        let msgData = slicedArray[counter][i]
+        let msgData = slicedArray[counter][i];
 
         let username = msgData.user.username;
 
