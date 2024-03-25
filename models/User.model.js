@@ -1,4 +1,4 @@
-import {DataTypes} from 'sequelize'
+import {DataTypes, Op} from 'sequelize'
 import DatabaseFactory from '../config/DatabaseAdapter.js';
 
 const sequelize = DatabaseFactory.createDatabase().sequelize;
@@ -129,4 +129,16 @@ export async function changeStatus(id, status){
             user_id: id
         }
     })
+}
+
+/**
+ * Query the users by username
+ * @param {string} query The query keyword
+ */
+export async function queryUser(query) {
+    return await User.findAll({
+        where: {
+            username: {[Op.like]: `%${query}%`}
+        }
+    });
 }

@@ -1,3 +1,8 @@
+import express from "express";
+import {search} from "../controllers/searchController.js";
+
+const router = express.Router();
+
 /**
  * @swagger
  * /search:
@@ -85,3 +90,6 @@
  *        description: Invalid search query or domain.
  */
 
+router.get("", search);
+
+export default router;

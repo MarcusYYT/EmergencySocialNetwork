@@ -61,7 +61,7 @@ html(lang='en')
             });
       })
 
-      function submitSearch(){
+      async function submitSearch() {
         event.preventDefault()
         console.log("ff")
         let selectElement = document.getElementById('search-select');
@@ -72,59 +72,31 @@ html(lang='en')
 
         console.log(selectedValue)
         console.log(searchValue)
-
+        let unread = [
+          {
+            "sender": {
+              "id": 2,
+              "username": "hijo"
+            },
+            "unreadCount": 4
+          }
+        ]
         console.log(`/search?q=${searchValue}&domain=${selectedValue}`)
 
+        await fetch(`/search?q=${searchValue}&domain=${selectedValue}`, {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json',
+          }
+        }).then(response => response.json()).then(data => {
+          console.log("Data in response::")
+          console.log(data.data);
+          renderESNList(data.data, unread);
+        }).catch(error => {
+          console.error(error);
+        })
 
-        let userlist = [{
-              "user_id": 42,
-              "username": "depasinre",
-              "password": "$2a$10$ogcVJiqQ6PC0Ut1iMLPbGu.H9cvRdASSkckEAcviXQC3wRQpFTLpe",
-              "status": "emergency",
-              "online_status": "online",
-              "createdAt": "2024-03-07T01:33:28.000Z",
-              "updatedAt": "2024-03-07T03:06:27.000Z"
-          },
 
-          {
-              "user_id": 3,
-              "username": "hiho",
-              "password": "$2a$10$RZ7QDO1DLMNLOGv59TRJRubDfVai/EdcsarrTwVbgTxNESjNxh.j6",
-              "status": "emergency",
-              "online_status": "offline",
-              "createdAt": "2024-02-21T00:47:55.000Z",
-              "updatedAt": "2024-03-07T02:50:27.000Z"
-          },
-          {
-              "user_id": 2,
-              "username": "hijo",
-              "password": "$2a$10$PdYfQfnR34pX9AA96r/Q5ua3MBIEXy17xCv6LiLWs.rVWHDqckZ0u",
-              "status": "place_holder",
-              "online_status": "offline",
-              "createdAt": "2024-02-21T00:41:42.000Z",
-              "updatedAt": "2024-02-21T00:41:42.000Z"
-          },
-          {
-              "user_id": 59,
-              "username": "justin",
-              "password": "$2a$10$05bD0/VKUp6bjIVzXfRjWuGBZZAOgOtc3NAmyIy4JaDDmapuQtuf2",
-              "status": "help",
-              "online_status": "offline",
-              "createdAt": "2024-03-13T22:20:54.000Z",
-              "updatedAt": "2024-03-13T22:27:28.000Z"
-          }]
-
-          let unread = [
-            {
-                "sender": {
-                    "id": 61,
-                    "username": "lolo"
-                },
-                "unreadCount": 4
-            }
-        ]    
-
-        renderESNList(userlist, unread);
       }
 
       async function searchFinished(){
@@ -302,6 +274,7 @@ html(lang='en')
             .catch(error => {
                 console.error('Error push status history', error);
             });
+
         const updateStatus = await fetch(`/users/${userId}`, {
           method: 'PUT',
           headers: {
