@@ -1,4 +1,4 @@
-import * as postModel from "../models/Post.model.js";
+import {Post} from "../models/Post.model.js";
 
 /**
  * TODO
@@ -8,7 +8,7 @@ import * as postModel from "../models/Post.model.js";
  * @returns 
  */
 export async function createNewPost(userId, content, status) {
-    return await postModel.createPost(userId, content, status)
+    return await Post.createPost(userId, content, status)
   }
 
 
@@ -22,7 +22,7 @@ export async function getPostById(postId){
         exist: null, 
         data: []
     }
-    await postModel.getPostById(postId).then((res)=>{
+    await Post.getPostById(postId).then((res)=>{
         if(res != null){
             returnJson.exist = true;
             returnJson.data.push(res) 
@@ -44,7 +44,7 @@ export async function getPostList(){
       message:"initial message"
     }
   
-    await postModel.getAllPosts().then((res)=>{
+    await Post.getAllPosts().then((res)=>{
       returnJson.message = "Fetch post list successful"
       returnJson.data = res;
     })

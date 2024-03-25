@@ -3,10 +3,6 @@ import express from 'express'
 import path from 'path'
 import swaggerJSDoc from 'swagger-jsdoc'
 import swaggerUI from 'swagger-ui-express'
-import {PrivatePost} from "./models/PrivatePost.model.js";
-import {User} from './models/User.model.js'
-import {Post} from './models/Post.model.js'
-import {Status} from './models/Status.model.js'
 import socketConfig from './config/socketConfig.js'
 import passport from './config/passportConfig.js'
 import authRoutes from './routes/authRoutes.js'
@@ -68,12 +64,6 @@ app.get('/swagger.json', (req, res) => {
 });
 app.use('/api-docs', swaggerUI.serve, swaggerUI.setup(swaggerSpec));
 
-
-// app.listen(port, async () => {
-//     console.log(`Server running at http://localhost:${port}`);
-//     // await User.sync()
-//     // await Post.sync()
-// });
 function cleanUpDatabase() {
   return fs.unlink('./tempdb.sqlite', (err) => {
     console.log("The file is deleted")
@@ -88,18 +78,23 @@ function cleanUpDatabase() {
 server.listen(port, async () => {
   console.log(`Server running at http://localhost:${port}`);
   if(process.env.NODE_ENV === 'test'){
-    // cleanUpDatabase()
-  }
-  const database = DatabaseAdapter.createDatabase();
-  await database.connect();
-  // await Status.sync()
-  await PrivatePost.sync()
-
-  if(process.env.NODE_ENV === 'test'){
-    await User.sync()
-    await Post.sync()
-    await PrivatePost.sync()
-    await Status.sync()
+    cleanUpDatabase()
+    DatabaseAdapter.setTestDatabaseName("tempdb.sqlite")
+    DatabaseAdapter.setCurrentDatabase('test')
+    const database = DatabaseAdapter.getDatabase();
+    await database.authenticate();
+    console.log("Connected to in-memeory test database");
+    console.log("initializing models...")
+    await DatabaseAdapter.reinitializeModels();
+    console.log("done")
+  } else {
+    DatabaseAdapter.setCurrentDatabase('default');
+    const database = DatabaseAdapter.getDatabase();
+    await database.authenticate();
+    console.log("Connected to MySQL database");
+    console.log("initializing models...")
+    await DatabaseAdapter.reinitializeModels();
+    console.log("done")
   }
 });
 

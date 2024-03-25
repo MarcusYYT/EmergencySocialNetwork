@@ -1,4 +1,4 @@
-import * as privatePostModel from "../models/PrivatePost.model.js";
+import {PrivatePost} from "../models/PrivatePost.model.js";
 
 /**
  * TODO
@@ -9,7 +9,7 @@ import * as privatePostModel from "../models/PrivatePost.model.js";
  * @returns 
  */
 export async function createPrivatePost(senderId, receiverId, content, status) {
-    return await privatePostModel.createPost(senderId, receiverId, content, status)
+    return await PrivatePost.createPost(senderId, receiverId, content, status)
   }
 
 
@@ -23,7 +23,7 @@ export async function getChatById(postId){
         exist: null, 
         data: []
     }
-    await privatePostModel.getChatById(postId).then((res)=>{
+    await PrivatePost.getChatById(postId).then((res)=>{
         if(res != null){
             returnJson.exist = true;
             returnJson.data.push(res) 
@@ -45,7 +45,7 @@ export async function getPrivatePostList(senderId, receiverId){
       message:"initial message"
     }
   
-    await privatePostModel.getChatByChatters(senderId, receiverId).then((res)=>{
+    await PrivatePost.getChatByChatters(senderId, receiverId).then((res)=>{
       returnJson.message = "Fetch post list successful"
       returnJson.data = res;
     })
@@ -61,7 +61,7 @@ export async function getPrivatePostList(senderId, receiverId){
    */
   export async function updateReadStatus(senderId, receiverId) {
     let returnJson = {success: null, message:"initial message"}
-    await privatePostModel.markMessagesAsRead(senderId, receiverId).then((resolve)=>{
+    await PrivatePost.markMessagesAsRead(senderId, receiverId).then((resolve)=>{
       returnJson.success = true;
       returnJson.message = `Change ${resolve} lines to read successful`
     });
@@ -75,7 +75,7 @@ export async function getPrivatePostList(senderId, receiverId){
  */
   export async function getUnreadMessageCountsForReceiver(receiverId){
     try {
-      return await privatePostModel.getUnreadMessageCountsForReceiver(receiverId);
+      return await PrivatePost.getUnreadMessageCountsForReceiver(receiverId);
   } catch (error) {
       console.error('Error fetching grouped unread messages:', error);
   }
