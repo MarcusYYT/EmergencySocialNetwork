@@ -1,4 +1,4 @@
-import {DataTypes} from 'sequelize'
+import {DataTypes, Op} from 'sequelize'
 import { User } from './User.model.js'
 import DatabaseAdapter from '../config/DatabaseAdapter.js';
 
@@ -67,5 +67,23 @@ export async function getStatusByUser(userId) {
         where: {
             user_id: userId
         }
+    });
+}
+
+
+/**
+ * Query the status by user_id
+ * @param {number} userId The status keyword
+ */
+export async function queryUserStatus(userId) {
+    return await Status.findAll({
+        where: {
+            user_id: userId
+        },
+        include: [{
+            model: User,
+            attributes: ['username']
+        }],
+        order: [['createdAt', 'DESC']]
     });
 }

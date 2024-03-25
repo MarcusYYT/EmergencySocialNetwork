@@ -13,11 +13,68 @@ export async function searchUser(query) {
     await userModel.queryUser(query).then((res) => {
         returnJson.success = true;
         returnJson.data = res;
-        console.log(`Data in service: `);
-        res.forEach(user => {
-            console.log(user.toJSON()); // 打印每个用户的数据
-        })
     });
     return returnJson;
 }
 
+
+export async function searchUserStatus(query) {
+    let returnJson = {
+        success: false,
+        data: []
+    }
+    await userModel.queryUserStatus(query).then((res) => {
+        returnJson.success = true;
+        returnJson.data = res;
+    });
+    return returnJson;
+}
+
+export async function searchAnnouncements(query) {
+    let returnJson = {
+        success: false,
+        data: []
+    }
+    await announcementModel.queryAnnouncement(query).then((res) => {
+        returnJson.success = true;
+        returnJson.data = res;
+    });
+    return returnJson;
+}
+
+
+export async function searchPosts(query) {
+    let returnJson = {
+        success: false,
+        data: []
+    }
+    await postModel.queryPosts(query).then((res) => {
+        returnJson.success = true;
+        returnJson.data = res;
+    });
+    return returnJson;
+}
+
+export async function searchPrivatePosts(senderId, receiverId, query) {
+    let returnJson = {
+        success: false,
+        data: []
+    }
+    await privatePostModel.queryPrivatePosts(senderId, receiverId, query).then((res) => {
+        returnJson.success = true;
+        returnJson.data = res;
+    });
+    return returnJson;
+}
+
+export async function searchStatusHistory(userId) {
+    let returnJson = {
+        success: false,
+        data: []
+    }
+    await statusModel.queryUserStatus(userId).then((res) => {
+        returnJson.success = true;
+        returnJson.data = res;
+    });
+    return returnJson;
+}

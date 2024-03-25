@@ -150,13 +150,14 @@ async function renderSearchedPosts(chatlist, isPrivate, isStatus) {
   }
 
   const sliceSize = 10;
-  
+
   let slicedArray = slice(chatlist, sliceSize)
 
   console.log(slicedArray)
-  
+
   renderSlicedArray(slicedArray, isPrivate, isStatus);    
 }
+
 
 function constructStatusMessage(sender, status, dateTime) {
   const messageDiv = document.createElement('div');

@@ -72,17 +72,7 @@ html(lang='en')
 
         console.log(selectedValue)
         console.log(searchValue)
-        let unread = [
-          {
-            "sender": {
-              "id": 2,
-              "username": "hijo"
-            },
-            "unreadCount": 4
-          }
-        ]
         console.log(`/search?q=${searchValue}&domain=${selectedValue}`)
-
         const userId = #{user_id}
         await fetch(`/search?q=${searchValue}&domain=${selectedValue}`, {
           method: 'GET',

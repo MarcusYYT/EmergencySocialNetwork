@@ -1,4 +1,4 @@
-import {DataTypes} from 'sequelize'
+import {DataTypes, Op} from 'sequelize'
 import { User } from './User.model.js'
 import DatabaseAdapter from '../config/DatabaseAdapter.js';
 
@@ -108,5 +108,23 @@ export async function deleteAnnouncement(announcementId) {
         where: {
             announcement_id: announcementId
         }
+    });
+}
+
+
+/**
+ * Query the announcements by keyword
+ * @param {string} query The keyword
+ */
+export async function queryAnnouncement(query) {
+    return await Announcement.findAll({
+        where: {
+            content: {[Op.like]: `%${query}%`}
+        },
+        include: [{
+            model: User,
+            attributes: ['username']
+        }],
+        order: [['createdAt', 'DESC']]
     });
 }

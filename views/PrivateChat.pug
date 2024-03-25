@@ -6,7 +6,7 @@ head
   link(rel='stylesheet', href='https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css')
   link(rel='stylesheet' type='text/css' href='/stylesheets/index.css')
   script(src='/javascripts/posts.js')
-  
+
   title Private Chat
 .links
   a.btn.btn-primary(onclick='routeToDirectory()') Back
@@ -22,7 +22,7 @@ script(src='https://cdn.socket.io/4.7.4/socket.io.min.js')
 script.
 
     const socket = io();
-    
+
     let senderUsername = "";
     let receiverUsername = "";
     let status = "";
@@ -83,13 +83,13 @@ script.
       if (stopWords.includes(word)) {
         filteredInput = filteredInput.replace(word, "")
         console.log("after: " + userInput)
-      } 
+      }
     }
 
     return filteredInput
   }
 
-  function submitSearch(){
+  async function submitSearch(){
     event.preventDefault()
 
     let searchInput = document.getElementsByClassName('search-input')[0];
@@ -174,13 +174,43 @@ script.
             }
         }
     ]
-    console.log(`/search?q=${filteredSearchValue}&domain=private_chat`)
+    console.log(`/search?q=${filteredSearchValue}&domain=PrivatePosts`)
+   
 
     if (isStatus) {
-        renderSearchedPosts(mockstatus, true, isStatus)
+        const receiverId = #{receiverId}
+        //- renderSearchedPosts(mockstatus, true, isStatus)
+        await fetch(`/search?q=${filteredSearchValue}&domain=StatusHistory&receiverId=${receiverId}`, {
+              method: 'GET',
+              headers: {
+                  'Content-Type': 'application/json',
+              }
+          }).then(response => response.json()).then(async (data) => {
+              console.log("Data in response::")
+              console.log(data.data);
+              renderSearchedPosts(data.data, true, isStatus)
+          }).catch(error => {
+              console.error(error);
+          })
     }
     else {
-        renderSearchedPosts(mockdata, true, isStatus)
+         const senderId = #{senderId}
+         const receiverId = #{receiverId}
+         console.log(`sender: ${senderId}, receiver: ${receiverId}`)
+         await fetch(`/search?q=${filteredSearchValue}&domain=PrivatePosts&senderId=${senderId}&receiverId=${receiverId}`, {
+              method: 'GET',
+              headers: {
+                  'Content-Type': 'application/json',
+              }
+          }).then(response => response.json()).then(async (data) => {
+              console.log("Data in response::")
+              console.log(data.data);
+              isStatus = false;
+              renderSearchedPosts(data.data, true, isStatus)
+          }).catch(error => {
+              console.error(error);
+          })
+        
     }
 
   }
@@ -217,7 +247,7 @@ script.
             senderUsername = data.data[0].username;
             status = data.data[0].status;
         })
-        
+
 
         const receiverId = #{receiverId}
         const receiverResponse = await fetch(`/users/${receiverId}`, {
@@ -229,14 +259,14 @@ script.
             console.log(data.data[0].username);
             receiverUsername = data.data[0].username;
             renderReceiverName()
-        })     
+        })
 
         await fetch(`/privatePosts/${senderId}/${receiverId}`)
             .then(response => response.json())
             .then(data => {
                 console.log(data);
                 let sortedList = sortByPostId(data.data);
-                renderChats(sortedList, true); 
+                renderChats(sortedList, true);
             })
             .catch(error => {
                 console.error('Error fetching data:', error);
@@ -298,7 +328,7 @@ script.
 
         const postData = {
             sender_name: senderUsername,
-            sender_id: sender_id, 
+            sender_id: sender_id,
             receiver_id: receiver_id,
             status: status,
             dateTime: new Date().toLocaleString(),
@@ -318,7 +348,7 @@ script.
             .catch(error => {
                 console.error('Error fetching data:', error);
             });
-                
+
     }
 
     function sortByPostId(data) {
@@ -327,4 +357,4 @@ script.
         })
         return data;
     }
-   
+

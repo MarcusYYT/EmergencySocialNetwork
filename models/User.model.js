@@ -142,3 +142,15 @@ export async function queryUser(query) {
         }
     });
 }
+
+/**
+ * Query the userstatus by status name
+ * @param {string} query The status keyword
+ */
+export async function queryUserStatus(query) {
+    return await User.findAll({
+        where: {
+            status: {[Op.like]: `%${query}%`}
+        }
+    });
+}

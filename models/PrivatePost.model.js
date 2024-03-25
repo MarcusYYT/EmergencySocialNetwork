@@ -1,6 +1,7 @@
 import {DataTypes, Op}  from "sequelize";
 import {User} from "./User.model.js";
 import DatabaseAdapter from '../config/DatabaseAdapter.js';
+import {Post} from "./Post.model.js";
 
 const sequelize = DatabaseAdapter.createDatabase().sequelize;
 
@@ -167,4 +168,30 @@ export async function getUnreadMessageCountsForReceiver(receiverId) {
         console.error('Error fetching unread message counts:', error);
         throw error;
     }
+}
+
+
+
+/**
+ * Query the posts by keyword
+ * @param {string} query The keyword
+ * @param {integer} senderId  - The user_id of the sender
+ * @param {integer} receiverId - The user_id of the reciever
+ */
+export async function queryPrivatePosts(senderId, receiverId, query) {
+
+    return await PrivatePost.findAll({
+        where: {
+            [Op.or]: [
+                { sender_id: senderId, receiver_id: receiverId },
+                { sender_id: receiverId, receiver_id: senderId }
+            ],
+            content: { [Op.like]: `%${query}%` }
+        },
+        include: [
+            { model: User, as: 'Sender', attributes: ['username'] },
+            { model: User, as: 'Receiver', attributes: ['username'] }
+        ],
+        order: [['createdAt', 'DESC']]
+    });
 }
