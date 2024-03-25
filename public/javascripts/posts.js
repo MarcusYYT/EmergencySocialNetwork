@@ -94,7 +94,7 @@ function renderSlicedArray(slicedArray, isPrivate, isStatus){
       let msgData = slicedArray[counter][i];
 
       let username = "";
-      if (isPrivate) {
+      if (isPrivate && !isStatus) {
         username = msgData.Sender.username;
       }
       else {

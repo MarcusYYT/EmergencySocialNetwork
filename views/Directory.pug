@@ -83,20 +83,30 @@ html(lang='en')
         ]
         console.log(`/search?q=${searchValue}&domain=${selectedValue}`)
 
+        const userId = #{user_id}
         await fetch(`/search?q=${searchValue}&domain=${selectedValue}`, {
           method: 'GET',
           headers: {
             'Content-Type': 'application/json',
           }
-        }).then(response => response.json()).then(data => {
-          console.log("Data in response::")
-          console.log(data.data);
-          renderESNList(data.data, unread);
+        }).then(response => response.json()).then( async (data) => {
+          await fetch(`/privatePosts/unread/${userId}`, {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          }).then(response => response.json()).then((unRead) => {
+            console.log('unread message status: ')
+            console.log(unRead)
+            // implement to display the notification
+            renderESNList(sortUsers(data.data),unRead.data)
+          })
+          //- console.log("Data in response::")
+          //- console.log(data.data);
+          //- renderESNList(data.data, unread);
         }).catch(error => {
           console.error(error);
         })
-
-
       }
 
       async function searchFinished(){

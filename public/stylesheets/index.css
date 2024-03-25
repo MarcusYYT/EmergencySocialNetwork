@@ -246,12 +246,12 @@ h2#message-header {
 
 #directory-header {
     text-align: center;
-    padding: 15px;
+    padding: 15px 0px 0px 0px;
     font-size: 8vw;
 }
 
 div#directory {
-    padding: 0vw 10vw 5vw 10vw;
+    padding: 3vw 10vw 5vw 10vw;
     overflow: scroll;
     height: 53vh;
 }
