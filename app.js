@@ -86,7 +86,7 @@ app.get('/swagger.json', (req, res) => {
 });
 app.use('/api-docs', swaggerUI.serve, swaggerUI.setup(swaggerSpec));
 
-function cleanUpDatabase() {
+export function cleanUpDatabase() {
   return fs.unlink('./tempdb.sqlite', (err) => {
     console.log("The file is deleted")
       if (err) {

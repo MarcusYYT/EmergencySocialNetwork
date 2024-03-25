@@ -1,5 +1,5 @@
 import DatabaseAdapter from "../config/DatabaseAdapter.js";
-import {getPerformanceTestMode, setPerformanceTestMode} from '../app.js'
+import {getPerformanceTestMode, setPerformanceTestMode, cleanUpDatabase} from '../app.js'
 import express from 'express';
 const router = express.Router();
 /**
@@ -67,6 +67,7 @@ router.post('/performance/end', async (req, res) => {
         await database.authenticate();
         await DatabaseAdapter.reinitializeModels();
         console.log("change back to mysql database");
+        cleanUpDatabase()
         res.status(202).json({ message: 'Performance test ended' });
     } catch (err) {
         console.error(error);
