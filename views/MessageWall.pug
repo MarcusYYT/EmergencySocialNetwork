@@ -102,7 +102,7 @@ script.
       console.log("word = " + word)
       if (stopWords.includes(word)) {
         filteredInput = filteredInput.replace(word, "")
-        console.log("after: " + userInput)
+        console.log("after: " + filteredInput)
       }
     }
 
@@ -119,22 +119,26 @@ script.
           console.log(searchValue)
           console.log(filteredSearchValue)
           console.log(`/search?q=${filteredSearchValue}&domain=Posts`)
-          await fetch(`/search?q=${filteredSearchValue}&domain=Posts`, {
+
+          if(filteredSearchValue !== ""){
+            await fetch(`/search?q=${filteredSearchValue}&domain=Posts`, {
               method: 'GET',
               headers: {
                   'Content-Type': 'application/json',
               }
-          }).then(response => response.json()).then(async (data) => {
-              console.log("Data in response::")
-              console.log(data.data);
-              isStatus = false;
-              renderSearchedPosts(data.data, false, false)
-          }).catch(error => {
-              console.error(error);
-          })
-
-          // renderSearchedPosts(mockdata, false)
-
+            }).then(response => response.json()).then(async (data) => {
+                console.log("Data in response::")
+                console.log(data.data);
+                isStatus = false;
+                renderSearchedPosts(data.data, false, false)
+            }).catch(error => {
+                console.error(error);
+            })
+          }
+          else{
+            //render empty message
+            renderEmptyMessage();
+          }
       }
 
   async function searchFinished(){

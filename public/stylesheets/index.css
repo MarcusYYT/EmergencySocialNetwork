@@ -201,12 +201,29 @@ form#post-form {
 }
 
 div#message-board {
-    background-color: white;
     width: 85vw;
     margin: 0 3vw 3vw 3vw;
-    border-radius: 15px;
     overflow: scroll;
     height: 75vh;
+    border-radius: 15px;
+    background-color: white;
+}
+
+div#announcement-board {
+    width: 85vw;
+    margin: 0 3vw 3vw 3vw;
+    overflow: scroll;
+    height: 75vh;
+    border-radius: 15px;
+}
+
+.empty-message{
+    text-align: center;
+    padding: 3vh;
+}
+
+.empty-announcement{
+    text-align: center;
 }
 
 textarea {
@@ -387,4 +404,17 @@ input#directory-search-input {
 
 div#show-more {
     font-weight: bold;
+}
+
+.card {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+    word-wrap: break-word;
+    background-color: #fff;
+    background-clip: border-box;
+    border: 1px solid rgba(0, 0, 0, .125);
+    border-radius: 15px;
+    margin-bottom: 1vh;
 }

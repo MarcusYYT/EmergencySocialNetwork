@@ -13,7 +13,7 @@ head
   h2#message-header Announcements
   form.search-form.input-group.mb-3(onsubmit="submitSearch()" onchange="searchFinished()")
     input.search-input.form-control(type='text', name='search', placeholder='Search...')
-  #message-board.list-group
+  #announcement-board
   form#post-form(method='POST')
     textarea#message(placeholder='Type your message here...' required='')
     button#post-btn.btn.btn-primary(type='button' onclick='postAnnouncement()') Post
@@ -100,7 +100,7 @@ script.
       console.log("word = " + word)
       if (stopWords.includes(word)) {
         filteredInput = filteredInput.replace(word, "")
-        console.log("after: " + userInput)
+        console.log("after: " + filteredInput)
       } 
     }
 
@@ -118,18 +118,27 @@ script.
       console.log(filteredSearchValue)
       console.log(`/search?q=${filteredSearchValue}&domain=Announcements`)
 
-      await fetch(`/search?q=${filteredSearchValue}&domain=Announcements`, {
+      if(filteredSearchValue !== ""){
+        await fetch(`/search?q=${filteredSearchValue}&domain=Announcements`, {
           method: 'GET',
           headers: {
               'Content-Type': 'application/json',
           }
-      }).then(response => response.json()).then(async (data) => {
-          console.log("Data in response::")
-          console.log(data.data);
-          renderSearchedAnnouncements(data.data)
-      }).catch(error => {
-          console.error(error);
-      })
+        }).then(response => response.json()).then(async (data) => {
+            console.log("Data in response::")
+            console.log(data.data);
+            renderSearchedAnnouncements(data.data)
+        }).catch(error => {
+            console.error(error);
+        })
+      }
+
+      else{
+        //render empty message
+        console.log("hereee")
+        renderEmptyAnnouncement();
+      }
+
 
   }
 
@@ -195,7 +204,7 @@ script.
   }
 
   socket.on("announcementData", (announcementData) => {
-    let messageBoard = document.getElementById("message-board")
+    let messageBoard = document.getElementById("announcement-board")
     let messageElement = constructAnnouncement(
         announcementData.username,
         announcementData.content,
@@ -203,7 +212,7 @@ script.
     );
     messageBoard.appendChild(messageElement);
     console.log(username);
-    document.getElementById("message-board").scrollTop = messageBoard.scrollHeight;
+    document.getElementById("announcement-board").scrollTop = messageBoard.scrollHeight;
   });
   
   

@@ -38,7 +38,7 @@ html(lang='en')
             i.bi.bi-bandaid-fill
     #directory-wrapper
       h1#directory-header ESN Directory
-      #directory.container.text-left
+      #directory.container
     script.
       const socket = io();
       let username = '';
@@ -177,10 +177,16 @@ html(lang='en')
           console.log(unread.unreadCount)
           userToUnreadCount.set(unread[i].sender.id, unread[i].unreadCount);
         }
+
+        if(list.length == 0){
+          let emptyMessage = document.createElement("h1")
+          let emptyMessageText = document.createTextNode("No results found")
+          emptyMessage.className = 'empty-message'
+          emptyMessage.appendChild(emptyMessageText)
+          directory.appendChild(emptyMessage);
+        }
       
         for (let i = 0; i < list.length; i++) {
-
-          let directory = document.getElementById("directory");
           let userDiv = document.createElement("div");
           userDiv.setAttribute("class", "directory-user row gx-1 justify-content-between");
           userDiv.addEventListener("click", () => {routeToPrivateChat(userId, list[i].user_id)})

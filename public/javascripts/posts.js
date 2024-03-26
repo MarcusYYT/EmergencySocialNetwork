@@ -149,13 +149,33 @@ async function renderSearchedPosts(chatlist, isPrivate, isStatus) {
       messageBoard.removeChild(messageBoard.lastChild);
   }
 
-  const sliceSize = 10;
+  if(chatlist.length == 0){
+    renderEmptyMessage()
+  }
 
-  let slicedArray = slice(chatlist, sliceSize)
+  else{
+    const sliceSize = 10;
 
-  console.log(slicedArray)
+    let slicedArray = slice(chatlist, sliceSize)
 
-  renderSlicedArray(slicedArray, isPrivate, isStatus);    
+    console.log(slicedArray)
+
+    renderSlicedArray(slicedArray, isPrivate, isStatus);    
+  }  
+}
+
+function renderEmptyMessage(){
+  let messageBoard = document.getElementById("message-board")
+
+  while(messageBoard.firstChild){
+    messageBoard.removeChild(messageBoard.lastChild);
+  }
+  
+  let emptyMessage = document.createElement("h1")
+  let emptyMessageText = document.createTextNode("No results found")
+  emptyMessage.className = 'empty-message'
+  emptyMessage.appendChild(emptyMessageText)
+  messageBoard.appendChild(emptyMessage);
 }
 
 

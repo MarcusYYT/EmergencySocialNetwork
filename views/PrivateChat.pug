@@ -82,7 +82,7 @@ script.
       console.log("word = " + word)
       if (stopWords.includes(word)) {
         filteredInput = filteredInput.replace(word, "")
-        console.log("after: " + userInput)
+        console.log("after: " + filteredInput)
       }
     }
 
@@ -103,116 +103,48 @@ script.
         isStatus = true;
     }
 
-    let mockdata = [
-        {
-            "post_id": 16,
-            "sender_id": 45,
-            "receiver_id": 45,
-            "content": "testestt",
-            "sender_read": true,
-            "receiver_read": true,
-            "status": "help",
-            "createdAt": "2024-03-10T06:17:48.000Z",
-            "updatedAt": "2024-03-10T06:17:48.000Z",
-            "Sender": {
-                "username": "kkkkk"
-            },
-            "Receiver": {
-                "username": "kkkkk"
-            }
-        },
-        {
-            "post_id": 17,
-            "sender_id": 45,
-            "receiver_id": 45,
-            "content": "remind me do hw hahaha",
-            "sender_read": true,
-            "receiver_read": true,
-            "status": "help",
-            "createdAt": "2024-03-10T06:18:12.000Z",
-            "updatedAt": "2024-03-10T06:18:12.000Z",
-            "Sender": {
-                "username": "kkkkk"
-            },
-            "Receiver": {
-                "username": "kkkkk"
-            }
-        }
-    ]
-       let mockstatus = [
-        {
-            "post_id": 16,
-            "user_id": 45,
-            "content": "testestt",
-            "status": "help",
-            "createdAt": "2024-03-10T06:17:48.000Z",
-            "updatedAt": "2024-03-10T06:17:48.000Z",
-            "user": {
-                "username": "kkkkk"
-            }
-        },
-        {
-            "post_id": 17,
-            "user_id": 45,
-            "content": "testestt",
-            "status": "emergency",
-            "createdAt": "2024-03-10T06:18:48.000Z",
-            "updatedAt": "2024-03-10T06:18:48.000Z",
-            "user": {
-                "username": "kkkkk"
-            }
-        },
-                {
-            "post_id": 18,
-            "user_id": 45,
-            "content": "testestt",
-            "status": "emergency",
-            "createdAt": "2024-03-10T06:19:48.000Z",
-            "updatedAt": "2024-03-10T06:19:48.000Z",
-            "user": {
-                "username": "kkkkk"
-            }
-        }
-    ]
     console.log(`/search?q=${filteredSearchValue}&domain=PrivatePosts`)
    
-
-    if (isStatus) {
-        const receiverId = #{receiverId}
-        //- renderSearchedPosts(mockstatus, true, isStatus)
-        await fetch(`/search?q=${filteredSearchValue}&domain=StatusHistory&receiverId=${receiverId}`, {
-              method: 'GET',
-              headers: {
-                  'Content-Type': 'application/json',
-              }
-          }).then(response => response.json()).then(async (data) => {
-              console.log("Data in response::")
-              console.log(data.data);
-              renderSearchedPosts(data.data, true, isStatus)
-          }).catch(error => {
-              console.error(error);
-          })
+    if(filteredSearchValue !== ""){
+        if (isStatus) {
+            const receiverId = #{receiverId}
+            //- renderSearchedPosts(mockstatus, true, isStatus)
+            await fetch(`/search?q=${filteredSearchValue}&domain=StatusHistory&receiverId=${receiverId}`, {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                }
+            }).then(response => response.json()).then(async (data) => {
+                console.log("Data in response::")
+                console.log(data.data);
+                renderSearchedPosts(data.data, true, isStatus)
+            }).catch(error => {
+                console.error(error);
+            })
+        }
+        else {
+            const senderId = #{senderId}
+            const receiverId = #{receiverId}
+            console.log(`sender: ${senderId}, receiver: ${receiverId}`)
+            await fetch(`/search?q=${filteredSearchValue}&domain=PrivatePosts&senderId=${senderId}&receiverId=${receiverId}`, {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                }
+            }).then(response => response.json()).then(async (data) => {
+                console.log("Data in response::")
+                console.log(data.data);
+                isStatus = false;
+                renderSearchedPosts(data.data, true, isStatus)
+            }).catch(error => {
+                console.error(error);
+            })      
+        }
     }
-    else {
-         const senderId = #{senderId}
-         const receiverId = #{receiverId}
-         console.log(`sender: ${senderId}, receiver: ${receiverId}`)
-         await fetch(`/search?q=${filteredSearchValue}&domain=PrivatePosts&senderId=${senderId}&receiverId=${receiverId}`, {
-              method: 'GET',
-              headers: {
-                  'Content-Type': 'application/json',
-              }
-          }).then(response => response.json()).then(async (data) => {
-              console.log("Data in response::")
-              console.log(data.data);
-              isStatus = false;
-              renderSearchedPosts(data.data, true, isStatus)
-          }).catch(error => {
-              console.error(error);
-          })
-        
-    }
 
+    else{
+        renderEmptyMessage();
+    }
   }
 
   async function searchFinished(){
