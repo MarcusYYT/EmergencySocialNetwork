@@ -1,7 +1,7 @@
 function constructAnnouncement(sender, message, dateTime) {
 
     const messageDiv = document.createElement('div');
-    messageDiv.className = 'list-group-item';
+    messageDiv.className = 'card';
     const messageHeader = document.createElement('div');
     messageHeader.className = 'd-flex w-100 justify-content-between';
     const messageUsernameHeader = document.createElement('div');
@@ -20,19 +20,26 @@ function constructAnnouncement(sender, message, dateTime) {
     const messageBody = document.createElement('div');
     messageBody.className = 'message-body';
     messageBody.textContent = message;
-    messageDiv.appendChild(messageUsernameHeader);
-    messageDiv.appendChild(messageHeader);
-    messageDiv.appendChild(messageBody);
+
+    let cardBody = document.createElement("div");
+    cardBody.className = 'card-body';
+    cardBody.appendChild(messageUsernameHeader);
+    cardBody.appendChild(messageHeader);
+    cardBody.appendChild(messageBody);
+
+    messageDiv.appendChild(cardBody)
+
+
     return messageDiv;
 
 }
 
 async function renderAnnouncements(chatlist) {
 
-    let messageBoard = document.getElementById("message-board")
+    let announcementBoard = document.getElementById("announcement-board")
 
-    while(messageBoard.firstChild){
-        messageBoard.removeChild(messageBoard.lastChild);
+    while(announcementBoard.firstChild){
+        announcementBoard.removeChild(announcementBoard.lastChild);
     }
 
     for (const msgData of chatlist) {
@@ -45,8 +52,8 @@ async function renderAnnouncements(chatlist) {
             msgData.createdAt
         );
 
-        messageBoard.appendChild(messageElement);
-        messageBoard.scrollTop = messageBoard.scrollHeight;
+        announcementBoard.appendChild(messageElement);
+        announcementBoard.scrollTop = announcementBoard.scrollHeight;
     }
 }
 
@@ -65,7 +72,7 @@ let counter = 0;
 
 function renderSlicedArray(slicedArray){
     console.log(counter)
-    let messageBoard = document.getElementById("message-board")
+    let announcementBoard = document.getElementById("announcement-board")
 
     let showMore = document.getElementById("show-more");
     if(showMore){
@@ -84,7 +91,7 @@ function renderSlicedArray(slicedArray){
             msgData.createdAt
         );
 
-        messageBoard.appendChild(messageElement);
+        announcementBoard.appendChild(messageElement);
         
     }
 
@@ -97,7 +104,7 @@ function renderSlicedArray(slicedArray){
 }
 
 function createShowMore(slicedArray){
-    let messageBoard = document.getElementById("message-board")
+    let announcementBoard = document.getElementById("announcement-board")
     let showMore = document.createElement("div");
     showMore.setAttribute("id", "show-more")
     showMore.setAttribute("class", "list-group-item")
@@ -106,25 +113,50 @@ function createShowMore(slicedArray){
     
     showMore.addEventListener("click", () => {renderSlicedArray(slicedArray)})
     showMore.appendChild(showMoreText)
-    messageBoard.appendChild(showMore)
+    announcementBoard.appendChild(showMore)
 }
 
 async function renderSearchedAnnouncements(chatlist) {
 
     counter = 0;
 
-    let messageBoard = document.getElementById("message-board")
+    let announcementBoard = document.getElementById("announcement-board")
 
-    while(messageBoard.firstChild){
-        messageBoard.removeChild(messageBoard.lastChild);
+    while(announcementBoard.firstChild){
+        announcementBoard.removeChild(announcementBoard.lastChild);
     }
 
-    const sliceSize = 10;
-    
-    let slicedArray = slice(chatlist, sliceSize)
+    if(chatlist.length == 0){
+        renderEmptyAnnouncement();
+    }
 
-    console.log(slicedArray)
-    
-    renderSlicedArray(slicedArray);    
+    else{
+        const sliceSize = 10; 
+        let slicedArray = slice(chatlist, sliceSize)
+        console.log(slicedArray)
+        renderSlicedArray(slicedArray);  
+    }
+}
+
+function renderEmptyAnnouncement(){
+    console.log("RENDER EMPTY ANNOUNCEMENT")
+    let announcementBoard = document.getElementById("announcement-board")
+    while(announcementBoard.firstChild){
+        announcementBoard.removeChild(announcementBoard.lastChild);
+    }
+
+    let card = document.createElement("div")
+    let cardBody = document.createElement("div")
+    card.className = "card"
+    cardBody.className = "card-body"
+
+    let emptyAnnouncement = document.createElement("h1")
+    let emptyAnnouncementText = document.createTextNode("No results found")
+    emptyAnnouncement.className = 'empty-announcement'
+    emptyAnnouncement.appendChild(emptyAnnouncementText)
+
+    cardBody.appendChild(emptyAnnouncement)
+    card.appendChild(cardBody)
+    announcementBoard.appendChild(card);
 }
 
