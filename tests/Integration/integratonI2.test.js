@@ -12,16 +12,15 @@ let database;
 
 beforeAll(async () => {
   server = app.listen(4000); // Start the app on a different port for testing
-  database = DatabaseAdapter.createDatabase('integration_db.sqlite'); // Create a new instance of the database
-  await database.connect(); // Connect to the database
-  await User.sync({ force: true });
-  await Post.sync({ force: true });
-  await PrivatePost.sync({ force: true });
-  await Status.sync({ force: true });
+  DatabaseAdapter.setTestDatabaseName("integration_db.sqlite")
+  DatabaseAdapter.setCurrentDatabase('test')
+  database = DatabaseAdapter.getDatabase()
+  await database.authenticate();// Connect to the database
+  await DatabaseAdapter.reinitializeModels();
 });
 
 afterAll(async () => {
-  await database.disconnect();// Disconnect from the database
+  await database.close();// Disconnect from the database
   await new Promise((resolve) => server.close(resolve)); // Stop the server
   rimrafSync('./integration_db.sqlite');
 });

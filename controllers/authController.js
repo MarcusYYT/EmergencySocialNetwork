@@ -1,5 +1,5 @@
 import * as userService from "../services/userService.js";
-import { ifUserExist, changeOnlineStatus } from "../models/User.model.js";
+import { User} from "../models/User.model.js";
 import passport from "../config/passportConfig.js";
 import jwt from "jsonwebtoken";
 import { io } from "../config/socketConfig.js"
@@ -21,7 +21,7 @@ export async function register(req, res) {
                 console.log("username is not valid");
                 res.status(409).json({ success: false, message: 'Username invalid' });
             } else {
-                await ifUserExist(username).then(async (result)=>{
+                await User.ifUserExist(username).then(async (result)=>{
                     if(result === true){
                         console.log("The User is exist")
                         res.status(409).json({ success: false, message: 'Username Exist' });
@@ -56,7 +56,7 @@ export async function login(req, res) {
             const statusCode = info.code || 401; 
             return res.status(statusCode).json({ success: false, message: info.message });
         } else {
-            changeOnlineStatus(user.user_id, "online")
+            User.changeOnlineStatus(user.user_id, "online")
             const token = jwt.sign({ user_id: user.user_id }, process.env.JWT_SECRET_KEY || 'sb1sb1', { expiresIn: '1h' });
             res.status(200).json({ success: true, user_id: user.user_id, token, message: 'Login successful' });
         }

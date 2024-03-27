@@ -1,4 +1,4 @@
-import * as announcementModel from "../models/Announcement.model.js";
+import { Announcement } from '../models/Announcement.model.js'
 
 /**
  * TODO
@@ -7,7 +7,7 @@ import * as announcementModel from "../models/Announcement.model.js";
  * @returns 
  */
 export async function createNewAnnouncement(userId, content) {
-    return await announcementModel.createAnnouncement(userId, content)
+    return await Announcement.createAnnouncement(userId, content)
   }
 
 
@@ -21,7 +21,7 @@ export async function getAnnouncementById(announcementId){
         exist: null, 
         data: []
     }
-    await announcementModel.getAnnouncementById(announcementId).then((res)=>{
+    await Announcement.getAnnouncementById(announcementId).then((res)=>{
         if(res != null){
             returnJson.exist = true;
             returnJson.data.push(res) 
@@ -43,7 +43,7 @@ export async function getAnnouncementList(){
       message:"initial message"
     }
   
-    await announcementModel.getAllAnnouncements().then((res)=>{
+    await Announcement.getAllAnnouncements().then((res)=>{
       returnJson.message = "Fetch post list successful"
       returnJson.data = res;
     })

@@ -1,8 +1,14 @@
-import * as userModel from "../models/User.model.js";
-import * as postModel from "../models/Post.model.js";
-import * as statusModel from "../models/Status.model.js";
-import * as privatePostModel from "../models/PrivatePost.model.js";
-import * as announcementModel from "../models/Announcement.model.js";
+// import * as userModel from "../models/User.model.js";
+// import * as postModel from "../models/Post.model.js";
+// import * as statusModel from "../models/Status.model.js";
+// import * as privatePostModel from "../models/PrivatePost.model.js";
+// import * as announcementModel from "../models/Announcement.model.js";
+import { User } from "../models/User.model.js";
+import { Post } from "../models/Post.model.js";
+import { Status } from "../models/Status.model.js";
+import { PrivatePost } from "../models/PrivatePost.model.js";
+import { Announcement } from "../models/Announcement.model.js";
+
 
 
 export async function searchUser(query) {
@@ -10,7 +16,7 @@ export async function searchUser(query) {
         success: false,
         data: []
     }
-    await userModel.queryUser(query).then((res) => {
+    await User.queryUser(query).then((res) => {
         returnJson.success = true;
         returnJson.data = res;
     });
@@ -23,7 +29,7 @@ export async function searchUserStatus(query) {
         success: false,
         data: []
     }
-    await userModel.queryUserStatus(query).then((res) => {
+    await User.queryUserStatus(query).then((res) => {
         returnJson.success = true;
         returnJson.data = res;
     });
@@ -35,7 +41,7 @@ export async function searchAnnouncements(query) {
         success: false,
         data: []
     }
-    await announcementModel.queryAnnouncement(query).then((res) => {
+    await Announcement.queryAnnouncement(query).then((res) => {
         returnJson.success = true;
         returnJson.data = res;
     });
@@ -48,7 +54,7 @@ export async function searchPosts(query) {
         success: false,
         data: []
     }
-    await postModel.queryPosts(query).then((res) => {
+    await Post.queryPosts(query).then((res) => {
         returnJson.success = true;
         returnJson.data = res;
     });
@@ -60,7 +66,7 @@ export async function searchPrivatePosts(senderId, receiverId, query) {
         success: false,
         data: []
     }
-    await privatePostModel.queryPrivatePosts(senderId, receiverId, query).then((res) => {
+    await PrivatePost.queryPrivatePosts(senderId, receiverId, query).then((res) => {
         returnJson.success = true;
         returnJson.data = res;
     });
@@ -72,7 +78,7 @@ export async function searchStatusHistory(userId) {
         success: false,
         data: []
     }
-    await statusModel.queryUserStatus(userId).then((res) => {
+    await Status.queryUserStatus(userId).then((res) => {
         returnJson.success = true;
         returnJson.data = res;
     });

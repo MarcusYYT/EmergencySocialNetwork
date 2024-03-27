@@ -1,23 +1,18 @@
 import { isUsernameValid, isPasswordValid, createNewUser } from "../../services/userService.js";
-import {User} from "../../models/User.model.js";
-import {Post} from '../../models/Post.model.js'
-import {PrivatePost} from '../../models/PrivatePost.model.js'
-import {Status} from '../../models/Status.model.js'
 import DatabaseAdapter from '../../config/DatabaseAdapter.js'; 
 import { sync as rimrafSync } from 'rimraf';
 
 let database
 beforeAll(async () => {
-  database = DatabaseAdapter.createDatabase('unit_db.sqlite'); // Create a new instance of the database
-  await database.connect(); // Connect to the database
-  await User.sync({ force: true });
-  await Post.sync({ force: true });
-  await PrivatePost.sync({ force: true });
-  await Status.sync({ force: true });
+  DatabaseAdapter.setTestDatabaseName("unit_db.sqlite")
+  DatabaseAdapter.setCurrentDatabase('test')
+  database = DatabaseAdapter.getDatabase()
+  await database.authenticate();// Connect to the database
+  await DatabaseAdapter.reinitializeModels();
 });
 
 afterAll(async () => {
-  await database.disconnect();// Disconnect from the database
+  await database.close();// Disconnect from the database
   await new Promise(resolve => setTimeout(resolve, 1000));
   rimrafSync('./unit_db.sqlite');
 });

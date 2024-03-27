@@ -3,13 +3,9 @@ import express from 'express'
 import path from 'path'
 import swaggerJSDoc from 'swagger-jsdoc'
 import swaggerUI from 'swagger-ui-express'
-import {PrivatePost} from "./models/PrivatePost.model.js";
-import {User} from './models/User.model.js'
-import {Post} from './models/Post.model.js'
-import {Status} from './models/Status.model.js'
-import {Announcement} from './models/Announcement.model.js'
 import socketConfig from './config/socketConfig.js'
 import passport from './config/passportConfig.js'
+
 import authRoutes from './routes/authRoutes.js'
 import userRoutes from './routes/userRoutes.js'
 import postRoutes from './routes/postRoutes.js'
@@ -18,6 +14,7 @@ import announcementRoutes from './routes/announcementRoutes.js'
 import pageRoutes from './routes/pageRoutes.js'
 import statusRoutes from './routes/statusRoutes.js'
 import searchRoutes from './routes/searchRoutes.js'
+import testRoute from './routes/testRoutes.js'
 import DatabaseAdapter from './config/DatabaseAdapter.js'
 import { createServer } from 'node:http';
 import cookieParser from 'cookie-parser';
@@ -32,7 +29,7 @@ const swaggerOptions = {
       version: '1.0.0',
     },
   },
-  apis: ['./routes/*.mjs'],
+  apis: ['./routes/*.js'],
 };
 
 // get the root folder for the project
@@ -55,6 +52,24 @@ app.use(cookieParser());
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'pug');
 
+let isPerformanceTestMode = false;
+
+export function setPerformanceTestMode(mode) {
+    isPerformanceTestMode = mode;
+}
+
+export function getPerformanceTestMode() {
+    return isPerformanceTestMode;
+}
+
+// filter non-test request
+app.use((req, res, next) => {
+    if (getPerformanceTestMode() && !req.headers['x-performance-test']) {
+        return res.status(503).send('Service temporarily unavailable due to performance testing');
+    }
+    next();
+});
+
 // Router setting
 app.use('', pageRoutes);
 app.use('/auth', authRoutes);
@@ -64,7 +79,7 @@ app.use('/status', statusRoutes)
 app.use('/privatePosts', privatePostRoutes)
 app.use('/announcements', announcementRoutes)
 app.use('/search', searchRoutes)
-
+app.use('/test', testRoute);
 
 // setup swagger
 const swaggerSpec = await swaggerJSDoc(swaggerOptions);
@@ -74,39 +89,40 @@ app.get('/swagger.json', (req, res) => {
 });
 app.use('/api-docs', swaggerUI.serve, swaggerUI.setup(swaggerSpec));
 
-
-// app.listen(port, async () => {
-//     console.log(`Server running at http://localhost:${port}`);
-//     // await User.sync()
-//     // await Post.sync()
-// });
-function cleanUpDatabase() {
-  return fs.unlink('./tempdb.sqlite', (err) => {
-    console.log("The file is deleted")
+export function cleanUpDatabase() {
+  if (fs.existsSync('./tempdb.sqlite')) {
+    return fs.unlink('./tempdb.sqlite', (err) => {
       if (err) {
-          console.error('Failed to delete database file:', err);
+        console.error('Failed to delete database file:', err);
       } else {
-          console.log('Database file deleted successfully.');
+        console.log('Database file deleted successfully.');
       }
-  });
+    });
+  } else {
+    console.log('Database file does not exist, no need to delete.');
+  }
 }
 
 server.listen(port, async () => {
   console.log(`Server running at http://localhost:${port}`);
+  cleanUpDatabase()
   if(process.env.NODE_ENV === 'test'){
-    // cleanUpDatabase()
-  }
-  const database = DatabaseAdapter.createDatabase();
-  await database.connect();
-  // await Status.sync()
-  //await Announcement.sync()
-
-  if(process.env.NODE_ENV === 'test'){
-    await User.sync()
-    await Post.sync()
-    await PrivatePost.sync()
-    await Status.sync()
-    await Announcement.sync()
+    DatabaseAdapter.setTestDatabaseName("tempdb.sqlite")
+    DatabaseAdapter.setCurrentDatabase('test')
+    const database = DatabaseAdapter.getDatabase();
+    await database.authenticate();
+    console.log("Connected to in-memeory test database");
+    console.log("initializing models...")
+    await DatabaseAdapter.reinitializeModels();
+    console.log("done")
+  } else {
+    DatabaseAdapter.setCurrentDatabase('default');
+    const database = DatabaseAdapter.getDatabase();
+    await database.authenticate();
+    console.log("Connected to MySQL database");
+    console.log("initializing models...")
+    await DatabaseAdapter.reinitializeModels();
+    console.log("done")
   }
 });
 
