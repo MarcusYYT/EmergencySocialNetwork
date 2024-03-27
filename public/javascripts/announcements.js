@@ -27,9 +27,7 @@ function constructAnnouncement(msgData) {
 
 async function renderAnnouncements(chatlist) {
     let announcementBoard = document.getElementById("announcement-board")
-    while (announcementBoard.firstChild) {
-        announcementBoard.removeChild(announcementBoard.lastChild);
-    }
+    removeAnnoucementElement(announcementBoard)
     for (const msgData of chatlist) {
         let announcementDetails = createDataObject(msgData)
         let announcementElement = constructAnnouncement(announcementDetails);
@@ -83,9 +81,7 @@ function createShowMore(slicedArray){
 async function renderSearchedAnnouncements(chatlist) {
     counter = 0;
     let announcementBoard = document.getElementById("announcement-board")
-    while (announcementBoard.firstChild) {
-        announcementBoard.removeChild(announcementBoard.lastChild);
-    }
+    removeAnnoucementElement(announcementBoard);
     if (chatlist.length == 0) {
         renderEmptyAnnouncement();
     } else {
@@ -97,9 +93,7 @@ async function renderSearchedAnnouncements(chatlist) {
 
 function renderEmptyAnnouncement(){
     let announcementBoard = document.getElementById("announcement-board")
-    while (announcementBoard.firstChild) {
-        announcementBoard.removeChild(announcementBoard.lastChild);
-    }
+    removeAnnoucementElement(announcementBoard);
     let card = document.createElement("div")
     let cardBody = document.createElement("div")
     card.className = "card"
@@ -120,4 +114,10 @@ function createDataObject(data) {
         dateTime: data.createdAt
     }
     return announcementDetails;
+}
+
+function removeAnnoucementElement(announcementBoard) {
+    while (announcementBoard.firstChild) {
+        announcementBoard.removeChild(announcementBoard.lastChild);
+    }
 }

@@ -36,9 +36,7 @@ function constructChatMessage(msgData) {
 async function renderChats(chatlist, isPrivate) {
   let messageBoard = document.getElementById("message-board")
   let isStatus = false;
-  while (messageBoard.firstChild) {
-    messageBoard.removeChild(messageBoard.lastChild);
-  }
+  removePostElements(messageBoard)
   for (const msgData of chatlist) {
     let username = ""
     if (isPrivate) {
@@ -102,9 +100,7 @@ function createShowMore(slicedArray, isPrivate){
 async function renderSearchedPosts(chatlist, isPrivate, isStatus) {
   counter = 0;
   let messageBoard = document.getElementById("message-board")
-  while(messageBoard.firstChild){
-      messageBoard.removeChild(messageBoard.lastChild);
-  }
+  removePostElements(messageBoard);
   if(chatlist.length == 0){
     renderEmptyMessage()
   } else {
@@ -116,9 +112,7 @@ async function renderSearchedPosts(chatlist, isPrivate, isStatus) {
 
 function renderEmptyMessage(){
   let messageBoard = document.getElementById("message-board")
-  while(messageBoard.firstChild){
-    messageBoard.removeChild(messageBoard.lastChild);
-  }
+  removePostElements(messageBoard)
   let emptyMessage = document.createElement("h1")
   let emptyMessageText = document.createTextNode("No results found")
   emptyMessage.className = 'empty-message'
@@ -135,4 +129,10 @@ function createMsgObject(msgData, username, isStatus) {
     isStatus: isStatus
   }
   return messageDetails;
+}
+
+function removePostElements(messageBoard) {
+  while (messageBoard.firstChild) {
+    messageBoard.removeChild(messageBoard.lastChild);
+  }
 }
