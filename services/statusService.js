@@ -1,4 +1,4 @@
-import * as statusModel from "../models/Status.model.js";
+import {Status} from "../models/Status.model.js";
 
 /**
  * TODO
@@ -11,7 +11,7 @@ export async function getStatusByUser(userId){
         data: [],
         message:'initial'
     }
-    await statusModel.getStatusByUser(userId).then((res)=>{
+    await Status.getStatusByUser(userId).then((res)=>{
         if(res != null){
             returnJson.exist = true;
             returnJson.data = res;
@@ -31,5 +31,5 @@ export async function getStatusByUser(userId){
  * @returns 
  */
 export async function createNewStatus(userId, status) {
-    return await statusModel.createStatus(userId, status)
+    return await Status.createStatus(userId, status)
   }

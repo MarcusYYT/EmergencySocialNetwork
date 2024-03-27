@@ -1,14 +1,47 @@
 import MySQLDatabase from './MySQLDatabase.js';
 import SQLiteDatabase from './SQLiteDatabase.js';
 
-export default class DatabaseAdapter {
-    static createDatabase(filename) {
-        const databaseMap = {
-            'test': () => new SQLiteDatabase(filename),
-            'default': () => new MySQLDatabase()
-        };
+import {User} from "../models/User.model.js"
+import {Post} from "../models/Post.model.js"
+import {PrivatePost} from "../models/PrivatePost.model.js"
+import {Status} from "../models/Status.model.js"
 
-        const DatabaseClass = databaseMap[process.env.NODE_ENV] || databaseMap['default'];
-        return DatabaseClass();
+
+export default class DatabaseAdapter {
+    static databases = {
+        'default': new MySQLDatabase(),
+        'test': null
+    };
+
+    static currentDatabase = 'default';
+
+    static setTestDatabaseName(filename) {
+        this.databases['test'] = new SQLiteDatabase(filename)
     }
+
+    static setCurrentDatabase(databaseKey){
+        this.currentDatabase = databaseKey;
+    }
+
+    static getDatabase() {
+        return this.databases[this.currentDatabase].sequelize;
+    }
+
+    static async reinitializeModels() {
+        User.initModel(this.getDatabase());
+        Post.initModel(this.getDatabase());
+        PrivatePost.initModel(this.getDatabase());
+        Status.initModel(this.getDatabase());
+
+        await User.model.sync();
+        await Post.model.sync();
+        await PrivatePost.model.sync();
+        await Status.model.sync();
+
+    }
+
+    static switchDatabase(databaseKey) {
+        this.currentDatabase = databaseKey;
+    }
+
 }

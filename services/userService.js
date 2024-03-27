@@ -1,4 +1,4 @@
-import * as userModel from "../models/User.model.js";
+import {User} from "../models/User.model.js";
 import { getUsernameBanList } from "../config/usernameBanList.js";
 import bcrypt from "bcryptjs";
 
@@ -13,12 +13,12 @@ let saltRounds = 10;
 export async function createNewUser(username, password) {
   let returnJson = {success: false, user_id: -1, message: "Create user failed"};
   try {
-    if (await userModel.ifUserExist(username)) {
+    if (await User.ifUserExist(username)) {
       returnJson.message = "Username already exists.";
       return returnJson;
     }
     const hashedPassword = await bcrypt.hash(password, saltRounds);
-    const user = await userModel.createUser(username, hashedPassword);
+    const user = await User.createUser(username, hashedPassword);
     returnJson.success = true;
     returnJson.user_id = user.user_id;
     returnJson.message = "Create user successfully.";
@@ -30,14 +30,6 @@ export async function createNewUser(username, password) {
       returnJson.message = "An unexpected error occurred.";
     }
   }
-  // await bcrypt.hash(password, saltRounds).then(async (res) => {
-  //   await userModel.createUser(username, res).then((user)=>{
-  //     returnJson.success = true;
-  //     returnJson.user_id = user.user_id
-  //     returnJson.message = "Create user successfully."
-  //   });
-  //
-  // });
   return returnJson;
 }
 
@@ -51,7 +43,7 @@ export async function getUserById(user_id){
     exist: null,
     data:[]
   }
-  await userModel.getUserById(user_id).then((res) => {
+  await User.getUserById(user_id).then((res) => {
     if(res != null){
       returnJson.exist = true;
       returnJson.data.push(res) 
@@ -73,7 +65,7 @@ export async function getUserList(){
     message:"initial message"
   }
 
-  await userModel.getUser().then((res)=>{
+  await User.getUser().then((res)=>{
     returnJson.message = "Fetch user list successful"
     returnJson.data = res;
   })
@@ -114,7 +106,7 @@ export async function isPasswordValid(password) {
 export async function changeOnlineStatus(id, status){
   let returnJson = {success: null, message:"initial message"}
   try{
-  await userModel.changeOnlineStatus(id, status).then((res)=>{
+  await User.changeOnlineStatus(id, status).then((res)=>{
     returnJson.success = true;
     returnJson.message = `Change online for user ${id} status successfull`
   });
@@ -126,7 +118,7 @@ export async function changeOnlineStatus(id, status){
 
 export async function changeStatus(id, status){
   let returnJson = {success: null, message:"initial message"}
-  await userModel.changeStatus(id, status).then(()=>{
+  await User.changeStatus(id, status).then(()=>{
     returnJson.success = true;
     returnJson.message = "Change status successfull"
   });
@@ -143,7 +135,7 @@ export async function changeStatus(id, status){
 
 export async function validUser(username, enteredPassword) {
   let ret = {code: 0, user_id: null};
-  await userModel.getOneUser(username).then(async(res)=> {
+  await User.getOneUser(username).then(async(res)=> {
     if (res.length > 0) {
       const user = res[0];
       const hashedPassword = user.password;
