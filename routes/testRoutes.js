@@ -70,7 +70,7 @@ router.post('/performance/end', async (req, res) => {
         cleanUpDatabase()
         res.status(202).json({ message: 'Performance test ended' });
     } catch (err) {
-        console.error(error);
+        console.error(err);
         res.status(500).json({ message: 'Error ending performance test' });
     }
 });
