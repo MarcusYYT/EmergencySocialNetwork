@@ -2,16 +2,13 @@ import supertest from 'supertest';
 import app from '../../app.js'; 
 import { sync as rimrafSync } from 'rimraf';
 import DatabaseAdapter from '../../config/DatabaseAdapter.js';
-import {User} from '../../models/User.model.js'
-import {Post} from '../../models/Post.model.js'
-import {PrivatePost} from '../../models/PrivatePost.model.js'
-import {Status} from '../../models/Status.model.js'
+
 
 let server;
 let database;
 
 beforeAll(async () => {
-  server = app.listen(4000); // Start the app on a different port for testing
+  server = app.listen(0); // Start the app on a different port for testing
   DatabaseAdapter.setTestDatabaseName("integration_db.sqlite")
   DatabaseAdapter.setCurrentDatabase('test')
   database = DatabaseAdapter.getDatabase()
@@ -117,3 +114,81 @@ describe('Private Chat Test', () => {
     expect(getresponse.body.data[0].content).toBe('Hello');
   });
 });
+
+describe('Post Announcement Test', () => {
+
+  test('get Announcement list before any message sent', async () => {
+    const getresponse = await supertest(app)
+      .get(`/announcements`);
+    expect(getresponse.status).toBe(200);
+    expect(getresponse.body.success).toBe(true);
+    expect(getresponse.body.message).toBeDefined();
+    expect(Array.isArray(getresponse.body.data)).toBe(true);
+    expect(getresponse.body.data.length).toBe(0);
+  });
+
+  test('post a announcement', async () => {
+    const postResponse = await supertest(app)
+      .post(`/announcements`)
+      .send({
+        username: "testuser",
+        user_id: 1,
+        dateTime: new Date().toLocaleString(),
+        content: "test"
+      });
+      expect(postResponse.statusCode).toBe(201);
+      expect(postResponse.body).toEqual({
+        success: true,
+        message: 'Post a new announcement successful'
+      });
+    });
+
+    test('get announcement list for after a post', async () => {
+    const getresponse = await supertest(app)
+      .get(`/announcements`);
+    expect(getresponse.status).toBe(200);
+    expect(getresponse.body.success).toBe(true);
+    expect(getresponse.body.message).toBeDefined();
+    expect(Array.isArray(getresponse.body.data)).toBe(true);
+    expect(getresponse.body.data[0].content).toBe('test');
+  });
+});
+
+describe('search Test', () => {
+
+  test('search a user', async () => {
+    const searchValue = "test"
+    const getresponse = await supertest(app)
+      .get(`/search?q=${searchValue}&domain=User`);
+    expect(getresponse.status).toBe(200);
+    expect(getresponse.body.success).toBe(true);
+    expect(getresponse.body.message).toBeDefined();
+    expect(Array.isArray(getresponse.body.data)).toBe(true);
+    expect(getresponse.body.data.length).toBe(2);
+  });
+
+  test('search a announcements', async () => {
+    const searchValue = "test"
+    const getresponse = await supertest(app)
+      .get(`/search?q=${searchValue}&domain=Announcements`);
+    expect(getresponse.status).toBe(200);
+    expect(getresponse.body.success).toBe(true);
+    expect(getresponse.body.message).toBeDefined();
+    expect(Array.isArray(getresponse.body.data)).toBe(true);
+    expect(getresponse.body.data.length).toBe(1);
+    });
+
+    test('search a private post', async () => {
+      const searchValue = "Hello"
+      const senderId = 2;
+      const receiverId = 1;
+      const getresponse = await supertest(app)
+        .get(`/search?q=${searchValue}&domain=PrivatePosts&senderId=${senderId}&receiverId=${receiverId}`);
+      expect(getresponse.status).toBe(200);
+      expect(getresponse.body.success).toBe(true);
+      expect(getresponse.body.message).toBeDefined();
+      expect(Array.isArray(getresponse.body.data)).toBe(true);
+      expect(getresponse.body.data.length).toBe(1);
+  });
+});
+

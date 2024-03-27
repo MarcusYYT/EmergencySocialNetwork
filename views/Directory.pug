@@ -330,23 +330,6 @@ html(lang='en')
       //-   alert(`${res.senderName} sent you a new message`)
       //- })
 
-      function toggleHamburgerMenu() {
-        let hamburgerMenu = document.getElementById("hamburgerMenu");
-        let overlay = document.createElement("div");
-        overlay.setAttribute("id", "overlay")
-        let body = document.getElementsByTagName("body")[0]
-        let statusWrapper = document.getElementById("status-wrapper")
-        
-        if (hamburgerMenu.style.display === "flex") {
-          hamburgerMenu.style.display = "none";
-          document.getElementById("overlay").remove()
-        } 
-        
-        else {
-          hamburgerMenu.style.display = "flex";
-          body.insertBefore(overlay, statusWrapper)
-        }
-      }
 
       function routeToAnnouncement() {
         const user_id = #{user_id};
