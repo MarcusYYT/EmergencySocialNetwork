@@ -124,4 +124,3 @@ server.listen(port, async () => {
 });
 
 export default app;
-

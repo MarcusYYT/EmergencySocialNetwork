@@ -14,11 +14,9 @@ function constructChatMessage(msgData) {
   const statusFieldImage = document.createElement("i");
   if (msgData.status == "OK") {
     statusFieldImage.setAttribute("class", "bi bi-check-circle-fill");
-  }
-  else if (msgData.status == "emergency") {
+  } else if (msgData.status == "emergency") {
     statusFieldImage.setAttribute("class", "bi bi-bandaid-fill");
-  }
-  else if (msgData.status == "help") {
+  } else if (msgData.status == "help") {
     statusFieldImage.setAttribute("class", "bi bi-exclamation-circle-fill");
   }
   messageUsernameHeader.appendChild(senderSpan);
@@ -38,7 +36,7 @@ function constructChatMessage(msgData) {
 async function renderChats(chatlist, isPrivate) {
   let messageBoard = document.getElementById("message-board")
   let isStatus = false;
-  while(messageBoard.firstChild){
+  while (messageBoard.firstChild) {
     messageBoard.removeChild(messageBoard.lastChild);
   }
   for (const msgData of chatlist) {
@@ -68,7 +66,7 @@ let counter = 0;
 function renderSlicedArray(slicedArray, isPrivate, isStatus){
   let messageBoard = document.getElementById("message-board")
   let showMore = document.getElementById("show-more");
-  if(showMore){
+  if (showMore) {
       showMore.remove();
   }
   for (let i = 0; i < slicedArray[counter].length; i++) {
@@ -84,7 +82,7 @@ function renderSlicedArray(slicedArray, isPrivate, isStatus){
     let messageElement = constructChatMessage(messageDetails);
     messageBoard.appendChild(messageElement);
   }
-  if(counter + 1 < slicedArray.length && !isStatus){
+  if (counter + 1 < slicedArray.length && !isStatus) {
       createShowMore(slicedArray, isPrivate)
       counter++;  
   }
