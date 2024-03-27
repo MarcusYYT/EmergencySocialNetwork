@@ -1,6 +1,6 @@
 import MySQLDatabase from './MySQLDatabase.js';
 import SQLiteDatabase from './SQLiteDatabase.js';
-
+import { Announcement } from '../models/Announcement.model.js';
 import {User} from "../models/User.model.js"
 import {Post} from "../models/Post.model.js"
 import {PrivatePost} from "../models/PrivatePost.model.js"
@@ -32,11 +32,13 @@ export default class DatabaseAdapter {
         Post.initModel(this.getDatabase());
         PrivatePost.initModel(this.getDatabase());
         Status.initModel(this.getDatabase());
+        Announcement.initModel(this.getDatabase());
 
         await User.model.sync();
         await Post.model.sync();
         await PrivatePost.model.sync();
         await Status.model.sync();
+        await Announcement.model.sync();
 
     }
 

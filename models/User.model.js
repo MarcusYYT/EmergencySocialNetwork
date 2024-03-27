@@ -1,4 +1,4 @@
-import {DataTypes} from 'sequelize'
+import {DataTypes, Op} from 'sequelize'
 
 export class User {
     static model = null;
@@ -88,7 +88,31 @@ export class User {
         } else {
             return await this.getUserList();
         }
+    }
 
+
+    /**
+     * Query the users by username
+     * @param {string} query The query keyword
+     */
+    static async queryUser(query) {
+        return await this.model.findAll({
+            where: {
+                username: {[Op.like]: `%${query}%`}
+            }
+        });
+    }
+
+    /**
+     * Query the userstatus by status name
+     * @param {string} query The status keyword
+     */
+    static async queryUserStatus(query) {
+        return await this.model.findAll({
+            where: {
+                status: {[Op.like]: `%${query}%`}
+            }
+        });
     }
 
     static async getUserById(user_id){

@@ -15,7 +15,7 @@ function renderMyStatus(username, status) {
     let userInfoText = document.createTextNode("My current status is: " + status);
     userInfo.appendChild(userInfoText);
     
-    let statusForm = document.getElementById("status-form");
+    let statusForm = document.getElementById("status-list");
     profile.insertBefore(user, statusForm);
     profile.insertBefore(userInfo, statusForm);
 }

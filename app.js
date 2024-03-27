@@ -5,15 +5,15 @@ import swaggerJSDoc from 'swagger-jsdoc'
 import swaggerUI from 'swagger-ui-express'
 import socketConfig from './config/socketConfig.js'
 import passport from './config/passportConfig.js'
-
 import authRoutes from './routes/authRoutes.js'
 import userRoutes from './routes/userRoutes.js'
 import postRoutes from './routes/postRoutes.js'
 import privatePostRoutes from './routes/privatePostRoutes.js'
+import announcementRoutes from './routes/announcementRoutes.js'
 import pageRoutes from './routes/pageRoutes.js'
 import statusRoutes from './routes/statusRoutes.js'
+import searchRoutes from './routes/searchRoutes.js'
 import testRoute from './routes/testRoutes.js'
-
 import DatabaseAdapter from './config/DatabaseAdapter.js'
 import { createServer } from 'node:http';
 import cookieParser from 'cookie-parser';
@@ -34,7 +34,6 @@ const swaggerOptions = {
 // get the root folder for the project
 const root = process.cwd();
 const __dirname = root;
-
 const app = express();
 const port = 3000;
 const server = createServer(app);
@@ -43,7 +42,6 @@ socketConfig(server);
 app.use(express.static(__dirname + '/public'));
 app.use(express.json());  // parse json request  
 app.use(express.urlencoded({ extended: true }));
-
 app.use(passport.initialize());
 app.use(cookieParser());
 
@@ -74,8 +72,10 @@ app.use('', pageRoutes);
 app.use('/auth', authRoutes);
 app.use('/users', userRoutes);
 app.use('/posts', postRoutes);
-app.use('/status', statusRoutes);
-app.use('/privatePosts', privatePostRoutes);
+app.use('/status', statusRoutes)
+app.use('/privatePosts', privatePostRoutes)
+app.use('/announcements', announcementRoutes)
+app.use('/search', searchRoutes)
 app.use('/test', testRoute);
 
 // setup swagger
@@ -124,4 +124,3 @@ server.listen(port, async () => {
 });
 
 export default app;
-

@@ -1,4 +1,4 @@
-import {DataTypes} from 'sequelize'
+import {DataTypes, Op} from 'sequelize'
 import { User } from './User.model.js'
 
 export class Status {
@@ -57,6 +57,23 @@ export class Status {
      */
     static async getStatusById(status_id) {
         return await this.model.findByPk(status_id);
+    }
+
+    /**
+     * Query the status by user_id
+     * @param {number} userId The status keyword
+     */
+    static async queryUserStatus(userId) {
+        return await this.model.findAll({
+            where: {
+                user_id: userId
+            },
+            include: [{
+                model: User.model,
+                attributes: ['username']
+            }],
+            order: [['createdAt', 'DESC']]
+        });
     }
 
     /**
