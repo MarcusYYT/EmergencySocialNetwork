@@ -1,3 +1,21 @@
+function toggleHamburgerMenu() {
+    let hamburgerMenu = document.getElementById("hamburgerMenu");
+    let overlay = document.createElement("div");
+    overlay.setAttribute("id", "overlay")
+    let body = document.getElementsByTagName("body")[0]
+    let statusWrapper = document.getElementById("status-wrapper")
+    
+    if (hamburgerMenu.style.display === "flex") {
+      hamburgerMenu.style.display = "none";
+      document.getElementById("overlay").remove()
+    } 
+    
+    else {
+      hamburgerMenu.style.display = "flex";
+      body.insertBefore(overlay, statusWrapper)
+    }
+  }
+
 function renderMyStatus(username, status) {
     let profile = document.getElementById("status-wrapper");
     if (document.getElementById("status-header") != undefined) {
@@ -24,4 +42,3 @@ function routeToPrivateChat(sender, receiver){
     //await changeReadStatus(sender, receiver)
     window.location.href = `/privatePostsWall/${sender}/${receiver}`;
 }
-

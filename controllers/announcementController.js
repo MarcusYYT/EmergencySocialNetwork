@@ -6,7 +6,7 @@ export async function getAnnouncementById(req, res){
         const announcement_id = req.params.announcement_id;
         await announcementService.getAnnouncementById(announcement_id).then((resolve)=>{
             if(resolve.exist==true){
-                res.status(200).json({success:true, data: resolve.data, message:"Fetch post successful"});
+                res.status(200).json({success:true, data: resolve.data, message:"Fetch announcement successful"});
             } else {
                 res.status(404).json({success:false, data:[], message:"The post is not exist"});
             }
@@ -30,8 +30,7 @@ export async function postAnnouncement(req, res){
     try{
         const userId = req.body.user_id;
         const content = req.body.content;
-        const status = req.body.status;
-        await announcementService.createNewAnnouncement(userId, content, status).then(() =>{
+        await announcementService.createNewAnnouncement(userId, content).then(() =>{
             io.emit("announcementData", req.body);
             res.status(201).json({ success: true, message: 'Post a new announcement successful' });
         })

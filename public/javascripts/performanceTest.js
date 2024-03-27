@@ -7,11 +7,14 @@ const postData = {
   };
 
 let continueTest = false;
-let startTime;
-let autoEndTimerId;
+
+let postDuration;
+let getDuration;
 
 let postCounter = 0;
 let getCounter = 0;
+
+let clickButtonToStop = false;
 
 function startPerformanceTest() {
     const duration = getTestDuration();
@@ -34,30 +37,9 @@ function startPerformanceTest() {
         console.log(data.message);
         startTime = Date.now();
         startTest(interval, duration);
-
     })
     .catch(error => alert('Error starting performance test'));
   }
-
-function endPerformanceTest() {
-    continueTest = false;
-    let endTime = Date.now();
-    let duration = (endTime - startTime) / 1000;
-    let getSpeed = getCounter / duration;
-    let postSpeed = postCounter / duration;
-    fetch('/test/performance/end', {
-        method: 'POST',
-        headers: {
-        'Content-Type': 'application/json'
-        }
-    })
-    .then(response => response.json())
-    .then(() => {
-        clearTimeout(autoEndTimerId);
-        alert(`The speed of get is ${getSpeed}/ second \nThe speed of post is ${postSpeed}/second`)
-    })
-    .catch(error => alert('Error ending performance test'));
-}
 
 function getTestDuration() {
     const testDuration = document.getElementById('testDuration').value;
@@ -76,6 +58,7 @@ async function registerTestUser(){
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
+            'X-Performance-Test': 'true'
         },
         body: JSON.stringify({ username: "userTest", password:"11111" }),
     }).then(response => response.json()
@@ -86,8 +69,12 @@ async function registerTestUser(){
         }
     })
 }
-async function performPostGetRequestPair(interval) {
-    try {
+
+async function performPostRequests(interval, duration) {
+    const postStartTime = Date.now();
+    postDuration = 0;
+
+    while (continueTest && postDuration < duration) {
         await fetch('/posts', {
             method: 'POST',
             headers: {
@@ -95,32 +82,75 @@ async function performPostGetRequestPair(interval) {
                 'X-Performance-Test': 'true'
             },
             body: JSON.stringify(postData)
-        }).then(()=>{
-            console.log("POST");
-            postCounter ++;
         });
-        // add a interval between post and get
+        console.log('POST');
+        postCounter++;
         await new Promise(resolve => setTimeout(resolve, interval));
+        postDuration = (Date.now() - postStartTime) / 1000;
+        if (postCounter > 999){
+            continueTest = false;
+            break;
+        }
+    }
+    console.log('POST requests completed');
+}
 
+async function performGetRequests(interval, duration) {
+    const getStartTime = Date.now();
+    getDuration = 0;
+
+    while (continueTest && getDuration < duration) {
         await fetch('/posts', {
             headers: {
                 'X-Performance-Test': 'true'
             }
-        }).then(()=>{
-            console.log("GET");
-            getCounter ++;
         });
-        if (continueTest) {
-            setTimeout(() => performPostGetRequestPair(interval), interval);
-        }
-    } catch (error) {
-        console.error('Error during test:', error);
+        console.log('GET');
+        getCounter++;
+        await new Promise(resolve => setTimeout(resolve, interval));
+        getDuration = (Date.now() - getStartTime) / 1000;
+    }
+    console.log('GET requests completed');
+    if (!clickButtonToStop){
+        await endPerformanceTest();
     }
 }
 
+
+
 async function startTest(interval, duration) {
     continueTest = true;
+    clickButtonToStop = false;
     await registerTestUser();
-    autoEndTimerId = setTimeout(endPerformanceTest, duration*1000);
-    await performPostGetRequestPair(interval);
+    await performPostRequests(interval, duration / 2);
+    await performGetRequests(interval, duration / 2);
+}
+
+async function endTheTest(){
+    clickButtonToStop = true;
+    await endPerformanceTest();
+}
+
+async function endPerformanceTest() {
+    continueTest = false;
+    let getSpeed = getCounter / getDuration;
+    let postSpeed = postCounter / postDuration;
+    await fetch('/test/performance/end', {
+        method: 'POST',
+        headers: {
+        'Content-Type': 'application/json',
+        'X-Performance-Test': 'true'
+        }
+    })
+    .then(response => response.json())
+    .then(() => {
+        console.log(postCounter)
+        console.log(postDuration)
+        if (postCounter > 999){
+            alert(`test stop because it reach the 1000 limit of post request\nThe speed of post request is ${postSpeed}/second`)
+        } else {
+            alert(`The speed of get is ${getSpeed}/ second \nThe speed of post is ${postSpeed}/second`)
+        }
+    })
+    .catch(error => alert('Error ending performance test'));
 }

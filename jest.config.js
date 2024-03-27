@@ -1,5 +1,6 @@
 export default {
-    transform: {},
+  transform: {
+    },
     testEnvironment: 'node',
     collectCoverage: true,
     coverageDirectory: "./coverage",

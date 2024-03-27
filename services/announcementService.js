@@ -44,7 +44,7 @@ export async function getAnnouncementList(){
     }
   
     await Announcement.getAllAnnouncements().then((res)=>{
-      returnJson.message = "Fetch post list successful"
+      returnJson.message = "Fetch announcement list successful"
       returnJson.data = res;
     })
   

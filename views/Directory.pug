@@ -40,9 +40,14 @@ html(lang='en')
     #directory-wrapper
       h1#directory-header ESN Directory
       #directory.container
+    #overlayForTest(style='display: none;')
+      p Currently Speed Testing... 
+      p Don't Close the Browser Tab...
+
     script.
       const socket = io();
       let username = '';
+
       socket.on('connect', async function() {
         console.log('Connected to server');
         console.log('Socket ID:', socket.id);
@@ -319,29 +324,12 @@ html(lang='en')
           })
 
         });
-      })
+      });
 
       //- socket.on("newMessage", async (res) => {
       //-   alert(`${res.senderName} sent you a new message`)
       //- })
 
-      function toggleHamburgerMenu() {
-        let hamburgerMenu = document.getElementById("hamburgerMenu");
-        let overlay = document.createElement("div");
-        overlay.setAttribute("id", "overlay")
-        let body = document.getElementsByTagName("body")[0]
-        let statusWrapper = document.getElementById("status-wrapper")
-        
-        if (hamburgerMenu.style.display === "flex") {
-          hamburgerMenu.style.display = "none";
-          document.getElementById("overlay").remove()
-        } 
-        
-        else {
-          hamburgerMenu.style.display = "flex";
-          body.insertBefore(overlay, statusWrapper)
-        }
-      }
 
       function routeToAnnouncement() {
         const user_id = #{user_id};
@@ -364,20 +352,34 @@ html(lang='en')
           updateAt: "online_status",
           updateValue: "offline"
         }
-
-
         await fetch(`/users/${userId}`, {
           method: 'PUT',
           headers: {
             'Content-Type': 'application/json',
+            'X-Performance-Test': 'true'
           },
           body: JSON.stringify(requestBody),
         }).then(response=> response.json()).then((data)=>{
           console.log(data.message)
         })
 
-        window.location.href = `/`;
+        window.location.href = `/`
       }
 
+      function showOverlay() {
+        document.getElementById('overlayForTest').style.display = 'flex';
+      }
+
+      function hideOverlay() {
+        document.getElementById('overlayForTest').style.display = 'none';
+      }
+
+      socket.on("testMode", () => {
+            showOverlay();
+      });
+
+      socket.on("testFinish", () => {
+            hideOverlay();
+      });
 
     
