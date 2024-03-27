@@ -87,14 +87,17 @@ app.get('/swagger.json', (req, res) => {
 app.use('/api-docs', swaggerUI.serve, swaggerUI.setup(swaggerSpec));
 
 export function cleanUpDatabase() {
-  return fs.unlink('./tempdb.sqlite', (err) => {
-    console.log("The file is deleted")
+  if (fs.existsSync('./tempdb.sqlite')) {
+    return fs.unlink('./tempdb.sqlite', (err) => {
       if (err) {
-          console.error('Failed to delete database file:', err);
+        console.error('Failed to delete database file:', err);
       } else {
-          console.log('Database file deleted successfully.');
+        console.log('Database file deleted successfully.');
       }
-  });
+    });
+  } else {
+    console.log('Database file does not exist, no need to delete.');
+  }
 }
 
 server.listen(port, async () => {
