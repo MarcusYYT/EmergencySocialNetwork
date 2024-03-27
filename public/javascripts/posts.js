@@ -1,4 +1,4 @@
-function constructChatMessage(sender, message, status, dateTime) {
+function constructChatMessage(msgData) {
   const messageDiv = document.createElement('div');
   messageDiv.className = 'list-group-item';
   const messageHeader = document.createElement('div');
@@ -7,40 +7,43 @@ function constructChatMessage(sender, message, status, dateTime) {
   messageUsernameHeader.className = 'd-flex w-100 justify-content-between';
   const senderSpan = document.createElement('span');
   senderSpan.className = 'message-sender';
-  senderSpan.textContent = sender;
+  senderSpan.textContent = msgData.sender;
   const dateSpan = document.createElement('span');
   dateSpan.className = 'message-date';
 
-  dateSpan.textContent = new Date(dateTime).toLocaleString();
+  dateSpan.textContent = new Date(msgData.dateTime).toLocaleString();
 
   const statusFieldImage = document.createElement("i");
-  if (status == "OK") {
+  if (msgData.status == "OK") {
     statusFieldImage.setAttribute("class", "bi bi-check-circle-fill");
   }
-  else if (status == "emergency") {
+  else if (msgData.status == "emergency") {
     statusFieldImage.setAttribute("class", "bi bi-bandaid-fill");
-
   }
-  else if (status == "help") {
+  else if (msgData.status == "help") {
     statusFieldImage.setAttribute("class", "bi bi-exclamation-circle-fill");
   }
 
   messageUsernameHeader.appendChild(senderSpan);
   messageHeader.appendChild(dateSpan);
   messageUsernameHeader.appendChild(statusFieldImage);
-
-  const messageBody = document.createElement('div');
-  messageBody.className = 'message-body';
-  messageBody.textContent = message;
   messageDiv.appendChild(messageUsernameHeader);
   messageDiv.appendChild(messageHeader);
-  messageDiv.appendChild(messageBody);
+
+  if (!msgData.isStatus){
+    const messageBody = document.createElement('div');
+    messageBody.className = 'message-body';
+    messageBody.textContent = msgData.message;
+    messageDiv.appendChild(messageBody);  
+  }
+  
   return messageDiv;
 }
 
 async function renderChats(chatlist, isPrivate) {
 
   let messageBoard = document.getElementById("message-board")
+  let isStatus = false;
 
   while(messageBoard.firstChild){
     messageBoard.removeChild(messageBoard.lastChild);
@@ -57,11 +60,10 @@ async function renderChats(chatlist, isPrivate) {
       username = msgData.user.username;
     }
 
+    let messageDetails = createMsgObject(msgData, username, isStatus);
+
     let messageElement = constructChatMessage(
-      username,
-      msgData.content,
-      msgData.status,
-      msgData.createdAt
+      messageDetails
     );
 
     messageBoard.appendChild(messageElement);
@@ -82,7 +84,6 @@ function slice(array, size){
 let counter = 0;
 
 function renderSlicedArray(slicedArray, isPrivate, isStatus){
-  console.log(counter)
   let messageBoard = document.getElementById("message-board")
 
   let showMore = document.getElementById("show-more");
@@ -91,36 +92,23 @@ function renderSlicedArray(slicedArray, isPrivate, isStatus){
   }
 
   for (let i = 0; i < slicedArray[counter].length; i++) {
-      let msgData = slicedArray[counter][i];
+    let msgData = slicedArray[counter][i];
 
-      let username = "";
-      if (isPrivate && !isStatus) {
-        username = msgData.Sender.username;
-      }
-      else {
-        username = msgData.user.username;
-      }
+    let username = "";
+    if (isPrivate && !isStatus) {
+      username = msgData.Sender.username;
+    }
+    else {
+      username = msgData.user.username;
+    }
 
-      if (isStatus) {
-        let messageElement = constructStatusMessage(
-          username,
-          msgData.status,
-          msgData.createdAt
-        );
-        messageBoard.appendChild(messageElement);
-      } 
-      else {
-        let messageElement = constructChatMessage(
-          username,
-          msgData.content,
-          msgData.status,
-          msgData.createdAt
-        );
-        messageBoard.appendChild(messageElement);
-      }
+    let messageDetails = createMsgObject(msgData, username, isStatus)
+
+    let messageElement = constructChatMessage(messageDetails);
+    messageBoard.appendChild(messageElement);
   }
 
-  if(counter + 1 < slicedArray.length){
+  if(counter + 1 < slicedArray.length && !isStatus){
       createShowMore(slicedArray, isPrivate)
       counter++;  
   }
@@ -134,7 +122,7 @@ function createShowMore(slicedArray, isPrivate){
   let showMoreText = document.createTextNode("Show More...")
 
   
-  showMore.addEventListener("click", () => {renderSlicedArray(slicedArray, isPrivate, isStatus)})
+  showMore.addEventListener("click", () => {renderSlicedArray(slicedArray, isPrivate)})
   showMore.appendChild(showMoreText)
   messageBoard.appendChild(showMore)
 }
@@ -155,11 +143,7 @@ async function renderSearchedPosts(chatlist, isPrivate, isStatus) {
 
   else{
     const sliceSize = 10;
-
     let slicedArray = slice(chatlist, sliceSize)
-
-    console.log(slicedArray)
-
     renderSlicedArray(slicedArray, isPrivate, isStatus);    
   }  
 }
@@ -178,39 +162,13 @@ function renderEmptyMessage(){
   messageBoard.appendChild(emptyMessage);
 }
 
-
-function constructStatusMessage(sender, status, dateTime) {
-  const messageDiv = document.createElement('div');
-  messageDiv.className = 'list-group-item';
-  const messageHeader = document.createElement('div');
-  messageHeader.className = 'd-flex w-100 justify-content-between';
-  const messageUsernameHeader = document.createElement('div');
-  messageUsernameHeader.className = 'd-flex w-100 justify-content-between';
-  const senderSpan = document.createElement('span');
-  senderSpan.className = 'message-sender';
-  senderSpan.textContent = sender;
-  const dateSpan = document.createElement('span');
-  dateSpan.className = 'message-date';
-
-  dateSpan.textContent = new Date(dateTime).toLocaleString();
-
-  const statusFieldImage = document.createElement("i");
-  if (status == "OK") {
-    statusFieldImage.setAttribute("class", "bi bi-check-circle-fill");
+function createMsgObject(msgData, username, isStatus) {
+  let messageDetails = {
+    sender: username,
+    message: msgData.content,
+    status: msgData.status,
+    dateTime: msgData.createdAt,
+    isStatus: isStatus
   }
-  else if (status == "emergency") {
-    statusFieldImage.setAttribute("class", "bi bi-bandaid-fill");
-
-  }
-  else if (status == "help") {
-    statusFieldImage.setAttribute("class", "bi bi-exclamation-circle-fill");
-  }
-
-  messageUsernameHeader.appendChild(senderSpan);
-  messageHeader.appendChild(dateSpan);
-  messageUsernameHeader.appendChild(statusFieldImage);
-
-  messageDiv.appendChild(messageUsernameHeader);
-  messageDiv.appendChild(messageHeader);
-  return messageDiv;
+  return messageDetails;
 }

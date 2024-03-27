@@ -6,6 +6,7 @@ head
   link(rel='stylesheet', href='https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css')
   link(rel='stylesheet' type='text/css' href='/stylesheets/index.css')
   script(src='/javascripts/posts.js')
+  script(src='/javascripts/filterStopWords.js')
   title Message Wall
 .links
   a.btn.btn-primary(onclick='routeToDirectory()') Back
@@ -47,7 +48,6 @@ script.
     window.location.href = `/directory/${user_id}`
   }
 
-
   async function postChatMessage(){
     let textArea = document.getElementById("message")
     let textContent = textArea.value
@@ -80,66 +80,33 @@ script.
             });
   }
 
-    function filterStopWords(userInput){
-    const stopWords = [
-      "a","able","about","across","after","all","almost","also","am","among","an","and","any","are","as","at","be",
-      "because","been","but","by","can","cannot","could","dear","did","do","does","either","else","ever","every",
-      "for","from","get","got","had","has","have","he","her","hers","him","his","how","however","i","if","in",
-      "into","is","it","its","just","least","let","like","likely","may","me","might","most","must","my","neither",
-      "no","nor","not","of","off","often","on","only","or","other","our","own","rather","said","say","says","she",
-      "should","since","so","some","than","that","the","their","them","then","there","these","they","this","tis",
-      "to","too","twas","us","wants","was","we","were","what","when","where","which","while","who","whom","why",
-      "will","with","would","yet","you","your"
-    ];
+  async function submitSearch() {
+      event.preventDefault()
 
+      let searchInput = document.getElementsByClassName('search-input')[0];
+      let searchValue = searchInput.value;
 
-    let userInputWordArray = userInput.split(/\s+/);
+      let filteredSearchValue = filterStopWords(searchValue)
 
-    let filteredInput = userInput;
-
-    for (word of userInputWordArray) {
-
-      console.log("word = " + word)
-      if (stopWords.includes(word)) {
-        filteredInput = filteredInput.replace(word, "")
-        console.log("after: " + filteredInput)
+      if(filteredSearchValue !== ""){
+        await fetch(`/search?q=${filteredSearchValue}&domain=Posts`, {
+          method: 'GET',
+          headers: {
+              'Content-Type': 'application/json',
+          }
+        }).then(response => response.json()).then(async (data) => {
+            console.log("Data in response::")
+            console.log(data.data);
+            isStatus = false;
+            renderSearchedPosts(data.data, false, false)
+        }).catch(error => {
+            console.error(error);
+        })
       }
-    }
-
-    return filteredInput
+      else{
+        renderEmptyMessage();
+      }
   }
-
-      async function submitSearch() {
-          event.preventDefault()
-
-          let searchInput = document.getElementsByClassName('search-input')[0];
-          let searchValue = searchInput.value;
-
-          let filteredSearchValue = filterStopWords(searchValue)
-          console.log(searchValue)
-          console.log(filteredSearchValue)
-          console.log(`/search?q=${filteredSearchValue}&domain=Posts`)
-
-          if(filteredSearchValue !== ""){
-            await fetch(`/search?q=${filteredSearchValue}&domain=Posts`, {
-              method: 'GET',
-              headers: {
-                  'Content-Type': 'application/json',
-              }
-            }).then(response => response.json()).then(async (data) => {
-                console.log("Data in response::")
-                console.log(data.data);
-                isStatus = false;
-                renderSearchedPosts(data.data, false, false)
-            }).catch(error => {
-                console.error(error);
-            })
-          }
-          else{
-            //render empty message
-            renderEmptyMessage();
-          }
-      }
 
   async function searchFinished(){
 
@@ -167,7 +134,6 @@ script.
         'Content-Type': 'application/json',
       },
     }).then(response => response.json()).then((data) => {
-      console.log(data.data[0].username);
       username = data.data[0].username;
       status = data.data[0].status
     })
@@ -205,14 +171,14 @@ script.
 
   socket.on("postData", (postData) => {
     let messageBoard = document.getElementById("message-board")
-    let messageElement = constructChatMessage(
-        postData.username,
-        postData.content,
-        postData.status,
-        postData.dateTime,
-    );
+    let msgData = {
+        sender: postData.username,
+        message: postData.content,
+        status: postData.status,
+        dateTime: postData.dateTime
+    }    
+    let messageElement = constructChatMessage(msgData);
     messageBoard.appendChild(messageElement);
-    console.log(username);
     document.getElementById("message-board").scrollTop = messageBoard.scrollHeight;
   });
   

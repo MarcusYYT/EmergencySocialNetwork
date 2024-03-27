@@ -1,37 +1,34 @@
-function constructAnnouncement(sender, message, dateTime) {
-
-    const messageDiv = document.createElement('div');
-    messageDiv.className = 'card';
-    const messageHeader = document.createElement('div');
-    messageHeader.className = 'd-flex w-100 justify-content-between';
-    const messageUsernameHeader = document.createElement('div');
-    messageUsernameHeader.className = 'd-flex w-100 justify-content-between';
+function constructAnnouncement(msgData) {
+    const announcementDiv = document.createElement('div');
+    announcementDiv.className = 'card';
+    const announcementHeader = document.createElement('div');
+    announcementHeader.className = 'd-flex w-100 justify-content-between';
+    const announcementUsernameHeader = document.createElement('div');
+    announcementUsernameHeader.className = 'd-flex w-100 justify-content-between';
     const senderSpan = document.createElement('span');
     senderSpan.className = 'message-sender';
-    senderSpan.textContent = sender;
+    senderSpan.textContent = msgData.sender;
     const dateSpan = document.createElement('span');
     dateSpan.className = 'message-date';
 
-    dateSpan.textContent = new Date(dateTime).toLocaleString();
+    dateSpan.textContent = new Date(msgData.dateTime).toLocaleString();
 
-    messageUsernameHeader.appendChild(senderSpan);
-    messageHeader.appendChild(dateSpan);
+    announcementUsernameHeader.appendChild(senderSpan);
+    announcementHeader.appendChild(dateSpan);
 
-    const messageBody = document.createElement('div');
-    messageBody.className = 'message-body';
-    messageBody.textContent = message;
+    const announcementBody = document.createElement('div');
+    announcementBody.className = 'message-body';
+    announcementBody.textContent = msgData.message;
 
     let cardBody = document.createElement("div");
     cardBody.className = 'card-body';
-    cardBody.appendChild(messageUsernameHeader);
-    cardBody.appendChild(messageHeader);
-    cardBody.appendChild(messageBody);
+    cardBody.appendChild(announcementUsernameHeader);
+    cardBody.appendChild(announcementHeader);
+    cardBody.appendChild(announcementBody);
 
-    messageDiv.appendChild(cardBody)
+    announcementDiv.appendChild(cardBody)
 
-
-    return messageDiv;
-
+    return announcementDiv;
 }
 
 async function renderAnnouncements(chatlist) {
@@ -41,22 +38,16 @@ async function renderAnnouncements(chatlist) {
     while(announcementBoard.firstChild){
         announcementBoard.removeChild(announcementBoard.lastChild);
     }
-
+  
     for (const msgData of chatlist) {
 
-        let username = msgData.user.username;
+        let announcementDetails = createDataObject(msgData)
+        let announcementElement = constructAnnouncement(announcementDetails);
 
-        let messageElement = constructAnnouncement(
-            username,
-            msgData.content,
-            msgData.createdAt
-        );
-
-        announcementBoard.appendChild(messageElement);
+        announcementBoard.appendChild(announcementElement);
         announcementBoard.scrollTop = announcementBoard.scrollHeight;
     }
 }
-
 
 function slice(array, size){   
 
@@ -71,7 +62,6 @@ function slice(array, size){
 let counter = 0;
 
 function renderSlicedArray(slicedArray){
-    console.log(counter)
     let announcementBoard = document.getElementById("announcement-board")
 
     let showMore = document.getElementById("show-more");
@@ -82,25 +72,18 @@ function renderSlicedArray(slicedArray){
     for (let i = 0; i < slicedArray[counter].length; i++) {
 
         let msgData = slicedArray[counter][i];
-
-        let username = msgData.user.username;
-
-        let messageElement = constructAnnouncement(
-            username,
-            msgData.content,
-            msgData.createdAt
+        let announcementDetails = createDataObject(msgData)
+        let announcementElement = constructAnnouncement(
+            announcementDetails
         );
 
-        announcementBoard.appendChild(messageElement);
-        
+        announcementBoard.appendChild(announcementElement);
     }
 
     if(counter + 1 < slicedArray.length){
         createShowMore(slicedArray)
-        counter++;
-        
+        counter++;   
     }
-
 }
 
 function createShowMore(slicedArray){
@@ -109,8 +92,7 @@ function createShowMore(slicedArray){
     showMore.setAttribute("id", "show-more")
     showMore.setAttribute("class", "list-group-item")
     let showMoreText = document.createTextNode("Show More...")
-
-    
+  
     showMore.addEventListener("click", () => {renderSlicedArray(slicedArray)})
     showMore.appendChild(showMoreText)
     announcementBoard.appendChild(showMore)
@@ -133,13 +115,11 @@ async function renderSearchedAnnouncements(chatlist) {
     else{
         const sliceSize = 10; 
         let slicedArray = slice(chatlist, sliceSize)
-        console.log(slicedArray)
         renderSlicedArray(slicedArray);  
     }
 }
 
 function renderEmptyAnnouncement(){
-    console.log("RENDER EMPTY ANNOUNCEMENT")
     let announcementBoard = document.getElementById("announcement-board")
     while(announcementBoard.firstChild){
         announcementBoard.removeChild(announcementBoard.lastChild);
@@ -160,3 +140,11 @@ function renderEmptyAnnouncement(){
     announcementBoard.appendChild(card);
 }
 
+function createDataObject(data) {
+    let announcementDetails = {
+        sender: data.user.username,
+        message: data.content,
+        dateTime: data.createdAt
+    }
+    return announcementDetails;
+}

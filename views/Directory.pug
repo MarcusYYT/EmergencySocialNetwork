@@ -64,16 +64,12 @@ html(lang='en')
 
       async function submitSearch() {
         event.preventDefault()
-        console.log("ff")
         let selectElement = document.getElementById('search-select');
         let selectedValue = selectElement.value;
 
         let searchInput = document.getElementById('directory-search-input');
         let searchValue = searchInput.value;
 
-        console.log(selectedValue)
-        console.log(searchValue)
-        console.log(`/search?q=${searchValue}&domain=${selectedValue}`)
         const userId = #{user_id}
         await fetch(`/search?q=${searchValue}&domain=${selectedValue}`, {
           method: 'GET',
@@ -92,9 +88,6 @@ html(lang='en')
             // implement to display the notification
             renderESNList(sortUsers(data.data),unRead.data)
           })
-          //- console.log("Data in response::")
-          //- console.log(data.data);
-          //- renderESNList(data.data, unread);
         }).catch(error => {
           console.error(error);
         })
@@ -166,8 +159,6 @@ html(lang='en')
       }
 
       function renderESNList(list, unread) {
-        console.log(list)
-        console.log(unread)
         const userId = #{user_id}
         let directory = document.getElementById("directory");
         while(directory.firstChild){
@@ -302,8 +293,6 @@ html(lang='en')
                     'Content-Type': 'application/json',
                   },
                   }).then(response => response.json()).then((unRead) => {
-                    console.log('unread message status: ')
-                    console.log(unRead)
                     // implement to display the notification
                     renderESNList(sortUsers(data.data),unRead.data)
                 })
