@@ -8,23 +8,38 @@ html(lang='en')
     link(rel='stylesheet', type='text/css', href='/stylesheets/index.css')
     script(src='/javascripts/directory.js')
     script(src='https://cdn.socket.io/4.7.4/socket.io.min.js')
+    script(src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js")
     title Directory 
   body
-    .links
-      a.btn.btn-primary(onclick='newPost()') New Post
-      a.btn.btn-primary(onclick='logout()') Log Out
-    #status-wrapper 
-      form#status-form(action="") 
-        #status-options
-          label(for='status') Change my status:
-          select#status(name='status').form-select.form-select-sm
-            option(value='OK') OK 
-            option(value='help') Help
-            option(value='emergency') Emergency
-        button#change-status-btn.btn.btn-primary(type='button' onclick='changeMyStatus()') Submit
+    .navbar.container
+      i.bi.bi-plus-circle-fill.col.col-2(onclick='toggleHamburgerMenu()')
+      a#logout.btn.btn-primary.col.col-1(onclick='logout()') Log Out
+    #hamburgerMenu.links
+      a.navLinks(onclick='routeToAnnouncement()') Annoucements
+      a.navLinks(onclick='routeToMessageWall()') New Post
+      a.navLinks(onclick='routeToTest()') Speed Test
+    form#directory-search-form.input-group.mb-3(onsubmit="submitSearch()" onchange="searchFinished()")
+        select#search-select.form-select-sm
+          option(value='User') User
+          option(value='Status') Status
+        input#directory-search-input.form-control(type='text', name='search', placeholder='Search...')
+    #status-wrapper.dropdown
+      button#status-list.btn.btn-primary.dropdown-toggle(type='button' data-bs-toggle='dropdown' aria-expanded='false')
+        | Change Status
+      #dropdown-wrapper
+        ul.dropdown-menu#status-dropdown
+          li#ok-status.status-options
+            p.status-item.dropdown-item OK
+            i.bi.bi-check-circle-fill
+          li#help-status.status-options
+            p.status-item.dropdown-item Help
+            i.bi.bi-exclamation-circle-fill
+          li#emergency-status.status-options
+            p.status-item.dropdown-item Emergency
+            i.bi.bi-bandaid-fill
     #directory-wrapper
       h1#directory-header ESN Directory
-      #directory.container.text-left
+      #directory.container
     script.
       const socket = io();
       let username = '';
@@ -46,10 +61,64 @@ html(lang='en')
                 console.error('Error register socket:', error);
             });
       })
-      
 
+      async function submitSearch() {
+        event.preventDefault()
+        let selectElement = document.getElementById('search-select');
+        let selectedValue = selectElement.value;
+
+        let searchInput = document.getElementById('directory-search-input');
+        let searchValue = searchInput.value;
+
+        const userId = #{user_id}
+        await fetch(`/search?q=${searchValue}&domain=${selectedValue}`, {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json',
+          }
+        }).then(response => response.json()).then( async (data) => {
+          await fetch(`/privatePosts/unread/${userId}`, {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          }).then(response => response.json()).then((unRead) => {
+            console.log('unread message status: ')
+            console.log(unRead)
+            // implement to display the notification
+            renderESNList(sortUsers(data.data),unRead.data)
+          })
+        }).catch(error => {
+          console.error(error);
+        })
+      }
+
+      async function searchFinished(){
+
+        let searchInput = document.getElementById('directory-search-input');
+        let searchValue = searchInput.value;
+
+        if (searchValue === ""){
+          const userId = #{user_id}
+            await getUsers().then(response => response.json()).then(async (data)=>{
+              await fetch(`/privatePosts/unread/${userId}`, {
+              method: 'GET',
+              headers: {
+                'Content-Type': 'application/json',
+              },
+              }).then(response => response.json()).then((unRead) => {
+                console.log('unread message status: ')
+                console.log(unRead)
+                // implement to display the notification
+                renderESNList(sortUsers(data.data),unRead.data)
+              })
+          });
+        }
+      }
+  
       window.onload = async function() {
         const userId = #{user_id}
+        addEventListenerstoStatus();
         const response = await fetch(`/users/${userId}`, {
           method: 'GET',
           headers: {
@@ -100,15 +169,19 @@ html(lang='en')
           console.log(unread.unreadCount)
           userToUnreadCount.set(unread[i].sender.id, unread[i].unreadCount);
         }
+
+        if(list.length == 0){
+          let emptyMessage = document.createElement("h1")
+          let emptyMessageText = document.createTextNode("No results found")
+          emptyMessage.className = 'empty-message'
+          emptyMessage.appendChild(emptyMessageText)
+          directory.appendChild(emptyMessage);
+        }
       
         for (let i = 0; i < list.length; i++) {
-
-          let directory = document.getElementById("directory");
           let userDiv = document.createElement("div");
           userDiv.setAttribute("class", "directory-user row gx-1 justify-content-between");
           userDiv.addEventListener("click", () => {routeToPrivateChat(userId, list[i].user_id)})
-
-          
 
           let usernameField = document.createElement("p");
           usernameField.setAttribute("class", "usernameField col-10");
@@ -149,7 +222,6 @@ html(lang='en')
           statusField.appendChild(statusFieldImage);
           userDiv.appendChild(onlineStatusField);
           userDiv.appendChild(usernameField);
-          
 
           if(userToUnreadCount.has(list[i].user_id)){
             console.log(userToUnreadCount)
@@ -167,13 +239,20 @@ html(lang='en')
 
           directory.appendChild(userDiv);
         }
-
       }
 
+      
+      function addEventListenerstoStatus(){
+          let okStatus = document.getElementById("ok-status");
+          let helpStatus = document.getElementById("help-status");
+          let emergencyStatus = document.getElementById("emergency-status");
 
-      async function changeMyStatus() {
-        let selectElement = document.getElementById('status');
-        let selectedValue = selectElement.value;
+          okStatus.addEventListener("click", () => {changeMyStatus("OK")})
+          helpStatus.addEventListener("click", () => {changeMyStatus("help")})
+          emergencyStatus.addEventListener("click", () => {changeMyStatus("emergency")})
+      }
+
+      async function changeMyStatus(selectedValue) {
         const userId = #{user_id};
         const requestBody = {
           user_id: userId,
@@ -193,6 +272,7 @@ html(lang='en')
             .catch(error => {
                 console.error('Error push status history', error);
             });
+
         const updateStatus = await fetch(`/users/${userId}`, {
           method: 'PUT',
           headers: {
@@ -213,8 +293,6 @@ html(lang='en')
                     'Content-Type': 'application/json',
                   },
                   }).then(response => response.json()).then((unRead) => {
-                    console.log('unread message status: ')
-                    console.log(unRead)
                     // implement to display the notification
                     renderESNList(sortUsers(data.data),unRead.data)
                 })
@@ -243,13 +321,40 @@ html(lang='en')
         });
       })
 
-      socket.on("newMessage", async (res) => {
-        alert(`${res.senderName} sent you a new message`)
-      })
+      //- socket.on("newMessage", async (res) => {
+      //-   alert(`${res.senderName} sent you a new message`)
+      //- })
 
-      function newPost() {
+      function toggleHamburgerMenu() {
+        let hamburgerMenu = document.getElementById("hamburgerMenu");
+        let overlay = document.createElement("div");
+        overlay.setAttribute("id", "overlay")
+        let body = document.getElementsByTagName("body")[0]
+        let statusWrapper = document.getElementById("status-wrapper")
+        
+        if (hamburgerMenu.style.display === "flex") {
+          hamburgerMenu.style.display = "none";
+          document.getElementById("overlay").remove()
+        } 
+        
+        else {
+          hamburgerMenu.style.display = "flex";
+          body.insertBefore(overlay, statusWrapper)
+        }
+      }
+
+      function routeToAnnouncement() {
+        const user_id = #{user_id};
+        window.location.href = `/announcements/${user_id}`;
+      }
+
+      function routeToMessageWall() {
         const user_id = #{user_id};
         window.location.href = `/messageWall/${user_id}`;
+      }
+      function routeToTest() {
+        const user_id = #{user_id};
+        window.location.href = `/test`;
       }
       
       async function logout(){

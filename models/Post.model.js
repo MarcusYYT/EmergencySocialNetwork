@@ -1,4 +1,4 @@
-import {DataTypes} from 'sequelize'
+import {DataTypes, Op} from 'sequelize'
 import { User } from './User.model.js'
 export class Post {
     static model = null;
@@ -102,6 +102,24 @@ export class Post {
               attributes: ['username']
             }]
           });
+    }
+
+
+    /**
+     * Query the posts by keyword
+     * @param {string} query The keyword
+     */
+    static async queryPosts(query) {
+        return await this.model.findAll({
+            where: {
+                content: {[Op.like]: `%${query}%`}
+            },
+            include: [{
+                model: User.model,
+                attributes: ['username']
+            }],
+            order: [['createdAt', 'DESC']]
+        });
     }
 
     /**

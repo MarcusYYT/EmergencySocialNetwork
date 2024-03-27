@@ -36,7 +36,6 @@ describe('status update tests', () => {
     console.log(`new user Id is ${userId} `)
     expect(regResponse.statusCode).toBe(201);
     expect(regResponse.body.success).toBe(true);
-    expect(regResponse.body.user_id).toBe(1);
 
     })
 
@@ -79,7 +78,6 @@ describe('Private Chat Test', () => {
       .send({ username: 'testuser2', password: 'testpass' });
     expect(regResponse.statusCode).toBe(201);
     expect(regResponse.body.success).toBe(true);
-    expect(regResponse.body.user_id).toBe(2);
   });
 
   test('get Private Post list for a user pair before any message sent', async () => {

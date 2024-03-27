@@ -130,4 +130,31 @@ export class PrivatePost {
             unreadCount: message.dataValues.unreadCount
         }));
     }
+
+
+
+
+    /**
+     * Query the posts by keyword
+     * @param {string} query The keyword
+     * @param {integer} senderId  - The user_id of the sender
+     * @param {integer} receiverId - The user_id of the reciever
+     */
+    static async queryPrivatePosts(senderId, receiverId, query) {
+
+        return await this.model.findAll({
+            where: {
+                [Op.or]: [
+                    { sender_id: senderId, receiver_id: receiverId },
+                    { sender_id: receiverId, receiver_id: senderId }
+                ],
+                content: { [Op.like]: `%${query}%` }
+            },
+            include: [
+                { model: User.model, as: 'Sender', attributes: ['username'] },
+                { model: User.model, as: 'Receiver', attributes: ['username'] }
+            ],
+            order: [['createdAt', 'DESC']]
+        });
+    }
 }
