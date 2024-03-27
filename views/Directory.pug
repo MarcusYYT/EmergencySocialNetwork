@@ -40,7 +40,7 @@ html(lang='en')
     #directory-wrapper
       h1#directory-header ESN Directory
       #directory.container
-    #overlay(style='display: none;')
+    #overlayForTest(style='display: none;')
       p Currently Speed Testing... 
       p Don't Close the Browser Tab...
 
@@ -384,11 +384,11 @@ html(lang='en')
       }
 
       function showOverlay() {
-        document.getElementById('overlay').style.display = 'flex';
+        document.getElementById('overlayForTest').style.display = 'flex';
       }
 
       function hideOverlay() {
-        document.getElementById('overlay').style.display = 'none';
+        document.getElementById('overlayForTest').style.display = 'none';
       }
 
       socket.on("testMode", () => {

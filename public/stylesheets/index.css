@@ -371,7 +371,7 @@ label {
     flex-wrap: wrap;
 }
 
-#overlay {
+#overlayForTest {
     position: fixed;
     top: 0;
     left: 0;

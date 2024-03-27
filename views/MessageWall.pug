@@ -17,7 +17,7 @@ head
   form#post-form(method='POST')
     textarea#message(placeholder='Type your message here...' required='')
     button#post-btn.btn.btn-primary(type='button' onclick='postChatMessage()') Post
-#overlay(style='display: none;')
+#overlayForTest(style='display: none;')
   p Currently Speed Testing... 
   p Don't Close the Browser Tab...
 script(src='https://cdn.socket.io/4.7.4/socket.io.min.js')
@@ -210,11 +210,11 @@ script.
   });
 
   function showOverlay() {
-    document.getElementById('overlay').style.display = 'flex';
+    document.getElementById('overlayForTest').style.display = 'flex';
   }
 
   function hideOverlay() {
-    document.getElementById('overlay').style.display = 'none';
+    document.getElementById('overlayForTest').style.display = 'none';
   }
 
   socket.on("testMode", () => {
