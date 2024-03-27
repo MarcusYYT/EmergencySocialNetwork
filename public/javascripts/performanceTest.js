@@ -56,6 +56,7 @@ async function registerTestUser(){
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
+            'X-Performance-Test': 'true'
         },
         body: JSON.stringify({ username: "userTest", password:"11111" }),
     }).then(response => response.json()

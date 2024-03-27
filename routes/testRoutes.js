@@ -43,7 +43,7 @@ const router = express.Router();
 
 router.post('/performance/start', async (req, res) => {
     try{
-        // setPerformanceTestMode(true);
+        setPerformanceTestMode(true);
         DatabaseAdapter.setTestDatabaseName("tempdb.sqlite")
         DatabaseAdapter.switchDatabase('test');
         const database = DatabaseAdapter.getDatabase();
@@ -59,7 +59,7 @@ router.post('/performance/start', async (req, res) => {
 
 router.post('/performance/end', async (req, res) => {
     try{
-        // setPerformanceTestMode(false);
+        setPerformanceTestMode(false);
         let database = DatabaseAdapter.getDatabase();
         await database.close();
         DatabaseAdapter.switchDatabase('default');
