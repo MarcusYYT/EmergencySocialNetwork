@@ -1,6 +1,8 @@
 import DatabaseAdapter from "../config/DatabaseAdapter.js";
 import {getPerformanceTestMode, setPerformanceTestMode, cleanUpDatabase} from '../app.js'
 import express from 'express';
+import { io } from "../config/socketConfig.js"
+
 const router = express.Router();
 /**
  * @swagger
@@ -50,6 +52,7 @@ router.post('/performance/start', async (req, res) => {
         await database.authenticate();
         await DatabaseAdapter.reinitializeModels();
         console.log("changed to test database");
+        io.emit("testMode", "test mode start, logout");
         res.status(202).json({ message: 'Performance test started' });
     } catch (err){
         console.error(error);
@@ -68,6 +71,7 @@ router.post('/performance/end', async (req, res) => {
         await DatabaseAdapter.reinitializeModels();
         console.log("change back to mysql database");
         cleanUpDatabase()
+        io.emit("testFinish", "test mode finish");
         res.status(202).json({ message: 'Performance test ended' });
     } catch (err) {
         console.error(err);

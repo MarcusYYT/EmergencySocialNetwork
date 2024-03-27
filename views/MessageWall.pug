@@ -15,6 +15,9 @@ head
   form#post-form(method='POST')
     textarea#message(placeholder='Type your message here...' required='')
     button#post-btn.btn.btn-primary(type='button' onclick='postChatMessage()') Post
+#overlay(style='display: none;')
+  p Currently Speed Testing... 
+  p Don't Close the Browser Tab...
 script(src='https://cdn.socket.io/4.7.4/socket.io.min.js')
 script.
 
@@ -133,6 +136,22 @@ script.
     messageBoard.appendChild(messageElement);
     console.log(username);
     document.getElementById("message-board").scrollTop = messageBoard.scrollHeight;
+  });
+
+  function showOverlay() {
+    document.getElementById('overlay').style.display = 'flex';
+  }
+
+  function hideOverlay() {
+    document.getElementById('overlay').style.display = 'none';
+  }
+
+  socket.on("testMode", () => {
+        showOverlay();
+  });
+
+  socket.on("testFinish", () => {
+        hideOverlay();
   });
   
   

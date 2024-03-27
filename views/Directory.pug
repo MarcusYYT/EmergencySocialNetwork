@@ -25,9 +25,13 @@ html(lang='en')
     #directory-wrapper
       h1#directory-header ESN Directory
       #directory.container.text-left
+    #overlay(style='display: none;')
+      p Currently Speed Testing... 
+      p Don't Close the Browser Tab...
     script.
       const socket = io();
       let username = '';
+
       socket.on('connect', async function() {
         console.log('Connected to server');
         console.log('Socket ID:', socket.id);
@@ -107,8 +111,6 @@ html(lang='en')
           let userDiv = document.createElement("div");
           userDiv.setAttribute("class", "directory-user row gx-1 justify-content-between");
           userDiv.addEventListener("click", () => {routeToPrivateChat(userId, list[i].user_id)})
-
-          
 
           let usernameField = document.createElement("p");
           usernameField.setAttribute("class", "usernameField col-10");
@@ -241,7 +243,7 @@ html(lang='en')
           })
 
         });
-      })
+      });
 
       socket.on("newMessage", async (res) => {
         alert(`${res.senderName} sent you a new message`)
@@ -259,20 +261,34 @@ html(lang='en')
           updateAt: "online_status",
           updateValue: "offline"
         }
-
-
         await fetch(`/users/${userId}`, {
           method: 'PUT',
           headers: {
             'Content-Type': 'application/json',
+            'X-Performance-Test': 'true'
           },
           body: JSON.stringify(requestBody),
         }).then(response=> response.json()).then((data)=>{
           console.log(data.message)
         })
 
-        window.location.href = `/`;
+        window.location.href = `/`
       }
 
+      function showOverlay() {
+        document.getElementById('overlay').style.display = 'flex';
+      }
+
+      function hideOverlay() {
+        document.getElementById('overlay').style.display = 'none';
+      }
+
+      socket.on("testMode", () => {
+            showOverlay();
+      });
+
+      socket.on("testFinish", () => {
+            hideOverlay();
+      });
 
     

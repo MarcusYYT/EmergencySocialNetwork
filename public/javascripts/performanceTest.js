@@ -14,6 +14,8 @@ let getDuration;
 let postCounter = 0;
 let getCounter = 0;
 
+let clickButtonToStop = false;
+
 function startPerformanceTest() {
     const duration = getTestDuration();
     const interval = getTestInterval();
@@ -85,8 +87,9 @@ async function performPostRequests(interval, duration) {
         postCounter++;
         await new Promise(resolve => setTimeout(resolve, interval));
         postDuration = (Date.now() - postStartTime) / 1000;
-        if (postCounter > 1000){
+        if (postCounter > 999){
             continueTest = false;
+            break;
         }
     }
     console.log('POST requests completed');
@@ -108,7 +111,7 @@ async function performGetRequests(interval, duration) {
         getDuration = (Date.now() - getStartTime) / 1000;
     }
     console.log('GET requests completed');
-    if (continueTest){
+    if (!clickButtonToStop){
         await endPerformanceTest();
     }
 }
@@ -117,9 +120,15 @@ async function performGetRequests(interval, duration) {
 
 async function startTest(interval, duration) {
     continueTest = true;
+    clickButtonToStop = false;
     await registerTestUser();
     await performPostRequests(interval, duration / 2);
     await performGetRequests(interval, duration / 2);
+}
+
+async function endTheTest(){
+    clickButtonToStop = true;
+    await endPerformanceTest();
 }
 
 async function endPerformanceTest() {
@@ -137,10 +146,11 @@ async function endPerformanceTest() {
     .then(() => {
         console.log(postCounter)
         console.log(postDuration)
-        if (postCounter > 998){
-            console.log(`test stop becasue it reach the 1000 limit of post request\nThe speed of post request is ${postSpeed}/second`)
+        if (postCounter > 999){
+            alert(`test stop because it reach the 1000 limit of post request\nThe speed of post request is ${postSpeed}/second`)
+        } else {
+            alert(`The speed of get is ${getSpeed}/ second \nThe speed of post is ${postSpeed}/second`)
         }
-        alert(`The speed of get is ${getSpeed}/ second \nThe speed of post is ${postSpeed}/second`)
     })
     .catch(error => alert('Error ending performance test'));
 }
