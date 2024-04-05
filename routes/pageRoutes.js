@@ -47,6 +47,16 @@ router.get('/announcements/:user_id', passport.authenticate('jwt', { session: fa
     }
 });
 
+router.get('/emergencyContact/:user_id', passport.authenticate('jwt', { session: false }), (req, res) => {
+    const user_id = req.user.data[0].user_id;
+    if (user_id != req.params.user_id) {
+        res.status(401).json({message: "Unauthorized access."});
+    }
+    else {
+        res.render('EmergencyContact', {user_id: user_id});
+    }
+});
+
 router.get('/test', (req, res) => {
     res.render('Test');
 })

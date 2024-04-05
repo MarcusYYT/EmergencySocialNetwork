@@ -17,6 +17,7 @@ html(lang='en')
     #hamburgerMenu.links
       a.navLinks(onclick='routeToAnnouncement()') Annoucements
       a.navLinks(onclick='routeToMessageWall()') New Post
+      a.navLinks(onclick='routeToEmergencyContact()') Contacts
       a.navLinks(onclick='routeToTest()') Speed Test
     form#directory-search-form.input-group.mb-3(onsubmit="submitSearch()" onchange="searchFinished()")
         select#search-select.form-select-sm
@@ -340,6 +341,12 @@ html(lang='en')
         const user_id = #{user_id};
         window.location.href = `/messageWall/${user_id}`;
       }
+
+      function routeToEmergencyContact() {
+        const user_id = #{user_id};
+        window.location.href = `/emergencyContact/${user_id}`;
+      }
+
       function routeToTest() {
         const user_id = #{user_id};
         window.location.href = `/test`;
