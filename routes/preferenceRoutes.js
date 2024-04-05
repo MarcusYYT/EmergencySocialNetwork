@@ -4,14 +4,22 @@ const router = express.Router();
 
 /**
  * @swagger
- * /preferences:
+ * /preferences/{preferenceType}:
  *  get:
  *    tags:
  *      - Preferences
- *    summary: Fetch all users with at least one SMS alert preference enabled
+ *    summary: Fetch user IDs with a specific SMS alert preference enabled
+ *    parameters:
+ *      - in: path
+ *        name: preferenceType
+ *        required: true
+ *        schema:
+ *          type: string
+ *          enum: [announcement_updates, private_post_updates, public_post_updates, status_changes]
+ *        description: The type of SMS alert preference to check.
  *    responses:
  *      200:
- *        description: Successful return of users with enabled SMS alert preferences.
+ *        description: Successful return of user IDs with the specified preference enabled.
  *        content:
  *          application/json:
  *            schema:
@@ -22,20 +30,7 @@ const router = express.Router();
  *                data:
  *                  type: array
  *                  items:
- *                    type: object
- *                    properties:
- *                      user_id:
- *                        type: integer
- *                      phone_number:
- *                        type: string
- *                      announcement_updates:
- *                        type: boolean
- *                      private_post_updates:
- *                        type: boolean
- *                      public_post_updates:
- *                        type: boolean
- *                      status_changes:
- *                        type: boolean
+ *                    type: integer
  *                message:
  *                  type: string
  *  post:
@@ -62,5 +57,6 @@ const router = express.Router();
  *      201:
  *        description: Preferences set successfully.
  */
+
 router.get('', ()=>{});
 export default router;
