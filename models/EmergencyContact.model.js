@@ -155,7 +155,7 @@ export class EmergencyContact {
      * @param {number} userId - The ID of the user
      * @returns {Promise} A promise resolving to the emergency contact with the given user ID, or null if not found
      */
-    static async getEmergencyContactById(userId) {
+    static async getEmergencyContactByUserId(userId) {
         return await this.model.findAll({
             where: {
                 user_id: userId

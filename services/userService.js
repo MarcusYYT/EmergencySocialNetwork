@@ -5,7 +5,7 @@ import bcrypt from "bcryptjs";
 let saltRounds = 10;
 
 /**
- * This function will inster a row to the user table with username and password
+ * This function will insert a row to the user table with username and password
  * @async
  * @param {string} username The username passed from the frontend
  * @param {string} password The password passed from the frontend

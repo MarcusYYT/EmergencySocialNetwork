@@ -1,7 +1,6 @@
 import express from 'express';
 const router = express.Router();
-
-
+import {createEmergencyContact, getEmerencyContactByUserId, changePrimaryContact, changeAlternativeContact, changeEmergencyMessage} from '../controllers/emergencyContactController.js'
 
 
 /**
@@ -123,7 +122,10 @@ const router = express.Router();
 *        description: Database push successful
 */
 
-
-
+router.get('/:user_id', getEmerencyContactByUserId);
+router.put('/:user_id/primary-contact', changePrimaryContact);
+router.put('/:user_id/alternative-contact', changeAlternativeContact);
+router.put('/:user_id/emergency-message', changeEmergencyMessage);
+router.post('', createEmergencyContact)
 
 export default router;
