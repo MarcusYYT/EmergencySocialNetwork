@@ -14,8 +14,7 @@ head
 
   #thread-board
     #threadWrapper.container
-    button#thread-btn.btn.btn-primary(type='button' onclick='showCreateThreadOverlay()') Create Thread
-
+    button#thread-btn.btn.btn-primary(type='button' onclick='showCreateThreadOverlay()') Create Threa
    
 #overlayForTest(style='display: none;')
   p Currently Speed Testing... 
@@ -52,8 +51,8 @@ script.
 
   function routeToThreadChat(thread_id){
     console.log(thread_id)
-    //- const user_id = #{user_id};
-    //- window.location.href = `/announcements/${user_id}`;
+    const user_id = #{user_id};
+    window.location.href = `/threads/${thread_id}/${user_id}`;
   }
 
   function createGroupNameWrapper(){

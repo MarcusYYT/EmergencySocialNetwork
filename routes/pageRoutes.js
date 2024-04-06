@@ -57,6 +57,17 @@ router.get('/threads/:user_id', passport.authenticate('jwt', { session: false })
     }
 });
 
+router.get('/threads/:thread_id/:user_id', passport.authenticate('jwt', { session: false }), (req, res) => {
+    const user_id = req.user.data[0].user_id;
+    const thread_id = req.params.thread_id;
+    if (user_id != req.params.user_id) {
+        res.status(401).json({message: "Unauthorized access."});
+    }
+    else {
+        res.render('ThreadChat', {user_id: user_id, thread_id: thread_id});
+    }
+});
+
 router.get('/test', (req, res) => {
     res.render('Test');
 })
