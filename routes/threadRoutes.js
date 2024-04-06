@@ -1,6 +1,5 @@
 import express from 'express';
 import {getThreadById, getThreadList, postThread} from '../controllers/threadController.js'
-import {getThreadPostById, getThreadPostList, postThreadPost} from '../controllers/threadPostController.js'
 
 const router = express.Router();
 
@@ -169,11 +168,7 @@ const router = express.Router();
  */
 
 router.get('', getThreadList);
-router.get('/:post_id', getThreadById);
+router.get('/:thread_id', getThreadById);
 router.post('', postThread);
-
-router.get('/:thread_id', getThreadPostList);
-router.get('/:thread_id/:post_id', getThreadPostById);
-router.post('/:thread_id', postThreadPost);
 
 export default router;

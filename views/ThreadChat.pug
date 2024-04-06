@@ -10,7 +10,7 @@ head
 .links
   a.btn.btn-primary(onclick='routeToThreads()') Back
 #post-wrapper
-  h2#message-header Thread Chat
+  h2#message-header
   form.search-form.input-group.mb-3(onsubmit="submitSearch()" onchange="searchFinished()")
     input.search-input.form-control(type='text', name='search', placeholder='Search...')
   #message-board.list-group
@@ -22,7 +22,7 @@ head
   p Don't Close the Browser Tab...
 script(src='https://cdn.socket.io/4.7.4/socket.io.min.js')
 script.
-
+  
   const socket = io();
   socket.on('connect', async function() {
         console.log('Connected to server');
@@ -45,10 +45,11 @@ script.
 
   let username = "";
   let status = "";
+  let chatName = ""
 
   function routeToThreads(){
     const user_id = #{user_id}
-    window.location.href = `/threads/${user_id}`
+    window.location.href = `/threadWall/${user_id}`
   }
 
   async function postChatMessage(){
@@ -170,6 +171,18 @@ script.
       status = data.data[0].status
     })
 
+    //fetching in order to get the thread name
+    await fetch(`/threads/${threadId}/`)
+         .then(response => response.json())
+         .then(data => {
+            console.log(data);
+            chatName = data.data[0].thread_name
+            renderChatName();
+         })
+         .catch(error => {
+             console.error('Error fetching data:', error);
+         });
+
     await fetch(`/threadPosts/${threadId}/`)
          .then(response => response.json())
          .then(data => {
@@ -179,6 +192,12 @@ script.
          .catch(error => {
              console.error('Error fetching data:', error);
          });
+  }
+
+  function renderChatName(){
+    let header = document.getElementById("message-header")
+    let headerText = document.createTextNode(chatName)
+    header.appendChild(headerText)
   }
 
   async function logout(){
