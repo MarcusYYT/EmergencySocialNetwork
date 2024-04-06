@@ -50,14 +50,21 @@ script.
     window.location.href = `/directory/${user_id}`
   }
 
+  function routeToThreadChat(thread_id){
+    console.log(thread_id)
+    //- const user_id = #{user_id};
+    //- window.location.href = `/announcements/${user_id}`;
+  }
+
   function createGroupNameWrapper(){
     let threadNameWrapper = document.createElement("div")
     threadNameWrapper.setAttribute("id", "threadNameWrapper")
     let threadNameLabel = document.createElement("label")
     threadNameLabel.setAttribute("id", "threadNameLabel")
-    let threadNameLabelText = document.createTextNode("Thread Topic")
+    let threadNameLabelText = document.createTextNode("Thread Topic:")
     threadNameLabel.appendChild(threadNameLabelText)
     let threadNameInput = document.createElement("input")
+    threadNameInput.setAttribute("class", "form-control")
     threadNameInput.setAttribute("id", "threadNameInput")
     threadNameInput.setAttribute("type", "text")
     threadNameWrapper.appendChild(threadNameLabel)
@@ -69,6 +76,7 @@ script.
     let urgencyWrapper = document.createElement("div")
     urgencyWrapper.setAttribute("id", "urgencyWrapper")
     let urgencySelect = document.createElement("select")
+    urgencySelect.setAttribute("class", "form-select-sm")
     urgencySelect.setAttribute("id", "urgencySelect")
     let urgencyLabel = document.createElement("label")
     urgencyLabel.setAttribute("id", "urgencyLabel")
@@ -98,11 +106,12 @@ script.
     let buttonWrapper = document.createElement("div")
     buttonWrapper.setAttribute("id", "buttonWrapper")
     let createThreadButton = document.createElement("button")
-    createThreadButton.setAttribute("value", "urgencyHigh")
+    createThreadButton.className = "btn btn-primary"
     let createThreadButtonText = document.createTextNode("Create Thread")
     createThreadButton.appendChild(createThreadButtonText)
     createThreadButton.addEventListener("click", () => {createThread()})
     let cancelButton = document.createElement("button")
+    cancelButton.className = "cancel btn btn-danger"
     let cancelButtonText = document.createTextNode("Cancel")
     cancelButton.appendChild(cancelButtonText)
     cancelButton.addEventListener("click", () => {removeCreateOverlay()})
@@ -147,9 +156,6 @@ script.
     let urgency = urgencySelect.value
 
     let userId = #{user_id}
-
-    console.log("userId is " + userId)
-
     removeCreateOverlay()
 
     const threadData = {
@@ -290,11 +296,13 @@ script.
 
   socket.on("threadData", (threadData) => {
     let threadWrapper = document.getElementById("threadWrapper")
-  
+    console.log(threadData)
+    console.log("uo")
     let msgData = {
-        creator: threadData.creator,
-        thread_name: threadData.thread_name,
-        urgency: threadData.urgency,
+      creator: threadData.Creator.username,
+      thread_name: threadData.thread_name,
+      thread_id: threadData.thread_id,
+      urgency: threadData.urgency,  
     }    
     let threadElement = constructThread(msgData);
     threadWrapper.appendChild(threadElement);

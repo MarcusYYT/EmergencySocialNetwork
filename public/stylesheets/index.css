@@ -451,7 +451,7 @@ div#createModal {
     z-index: 10;
     position: fixed;
     width: 85vw;
-    height: 38vh;
+    max-height: 46vh;
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
@@ -482,14 +482,34 @@ div#urgencyWrapper {
     margin-bottom: 1vh;
 }
 
+.cancel {
+    width: 28vw;
+}
+
 #threadWrapper {
     overflow: scroll;
-    max-height: 63vh;
+    max-height: 61vh;
     margin-top: 4vh;
     margin-bottom: 2vh;
     border-radius: 10px;
     width: 68vw;
     padding: 0
+}
+
+h2#createHeader {
+    text-align: center;
+}
+
+label{
+    font-size: 4vw;
+    color: #031926;
+    padding-bottom: 0.5vh;
+}
+
+div#buttonWrapper {
+    justify-content: space-between;
+    display: flex;
+    margin-top: 3vh;
 }
 
 .thread-name {

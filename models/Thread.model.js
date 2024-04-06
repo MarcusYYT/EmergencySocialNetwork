@@ -69,6 +69,39 @@ export class Thread {
         return await this.model.findByPk(thread_id);
     }
 
+    /**
+     * Get a thread by its ID
+     * @param {string} thread_name - The ID of the thread
+     * @returns The thread with the given ID, or null if not found
+     */
+    static async getThreadByName(thread_name) {
+        return await this.model.findAll({
+            where: { thread_name: thread_name },
+            include: [
+                { model: User.model, as: 'Creator', attributes: ['username'] }
+            ]    
+        });
+    }
+
+
+    /**
+     * The function to check if a thread name exists in the database by name
+     * @param {string} thread_name The name passed from the frontend
+     * @returns The function will return true if the name exists in the database. Otherwise return false
+     */
+    static async ifThreadNameExists(thread_name) {
+        const result = await this.model.findAll({
+            where: { thread_name: thread_name },
+        });
+        if (result.length === 0) {
+            // thread name does not exist
+            return false;
+        } else {
+            // thread name exists
+            return true;
+        }
+    }
+
     // /**
     //  * Get all threads by a specific user
     //  * @param {number} userId - The ID of the user
@@ -119,6 +152,8 @@ export class Thread {
             where: {
                 thread_id: threadId
             }
+
+            
         });
     }
 

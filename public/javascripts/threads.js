@@ -1,6 +1,7 @@
 function constructThread(msgData) {
     const threadDiv = document.createElement('div');
     threadDiv.className = 'thread row g-0 justify-content-between';
+    threadDiv.addEventListener("click", () => {routeToThreadChat(msgData.thread_id)})
     const threadHeader = document.createElement('div');
     threadHeader.className = 'thread-name';
     threadHeader.appendChild(document.createTextNode(msgData.thread_name))
@@ -39,6 +40,8 @@ function constructThread(msgData) {
       threadWrapper.scrollTop = threadWrapper.scrollHeight;
     }
   }
+
+
   
 //   function slice(array, size){   
 //     let slicedArray = [];
@@ -111,7 +114,8 @@ function constructThread(msgData) {
     let messageDetails = {
       creator: username,
       thread_name: msgData.thread_name,
-      urgency: msgData.urgency,
+      thread_id: msgData.thread_id,
+      urgency: msgData.urgency
     }
     return messageDetails;
   }

@@ -31,10 +31,23 @@ export async function postThread(req, res){
         const creator_id = req.body.creator_id;
         const thread_name = req.body.thread_name;
         const urgency = req.body.urgency;
-        await threadService.createNewThread(creator_id, thread_name, urgency).then(() =>{
-            io.emit("threadData", req.body);
-            res.status(201).json({ success: true, message: 'Post a new thread successful' });
-        })
+
+        // makes sure that the thread is unique
+        if (await threadService.ifThreadNameExists(thread_name)) {
+            res.status(500).send({ success: false, message: "thread name already exists."});
+        }
+        else{
+            await threadService.createNewThread(creator_id, thread_name, urgency).then(async () => {
+                
+                //doing this in order to get the thread Id
+                await threadService.getThreadByName(thread_name).then((resolve) =>{
+                    io.emit("threadData", resolve.data[0]);
+                    res.status(201).json({ success: true, message: 'Post a new thread successfuli'});
+                })
+        
+            })
+        }
+       
     } catch(error) {
         res.status(500).send(error.message);
     }

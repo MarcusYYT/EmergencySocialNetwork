@@ -7,8 +7,36 @@ import { Thread } from '../models/Thread.model.js'
  * @returns 
  */
 export async function createNewThread(creatorId, threadName, urgency) {
-    return await Thread.createThread(creatorId, threadName, urgency)
+  // let returnJson = {
+  //   data:[],
+  //   name_exists: null,
+  //   message:"initial message"
+  // }
+  // if (await Thread.ifThreadNameExists(threadName)) {
+  //   returnJson.message = "thread name already exists.";
+  //   returnJson.name_exists = true;
+  //   return returnJson;
+  // }
+  return await Thread.createThread(creatorId, threadName, urgency)
+  // await Thread.createThread(creatorId, threadName, urgency).then((res)=>{
+  //   if(res != null){
+  //     returnJson.name_exists = false;
+  //     returnJson.data.push(res) 
+  //   } else {
+  //     returnJson.name_exists = true;
+  //   }})
   }
+
+  /**
+ * TODO
+ * @param {*} threadName 
+ * @returns 
+ */
+  export async function ifThreadNameExists(threadName) {
+    return await Thread.ifThreadNameExists(threadName)
+  }
+  
+  
 
 
 /**
@@ -31,6 +59,28 @@ export async function getThreadById(threadId){
     })
     return returnJson;
 }
+
+/**
+ * TODO
+ * @param {*} threadName 
+ * @returns 
+ */
+export async function getThreadByName(threadName){
+  let returnJson = {
+      exist: null, 
+      data: []
+  }
+  await Thread.getThreadByName(threadName).then((res)=>{
+      if(res != null){
+          returnJson.exist = true;
+          returnJson.data = res
+        } else {
+          returnJson.exist = false;
+        }
+  })
+  return returnJson;
+}
+
 
 
 /**
