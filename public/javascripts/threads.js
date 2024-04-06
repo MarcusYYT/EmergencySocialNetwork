@@ -1,41 +1,51 @@
-function constructThread(msgData) {
+function constructThread(msgData, user_id) {
     const threadDiv = document.createElement('div');
     threadDiv.className = 'thread row g-0 justify-content-between';
     threadDiv.addEventListener("click", () => {routeToThreadChat(msgData.thread_id)})
     const threadHeader = document.createElement('div');
     threadHeader.className = 'thread-name';
+
+    const urgencyFieldImage = document.createElement("i");
+    if (msgData.urgency === "Low Priority") {
+      urgencyFieldImage.setAttribute("class", "lowPriority col-1 bi bi-record-fill");
+    } else if (msgData.urgency === "High Priority") {
+      urgencyFieldImage.setAttribute("class", "highPriority col-1 bi bi-record-fill");
+    } else if (msgData.urgency === "Normal Priority") {
+      urgencyFieldImage.setAttribute("class", "normPriority col-1 bi bi-record-fill");
+    }
+
+    threadHeader.appendChild(urgencyFieldImage);
     threadHeader.appendChild(document.createTextNode(msgData.thread_name))
     const threadCreatorHeader = document.createElement('div');
     threadCreatorHeader.className = 'creator col-11';
     const creatorSpan = document.createElement('span');
     creatorSpan.className = 'thread-creator';
     creatorSpan.appendChild(document.createTextNode("By: " + msgData.creator));
-    const urgencyFieldImage = document.createElement("i");
-    if (msgData.urgency === "Low Priority") {
-      urgencyFieldImage.setAttribute("class", "col-1 bi bi-check-circle-fill");
-    } else if (msgData.urgency === "High Priority") {
-      urgencyFieldImage.setAttribute("class", "col-1 bi bi-bandaid-fill");
-    } else if (msgData.urgency === "Normal Priority") {
-      urgencyFieldImage.setAttribute("class", "col-1 bi bi-exclamation-circle-fill");
-    }
-
+    
     threadCreatorHeader.appendChild(threadHeader);
     threadCreatorHeader.appendChild(creatorSpan);
     threadDiv.appendChild(threadCreatorHeader);
-    threadDiv.appendChild(urgencyFieldImage);
+
+    if(msgData.creator_id === user_id){
+      const editImage = document.createElement("i");
+      editImage.setAttribute("class", "col-1 bi  bi-pencil-fill");
+      threadDiv.appendChild(editImage);
+      console.log("crea")
+    }
+    //threadDiv.appendChild(urgencyFieldImage);
     return threadDiv;
   }
   
-  async function renderThreads(threadlist) {
+  async function renderThreads(threadlist, user_id) {
     let threadWrapper = document.getElementById("threadWrapper")
     removeChildElements(threadWrapper)
     for (const msgData of threadlist) {
-      let username = ""
-     
-      username = msgData.Creator.username;
+
+      let creator = msgData.Creator.username;
       
-      let messageDetails = createThreadObject(msgData, username);
-      let messageElement = constructThread(messageDetails);
+      let messageDetails = createThreadObject(msgData, creator);
+      let messageElement = constructThread(messageDetails, user_id);
+      
       threadWrapper.appendChild(messageElement);
       threadWrapper.scrollTop = threadWrapper.scrollHeight;
     }
@@ -113,6 +123,7 @@ function constructThread(msgData) {
   function createThreadObject(msgData, username) {
     let messageDetails = {
       creator: username,
+      creator_id: msgData.creator_id,
       thread_name: msgData.thread_name,
       thread_id: msgData.thread_id,
       urgency: msgData.urgency
