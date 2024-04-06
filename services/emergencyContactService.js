@@ -11,13 +11,13 @@ import {EmergencyContact} from "../models/EmergencyContact.model.js";
 export async function createEmergencyContact(userId, primary, alternative, message) {
     let returnJson = {success: false, emergency_id: -1, message: "Create user emergency contact failed"};
     try {
-      if (await EmergencyContact.ifEmergencyContactExist(userId)) {
-        returnJson.message = "User emergency contact already exists.";
-        return returnJson;
-      }
+      // if (await EmergencyContact.ifEmergencyContactExist(userId)) {
+      //   returnJson.message = "User emergency contact already exists.";
+      //   return returnJson;
+      // }
       const emergncyContact = await EmergencyContact.createEmergencyContact(userId, primary, alternative, message);
       returnJson.success = true;
-      returnJson.emergency_id = emergncyContact.emergncy_id;
+      returnJson.emergency_id = emergncyContact.emergency_id;
       returnJson.message = "Create emergency contact successfully.";
     } catch (error) {
       console.log("Error creating user emergency contact:", error);
@@ -35,12 +35,12 @@ export async function createEmergencyContact(userId, primary, alternative, messa
  * @param {*} userId 
  * @returns 
  */
-export async function getEmerencyContactByUserId(userId){
+export async function getEmergencyContactByUserId(userId){
     let returnJson = {
       exist: null,
       data:[]
     }
-    await EmergencyContact.getEmergencyContactUserById(userId).then((res) => {
+    await EmergencyContact.getEmergencyContactByUserId(userId).then((res) => {
       if(res != null){
         returnJson.exist = true;
         returnJson.data.push(res) 

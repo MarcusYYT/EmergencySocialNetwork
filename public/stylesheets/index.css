@@ -431,3 +431,21 @@ div#show-more {
     border-radius: 15px;
     margin-bottom: 1vh;
 }
+
+#emergency-wrapper {
+    background-color: #78caff;
+    width: 80vw;
+    border-radius: 15px;
+    height: 85vh;
+    position: relative;
+    display: flex;
+    margin: auto;
+    top: 2vh;
+    flex-direction: column;
+}
+
+#emergency-header {
+    text-align: center;
+    padding: 15px 0px 10px 0px;
+    font-size: 8vw;
+}

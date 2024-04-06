@@ -1,5 +1,6 @@
 import * as emergencyContactService from '../services/emergencyContactService.js'
 import { EmergencyContact } from "../models/EmergencyContact.model.js";
+import { User } from "../models/User.model.js";
 
 
 export async function createEmergencyContact(req, res) {
@@ -24,10 +25,10 @@ export async function createEmergencyContact(req, res) {
     }
 }
 
-export async function getEmerencyContactByUserId(req, res){
+export async function getEmergencyContactByUserId(req, res){
     try{
         const user_id = req.params.user_id;
-        await emergencyContactService.getEmerencyContactByUserId(user_id).then((resolve)=>{
+        await emergencyContactService.getEmergencyContactByUserId(user_id).then((resolve)=>{
             if(resolve.exist==true){
                 res.status(200).json({success:true, data: resolve.data, message:"Fetch emergency contact successful"});
             } else {
@@ -39,41 +40,77 @@ export async function getEmerencyContactByUserId(req, res){
     }
 }
 
-export async function changePrimaryContact(req, res){
+export async function updateEmergencyContact(req, res){
     try{
         const userId = req.body.user_id;
-        const newPrimaryContact = req.body.updateValue;
-        await emergencyContactService.changePrimaryContact(userId, newPrimaryContact).then((resolve)=>{
-            io.emit('primary_update')
-            res.status(200).json({success: resolve.success, message: resolve.message});
-        })
+        const updateAtrribute = req.body.updateAt;
+        const updateValue = req.body.updateValue;
+        if (updateAtrribute === "primary_contact_id" || updateAtrribute === "alternative_contact_id") {
+            await User.ifUserExist(updateValue).then(async (result)=>{
+                if (result !== true) {
+                    console.log("The contact you select does not exist")
+                    res.status(404).json({ success: false, message: 'User not exist' });
+                } else {
+                    await User.getOneUser(updateValue).then(async (result)=>{
+                        if (updateAtrribute === "primary_contact_id") {
+                            await emergencyContactService.changePrimaryContact(userId, updateValue).then((resolve)=>{
+                                io.emit('primary_update')
+                                res.status(200).json({success: resolve.success, message: resolve.message});
+                        })
+                        } else {
+                            await emergencyContactService.changeAlternativeContact(userId, updateValue).then((resolve)=>{
+                                io.emit('alternative_update')
+                                res.status(200).json({success: resolve.success, message: resolve.message});
+                        })}
+                    })
+                }
+            })
+        } else {
+            await emergencyContactService.changeEmergencyMessage(userId, updateValue).then((resolve)=>{
+                io.emit('message_update')
+                res.status(200).json({success: resolve.success, message: resolve.message});
+            })
+        }
     } catch(error){
-        res.status(500).json({ message: 'Error updating primary contact', error: error.message });
+        res.status(500).json({ message: 'Error updating user emergency contact', error: error.message });
     }
 }
 
-export async function changeAlternativeContact(req, res){
-    try{
-        const userId = req.body.user_id;
-        const newAlternativeContact = req.body.updateValue;
-        await emergencyContactService.changeAlternativeContact(userId, newAlternativeContact).then((resolve)=>{
-            io.emit('alternative_update')
-            res.status(200).json({success: resolve.success, message: resolve.message});
-        })
-    } catch(error){
-        res.status(500).json({ message: 'Error updating alternative contact', error: error.message });
-    }
-}
+// export async function changePrimaryContact(req, res){
+//     try{
+//         const userId = req.body.user_id;
+//         const newPrimaryContact = req.body.updateValue;
+//         await emergencyContactService.changePrimaryContact(userId, newPrimaryContact).then((resolve)=>{
+//             io.emit('primary_update')
+//             res.status(200).json({success: resolve.success, message: resolve.message});
+//         })
+//     } catch(error){
+//         res.status(500).json({ message: 'Error updating primary contact', error: error.message });
+//     }
+// }
 
-export async function changeEmergencyMessage(req, res){
-    try{
-        const userId = req.body.user_id;
-        const newMessage = req.body.updateValue;
-        await emergencyContactService.changeEmergencyMessage(userId, newMessage).then((resolve)=>{
-            io.emit('message_update')
-            res.status(200).json({success: resolve.success, message: resolve.message});
-        })
-    } catch(error){
-        res.status(500).json({ message: 'Error updating emergency message', error: error.message });
-    }
-}
+// export async function changeAlternativeContact(req, res){
+//     try{
+//         const userId = req.body.user_id;
+//         const newAlternativeContact = req.body.updateValue;
+//         await emergencyContactService.changeAlternativeContact(userId, newAlternativeContact).then((resolve)=>{
+//             io.emit('alternative_update')
+//             res.status(200).json({success: resolve.success, message: resolve.message});
+//         })
+//     } catch(error){
+//         res.status(500).json({ message: 'Error updating alternative contact', error: error.message });
+//     }
+// }
+
+// export async function changeEmergencyMessage(req, res){
+//     try{
+//         const userId = req.body.user_id;
+//         const newMessage = req.body.updateValue;
+//         await emergencyContactService.changeEmergencyMessage(userId, newMessage).then((resolve)=>{
+//             io.emit('message_update')
+//             res.status(200).json({success: resolve.success, message: resolve.message});
+//         })
+//     } catch(error){
+//         res.status(500).json({ message: 'Error updating emergency message', error: error.message });
+//     }
+// }

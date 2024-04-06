@@ -5,36 +5,42 @@ html(lang='en')
     link(href='https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css', rel='stylesheet', integrity='sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3', crossorigin='anonymous')
     link(rel='stylesheet', href='https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css')
     link(rel='stylesheet', type='text/css', href='/stylesheets/index.css')
-    script(src='/javascripts/directory.js')
+    script(src='/javascripts/emergencyContact.js')
     script(src='https://cdn.socket.io/4.7.4/socket.io.min.js')
     script(src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js")
-    title Directory 
+    title Emergency Contact 
   body
     .navbar.container
       a.btn.btn-primary(onclick='routeToDirectory()') Back
-    #status-wrapper.dropdown
-      button#status-list.btn.btn-primary.dropdown-toggle(type='button' data-bs-toggle='dropdown' aria-expanded='false')
-        | Change Status
-      #dropdown-wrapper
-        ul.dropdown-menu#status-dropdown
-          li#ok-status.status-options
-            p.status-item.dropdown-item OK
-            i.bi.bi-check-circle-fill
-          li#help-status.status-options
-            p.status-item.dropdown-item Help
-            i.bi.bi-exclamation-circle-fill
-          li#emergency-status.status-options
-            p.status-item.dropdown-item Emergency
-            i.bi.bi-bandaid-fill
-    #directory-wrapper
-      h1#directory-header Emergency Contact
-      #directory.container
+    #emergency-wrapper
+      h1#emergency-header My Contact
+      form#primary-contact-form(method='put')
+        h2 Primary Contact
+        input(type='text', name='primary', value='', placeholder='New Contact' required='')
+        button.btn.btn-primary(type='button' onclick='changePrimaryContact()') Save
+      form#alternative-contact-form(method='put')
+        h2 Alternative Contact
+        input(type='text', name='alternative', value='', placeholder='New Contact' required='')
+        button.btn.btn-primary(type='button' onclick='changeAlternativeContact()') Save
+      form#emergency-message-form(method='put')
+        h2 Message
+        textarea#emergency-message(placeholder='Type your personalized emergency message here...' required='')
+        button.btn.btn-primary(type='button' onclick='changeEmergencyMessage()') Save
+    
 
 script(src='https://cdn.socket.io/4.7.4/socket.io.min.js')
 script.
 
-  const socket = io();
-  socket.on('connect', async function() {
+    const socket = io();
+    let username = '';
+    let userId = '';
+    let primary_id = '';
+    let alternative_id = '';
+    let primary_username = '';
+    let alternative_username = '';
+    let emergency_message = '';
+
+    socket.on('connect', async function() {
         console.log('Connected to server');
         console.log('Socket ID:', socket.id);
         const userId = #{user_id};
@@ -51,9 +57,126 @@ script.
             .catch(error => {
                 console.error('Error register socket:', error);
             });
-  })
+    })
 
-  function routeToDirectory(){
-    const user_id = #{user_id}
-    window.location.href = `/directory/${user_id}`
-  }
+    window.onload = async function() {
+        userId = #{user_id}
+        console.log("Current user id is: " + userId);
+        const response = await fetch(`/emergencyContacts/${userId}`, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+        }).then(response => response.json()).then((data) => {
+            primary_id = data.data[0][0].primary_contact_id
+            alternative_id = data.data[0][0].alternative_contact_id
+            emergency_message = data.data[0][0].emergency_message;
+        })
+        const primaryResponse = await fetch(`/users/${primary_id}`, {
+            method: 'GET',
+            headers: {
+            'Content-Type': 'application/json',
+        },
+        }).then(response => response.json()).then((data) => {
+            primary_username = data.data[0].username;
+        })
+        const alternativeResponse = await fetch(`/users/${alternative_id}`, {
+            method: 'GET',
+            headers: {
+            'Content-Type': 'application/json',
+        },
+        }).then(response => response.json()).then((data) => {            alternative_username = data.data[0].username;
+            renderEmergencyContact(primary_username, alternative_username, emergency_message);
+        })
+      }
+
+    async function changePrimaryContact() {
+        const userId = #{user_id};
+        let primaryForm = document.getElementById('primary-contact-form');
+        let primary = primaryForm.primary.value.trim();
+        primaryForm.value = '';
+
+        const requestBody = {
+            user_id: userId,
+            updateAt: "primary_contact_id",
+            updateValue: primary
+        }
+
+        const updatePrimary = await fetch(`/emergencyContacts/${userId}`, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(requestBody),
+            })
+    }
+
+        async function changeAlternativeContact() {
+        const userId = #{user_id};
+        let alternativeForm = document.getElementById('alternative-contact-form');
+        let alternative = alternativeForm.alternative.value.trim();
+        alternativeForm.value = '';
+
+        const requestBody = {
+            user_id: userId,
+            updateAt: "alternative_contact_id",
+            updateValue: alternative
+        }
+
+        const updateAlternative = await fetch(`/emergencyContacts/${userId}`, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(requestBody),
+            })
+    }
+
+    async function changeEmergencyMessage() {
+        const userId = #{user_id};
+        let messageArea = document.getElementById("emergency-message");
+        let messageContent = messageArea.value;
+        messageArea.value = '';
+
+        const requestBody = {
+            user_id: userId,
+            updateAt: "emergency-message",
+            updateValue: messageContent
+        }
+
+        const updateMessage = await fetch(`/emergencyContacts/${userId}`, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(requestBody),
+            })
+    }
+
+    function routeToDirectory() {
+        const user_id = #{user_id}
+        window.location.href = `/directory/${user_id}`
+    }
+
+    //- async function createEmergencyContact() {
+    //-     const postData = {
+    //-         user_id: userId,
+    //-         primary_id: 1,
+    //-         alternative_id: 2,
+    //-         emergency_message: 'I need HELP!'
+    //-     };
+
+    //-     await fetch('/emergencyContacts', {
+    //-         method: 'POST',
+    //-         headers: {
+    //-             'Content-Type': 'application/json',
+    //-         },
+    //-         body: JSON.stringify(postData)})
+    //-         .then(response => response.json())
+    //-         .then(data => {
+    //-             console.log(data);
+    //-         })
+    //-         .catch(error => {
+    //-             console.error('Error fetching data:', error);
+    //-         });
+    //- }

@@ -22,7 +22,6 @@ export class EmergencyContact {
             primary_contact_id: {
                 type: DataTypes.INTEGER,
                 allowNull: true,
-                defaultValue: -1,
                 references: {
                     model: User.model,
                     key: 'user_id'
@@ -31,7 +30,6 @@ export class EmergencyContact {
             alternative_contact_id: {
                 type: DataTypes.INTEGER,
                 allowNull: true,
-                defaultValue: -1,
                 references: {
                     model: User.model,
                     key: 'user_id'
