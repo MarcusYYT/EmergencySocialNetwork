@@ -42,6 +42,7 @@ script.
                 console.error('Error register socket:', error);
             });
   })
+
   let username = "";
   let status = "";
 
@@ -116,9 +117,10 @@ script.
       let searchValue = searchInput.value;
 
       let filteredSearchValue = filterStopWords(searchValue)
+      const thread_id = #{thread_id}
 
       if(filteredSearchValue !== ""){
-        await fetch(`/search?q=${filteredSearchValue}&domain=Posts`, {
+        await fetch(`/search?q=${filteredSearchValue}&domain=ThreadPosts&threadId=${thread_id}`, {
           method: 'GET',
           headers: {
               'Content-Type': 'application/json',
@@ -126,7 +128,6 @@ script.
         }).then(response => response.json()).then(async (data) => {
             console.log("Data in response::")
             console.log(data.data);
-            isStatus = false;
             renderSearchedPosts(data.data, false, false)
         }).catch(error => {
             console.error(error);
@@ -138,22 +139,23 @@ script.
   }
 
   async function searchFinished(){
+    const threadId = #{thread_id}
+    
+    let searchInput = document.getElementsByClassName('search-input')[0];
+    let searchValue = searchInput.value;
 
-        let searchInput = document.getElementsByClassName('search-input')[0];
-        let searchValue = searchInput.value;
-
-        if (searchValue === ""){
-          await fetch(`/threadPosts/${threadId}`)
-            .then(response => response.json())
-            .then(data => {
-                console.log(data);
-                renderChats(data.data, false)
-            })
-            .catch(error => {
-                console.error('Error fetching data:', error);
-            });
-        }
-      }
+    if (searchValue === ""){
+      await fetch(`/threadPosts/${threadId}`)
+        .then(response => response.json())
+        .then(data => {
+            console.log(data);
+            renderChats(data.data, false)
+        })
+        .catch(error => {
+            console.error('Error fetching data:', error);
+        });
+    }
+  }
 
   window.onload = async function() {
     const userId = #{user_id}

@@ -3,7 +3,7 @@ import { Post } from "../models/Post.model.js";
 import { Status } from "../models/Status.model.js";
 import { PrivatePost } from "../models/PrivatePost.model.js";
 import { Announcement } from "../models/Announcement.model.js";
-
+import { ThreadPost } from "../models/ThreadPost.model.js";
 
 
 export async function searchUser(query) {
@@ -80,6 +80,18 @@ export async function searchPrivatePosts(senderId, receiverId, query) {
         data: []
     }
     await PrivatePost.queryPrivatePosts(senderId, receiverId, query).then((res) => {
+        returnJson.success = true;
+        returnJson.data = res;
+    });
+    return returnJson;
+}
+
+export async function searchThreadPosts(threadId, query) {
+    let returnJson = {
+        success: false,
+        data: []
+    }
+    await ThreadPost.queryThreadPosts(threadId, query).then((res) => {
         returnJson.success = true;
         returnJson.data = res;
     });

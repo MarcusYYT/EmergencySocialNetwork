@@ -130,10 +130,11 @@ export class ThreadPost {
      * Query the posts by keyword
      * @param {string} query The keyword
      */
-    static async queryThreadPosts(query) {
+    static async queryThreadPosts(thread_id, query) {
         return await this.model.findAll({
             where: {
-                content: {[Op.like]: `%${query}%`}
+                content: {[Op.like]: `%${query}%`},
+                thread_id: thread_id
             },
             include: [{
                 model: User.model,
