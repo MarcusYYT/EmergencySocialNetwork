@@ -103,10 +103,9 @@ export class Thread {
     static async getAllThreads() {
         
         return await this.model.findAll({
-            include: [{
-            model: User.model,
-            attributes: ['username']
-            }]
+            include: [
+                { model: User.model, as: 'Creator', attributes: ['username'] }
+            ]    
         });
     }
 

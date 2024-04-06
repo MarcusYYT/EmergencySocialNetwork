@@ -29,7 +29,7 @@ export async function getThreadList(req, res){
 export async function postThread(req, res){
     try{
         const creator_id = req.body.creator_id;
-        const thread_name = red.body.thread_name;
+        const thread_name = req.body.thread_name;
         const urgency = req.body.urgency;
         await threadService.createNewThread(creator_id, thread_name, urgency).then(() =>{
             io.emit("threadData", req.body);

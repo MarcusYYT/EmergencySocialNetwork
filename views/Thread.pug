@@ -6,15 +6,15 @@ head
   link(rel='stylesheet', href='https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css')
   link(rel='stylesheet' type='text/css' href='/stylesheets/index.css')
   script(src='/javascripts/posts.js')
-  title Message Wall
+  title Threads
 .links
   a.btn.btn-primary(onclick='routeToDirectory()') Back
 #post-wrapper
   h2#message-header Threads
-  #message-board.list-group
-  form#post-form(method='POST')
-    textarea#message(placeholder='Type your message here...' required='')
-    button#post-btn.btn.btn-primary(type='button' onclick='postChatMessage()') Post
+  #thread-board.list-group
+    button#thread-btn.btn.btn-primary(type='button' onclick='showCreateThreadOverlay()') Create Thread
+
+   
 #overlayForTest(style='display: none;')
   p Currently Speed Testing... 
   p Don't Close the Browser Tab...
@@ -48,36 +48,137 @@ script.
     window.location.href = `/directory/${user_id}`
   }
 
-  async function postChatMessage(){
-    let textArea = document.getElementById("message")
-    let textContent = textArea.value
+  function createGroupNameWrapper(){
+    let threadNameWrapper = document.createElement("div")
+    threadNameWrapper.setAttribute("id", "threadNameWrapper")
+    let threadNameLabel = document.createElement("label")
+    threadNameLabel.setAttribute("id", "threadNameLabel")
+    let threadNameLabelText = document.createTextNode("Thread Topic")
+    threadNameLabel.appendChild(threadNameLabelText)
+    let threadNameInput = document.createElement("input")
+    threadNameInput.setAttribute("id", "threadNameInput")
+    threadNameInput.setAttribute("type", "text")
+    threadNameWrapper.appendChild(threadNameLabel)
+    threadNameWrapper.appendChild(threadNameInput)
+    return threadNameWrapper
+  }
 
-    let path = window.location.pathname;
-    textArea.value = "";
+  function createUrgencyWrapper(){
+    let urgencyWrapper = document.createElement("div")
+    urgencyWrapper.setAttribute("id", "urgencyWrapper")
+    let urgencySelect = document.createElement("select")
+    urgencySelect.setAttribute("id", "urgencySelect")
+    let urgencyLabel = document.createElement("label")
+    urgencyLabel.setAttribute("id", "urgencyLabel")
+    let urgencyLabelText =  document.createTextNode("Urgency Level:")
+    urgencyLabel.appendChild(urgencyLabelText)
+    urgencyWrapper.appendChild(urgencyLabel)
+    let urgencyHigh = document.createElement("option")
+    urgencyHigh.setAttribute("value", "High Priority")
+    let urgencyHighText = document.createTextNode("High Priority")
+    urgencyHigh.appendChild(urgencyHighText)
+    let urgencyNormal = document.createElement("option")
+    urgencyNormal.setAttribute("value", "Normal Priority")
+    let urgencyNormalText = document.createTextNode("Normal Priority")
+    urgencyNormal.appendChild(urgencyNormalText)
+    let urgencyLow = document.createElement("option")
+    urgencyLow.setAttribute("value", "Low Priority")
+    let urgencyLowText = document.createTextNode("Low Priority")
+    urgencyLow.appendChild(urgencyLowText)
+    urgencySelect.appendChild(urgencyHigh)
+    urgencySelect.appendChild(urgencyNormal)
+    urgencySelect.appendChild(urgencyLow)
+    urgencyWrapper.appendChild(urgencySelect)
+    return urgencyWrapper
+  }
+
+  function createButttonWrapper(){
+    let buttonWrapper = document.createElement("div")
+    buttonWrapper.setAttribute("id", "buttonWrapper")
+
+    let createThreadButton = document.createElement("button")
+    createThreadButton.setAttribute("value", "urgencyHigh")
+    let createThreadButtonText = document.createTextNode("Create Thread")
+    createThreadButton.appendChild(createThreadButtonText)
+    createThreadButton.addEventListener("click", () => {createThread()})
+
+    let cancelButton = document.createElement("button")
+    let cancelButtonText = document.createTextNode("Cancel")
+    cancelButton.appendChild(cancelButtonText)
+
+    cancelButton.addEventListener("click", () => {removeCreateOverlay()})
+
+    buttonWrapper.appendChild(cancelButton)
+    buttonWrapper.appendChild(createThreadButton)
+    return buttonWrapper
+  }
+
+  function showCreateThreadOverlay(){
+    let threadOverlay = document.createElement("div")
+    threadOverlay.setAttribute("id", "overlay")
+    let body = document.getElementsByTagName("body")[0]
+    let postWrapper = document.getElementById("post-wrapper")
+
+    let createModal = document.createElement("div")
+    createModal.setAttribute("id", "createModal")
+    let createHeader = document.createElement("h2")
+    createHeader.setAttribute("id", "createHeader")
+    createHeader.appendChild(document.createTextNode("Create Thread"))
+
+    let threadNameWrapper = createGroupNameWrapper();
+    let urgencyWrapper = createUrgencyWrapper();
+    let buttonWrapper = createButttonWrapper();
+
+    createModal.appendChild(createHeader)
+    createModal.appendChild(threadNameWrapper)
+    createModal.appendChild(urgencyWrapper)
+    createModal.appendChild(buttonWrapper)
+
+    body.insertBefore(threadOverlay, postWrapper)
+    body.insertBefore(createModal, postWrapper)
+  }
+
+  function removeCreateOverlay(){
+    document.getElementById("overlay").remove();
+    document.getElementById("createModal").remove();
+  }
+
+  async function createThread(){
+    let threadInput = document.getElementById("threadNameInput")
+    let threadName = threadInput.value
+
+    let urgencySelect = document.getElementById("urgencySelect")
+    let urgency = urgencySelect.value
+
+    console.log("urgency is: " + urgency)
+    console.log("urgency is: " + threadName)
+
     // Get the user_id (assuming it's the last part of the URL)
 
     let userId = #{user_id}
 
-    const postData = {
+    console.log("userId is " + userId)
+
+    const threadData = {
       username: username,
       creator_id: userId,
-      thread_name: threadName
+      thread_name: threadName,
       urgency: urgency
     };
 
-      await fetch('/threads', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(postData)})
-            .then(response => response.json())
-            .then(data => {
-                console.log(data);
-            })
-            .catch(error => {
-                console.error('Error fetching data:', error);
-            });
+    await fetch('/threads', {
+          method: 'POST',
+          headers: {
+              'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(threadData)})
+          .then(response => response.json())
+          .then(data => {
+              console.log(data);
+          })
+          .catch(error => {
+              console.error('Error fetching data:', error);
+          });
   }
 
     function filterStopWords(userInput){
@@ -167,7 +268,7 @@ script.
         .then(response => response.json())
         .then(data => {
             console.log(data);
-            renderThreads(data.data, false)
+            renderThreads(data.data)
         })
         .catch(error => {
             console.error('Error fetching data:', error);

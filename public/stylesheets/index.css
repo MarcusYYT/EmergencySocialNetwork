@@ -209,6 +209,15 @@ div#message-board {
     background-color: white;
 }
 
+div#thread-board {
+    width: 85vw;
+    margin: 0 3vw 3vw 3vw;
+    overflow: scroll;
+    height: 75vh;
+    border-radius: 15px;
+    background-color: #78caff;
+}
+
 div#announcement-board {
     width: 85vw;
     margin: 0 3vw 3vw 3vw;
@@ -236,6 +245,13 @@ textarea {
 
 button#post-btn {
     border-radius: 0px 0px 15px 15px;
+}
+
+button#thread-btn {
+    width: 68vw;
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: 4vh;
 }
 
 h2#message-header {
@@ -430,4 +446,24 @@ div#show-more {
     border: 1px solid rgba(0, 0, 0, .125);
     border-radius: 15px;
     margin-bottom: 1vh;
+}
+
+div#createModal {
+    background-color: #78caff;
+    z-index: 10;
+    position: fixed;
+    width: 85vw;
+    height: 38vh;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    border-radius: 15px;
+    padding: 10vw;
+}
+div#threadNameWrapper {
+    margin-bottom: 2vh;
+}
+
+div#urgencyWrapper {
+    margin-bottom: 2vh;
 }
