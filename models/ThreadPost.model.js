@@ -1,5 +1,6 @@
 import {DataTypes, Op} from 'sequelize'
 import { User } from './User.model.js'
+import { Thread } from './Thread.model.js';
 export class ThreadPost {
     static model = null;
 
@@ -9,6 +10,14 @@ export class ThreadPost {
                 type: DataTypes.INTEGER,
                 primaryKey: true,
                 autoIncrement: true
+            },
+            thread_id: {
+                type: DataTypes.INTEGER,
+                allowNull: false,
+                references: {
+                    model: Thread.model,
+                    key: 'thread_id'
+                }
             },
             user_id: {
                 type: DataTypes.INTEGER,
@@ -38,6 +47,13 @@ export class ThreadPost {
         User.model.hasMany(this.model, {
             foreignKey: 'user_id'
         });
+        this.model.belongsTo(Thread.model, {
+            foreignKey: 'thread_id',
+            onDelete: 'CASCADE'
+        });
+        Thread.model.hasMany(this.model, {
+            foreignKey: 'thread_id'
+        });
     }
 
     /**
@@ -47,11 +63,12 @@ export class ThreadPost {
      * @param {string} status - The status when the user push the post
      * @returns The created post
      */
-    static async createThreadPost(userId, content, status) {
+    static async createThreadPost(userId, content, status, thread_id) {
         return await this.model.create({
             user_id: userId,
             content: content,
-            status: status
+            status: status,
+            thread_id: thread_id
         });
     }
 
@@ -95,8 +112,12 @@ export class ThreadPost {
      * Get all posts
      * @returns An array of all posts
      */
-    static async getAllThreadPosts() {
+    static async getAllThreadPosts(thread_id) {
         return await this.model.findAll({
+            where :{
+                thread_id: thread_id
+            }, 
+
             include: [{
               model: User.model,
               attributes: ['username']

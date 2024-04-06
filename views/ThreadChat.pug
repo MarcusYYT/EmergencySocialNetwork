@@ -8,7 +8,7 @@ head
   script(src='/javascripts/posts.js')
   title Thread Chat
 .links
-  a.btn.btn-primary(onclick='routeToDirectory()') Back
+  a.btn.btn-primary(onclick='routeToThreads()') Back
 #post-wrapper
   h2#message-header Thread Chat
   form.search-form.input-group.mb-3(onsubmit="submitSearch()" onchange="searchFinished()")
@@ -45,9 +45,9 @@ script.
   let username = "";
   let status = "";
 
-  function routeToDirectory(){
+  function routeToThreads(){
     const user_id = #{user_id}
-    window.location.href = `/directory/${user_id}`
+    window.location.href = `/threads/${user_id}`
   }
 
   async function postChatMessage(){
@@ -58,16 +58,18 @@ script.
     // Get the user_id (assuming it's the last part of the URL)
 
     let userId = #{user_id}
+    let threadId = #{thread_id}
 
     const postData = {
       username: username,
       user_id: userId,
       status: status,
+      thread_id: threadId,
       dateTime: new Date().toLocaleString(),
       content: textContent
     };
 
-      await fetch('/posts', {
+      await fetch(`/threadPosts/${threadId}`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -141,7 +143,7 @@ script.
         let searchValue = searchInput.value;
 
         if (searchValue === ""){
-          await fetch('/posts')
+          await fetch(`/threadPosts/${threadId}`)
             .then(response => response.json())
             .then(data => {
                 console.log(data);
@@ -155,6 +157,7 @@ script.
 
   window.onload = async function() {
     const userId = #{user_id}
+    const threadId = #{thread_id}
     const response = await fetch(`/users/${userId}`, {
       method: 'GET',
       headers: {
@@ -165,7 +168,7 @@ script.
       status = data.data[0].status
     })
 
-    await fetch('/posts')
+    await fetch(`/threadPosts/${threadId}/`)
          .then(response => response.json())
          .then(data => {
              console.log(data);
@@ -196,7 +199,7 @@ script.
       window.location.href = `/`;
   }
 
-  socket.on("postData", (postData) => {
+  socket.on("threadPostData", (postData) => {
     let messageBoard = document.getElementById("message-board")
     let msgData = {
         sender: postData.username,

@@ -11,6 +11,7 @@ import postRoutes from './routes/postRoutes.js'
 import privatePostRoutes from './routes/privatePostRoutes.js'
 import announcementRoutes from './routes/announcementRoutes.js'
 import threadRoutes from './routes/threadRoutes.js'
+import threadPostRoutes from './routes/threadPostRoutes.js'
 import pageRoutes from './routes/pageRoutes.js'
 import statusRoutes from './routes/statusRoutes.js'
 import searchRoutes from './routes/searchRoutes.js'
@@ -77,6 +78,7 @@ app.use('/status', statusRoutes)
 app.use('/privatePosts', privatePostRoutes)
 app.use('/announcements', announcementRoutes)
 app.use('/threads', threadRoutes)
+app.use('/threadPosts', threadPostRoutes)
 app.use('/search', searchRoutes)
 app.use('/test', testRoute);
 

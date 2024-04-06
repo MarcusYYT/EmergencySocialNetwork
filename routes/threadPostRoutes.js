@@ -1,5 +1,4 @@
 import express from 'express';
-import {getThreadById, getThreadList, postThread} from '../controllers/threadController.js'
 import {getThreadPostById, getThreadPostList, postThreadPost} from '../controllers/threadPostController.js'
 
 const router = express.Router();
@@ -167,10 +166,6 @@ const router = express.Router();
  *      '201':
  *        description: Database push successful
  */
-
-router.get('', getThreadList);
-router.get('/:post_id', getThreadById);
-router.post('', postThread);
 
 router.get('/:thread_id', getThreadPostList);
 router.get('/:thread_id/:post_id', getThreadPostById);

@@ -7,8 +7,8 @@ import { ThreadPost } from "../models/ThreadPost.model.js";
  * @param {*} status 
  * @returns 
  */
-export async function createNewThreadPost(userId, content, status) {
-    return await ThreadPost.createThreadPost(userId, content, status)
+export async function createNewThreadPost(userId, content, status, threadId) {
+    return await ThreadPost.createThreadPost(userId, content, status, threadId)
   }
 
 
@@ -38,13 +38,13 @@ export async function getThreadPostById(postId){
  * TODO: write the function documentation
  * @returns 
  */
-export async function getThreadPostList(){
+export async function getThreadPostList(thread_id){
     let returnJson = {
       data:[],
       message:"initial message"
     }
   
-    await ThreadPost.getAllThreadPosts().then((res)=>{
+    await ThreadPost.getAllThreadPosts(thread_id).then((res)=>{
       returnJson.message = "Fetch post list successful"
       returnJson.data = res;
     })
