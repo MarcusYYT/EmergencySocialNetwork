@@ -150,8 +150,10 @@ script.
 
     console.log("userId is " + userId)
 
+    removeCreateOverlay()
+
     const threadData = {
-      username: username,
+      creator: username,
       creator_id: userId,
       thread_name: threadName,
       urgency: urgency
@@ -286,17 +288,17 @@ script.
       window.location.href = `/`;
   }
 
-  socket.on("postData", (postData) => {
-    let messageBoard = document.getElementById("message-board")
+  socket.on("threadData", (threadData) => {
+    let threadWrapper = document.getElementById("threadWrapper")
+  
     let msgData = {
-        sender: postData.username,
-        message: postData.content,
-        status: postData.status,
-        dateTime: postData.dateTime
+        creator: threadData.creator,
+        thread_name: threadData.thread_name,
+        urgency: threadData.urgency,
     }    
-    let messageElement = constructChatMessage(msgData);
-    messageBoard.appendChild(messageElement);
-    document.getElementById("message-board").scrollTop = messageBoard.scrollHeight;
+    let threadElement = constructThread(msgData);
+    threadWrapper.appendChild(threadElement);
+    document.getElementById("threadWrapper").scrollTop = threadWrapper.scrollHeight;
   });
 
   function showOverlay() {

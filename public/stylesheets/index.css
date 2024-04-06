@@ -209,15 +209,6 @@ div#message-board {
     background-color: white;
 }
 
-div#thread-board {
-    width: 85vw;
-    margin: 0 3vw 3vw 3vw;
-    overflow: scroll;
-    height: 75vh;
-    border-radius: 15px;
-    background-color: #78caff;
-}
-
 div#announcement-board {
     width: 85vw;
     margin: 0 3vw 3vw 3vw;
@@ -467,6 +458,15 @@ div#createModal {
     border-radius: 15px;
     padding: 10vw;
 }
+
+div#thread-board {
+    width: 85vw;
+    margin: 0 3vw 3vw 3vw;
+    height: 75vh;
+    border-radius: 15px;
+    background-color: #78caff;
+}
+
 div#threadNameWrapper {
     margin-bottom: 2vh;
 }
@@ -479,12 +479,17 @@ div#urgencyWrapper {
     background-color: #c5ebff;
     border-radius: 10px;
     padding: 2vw;
+    margin-bottom: 1vh;
 }
 
 #threadWrapper {
-    padding: 4vh 10vw 2vh 10vw;
     overflow: scroll;
-    max-height: 67vh;
+    max-height: 63vh;
+    margin-top: 4vh;
+    margin-bottom: 2vh;
+    border-radius: 10px;
+    width: 68vw;
+    padding: 0
 }
 
 .thread-name {

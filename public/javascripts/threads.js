@@ -1,6 +1,6 @@
 function constructThread(msgData) {
     const threadDiv = document.createElement('div');
-    threadDiv.className = 'thread row gx-1 justify-content-between';
+    threadDiv.className = 'thread row g-0 justify-content-between';
     const threadHeader = document.createElement('div');
     threadHeader.className = 'thread-name';
     threadHeader.appendChild(document.createTextNode(msgData.thread_name))
