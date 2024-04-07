@@ -234,11 +234,16 @@ script.
     document.getElementById("message-board").scrollTop = messageBoard.scrollHeight;
   });
 
-  //the new thread name
+  //updating the new thread name
   socket.on("edit_thread", (thread_name) => {
     chatName = thread_name;
     console.log("kik: " + thread_name)
     renderChatName();
+  });
+
+  //kicking everyone out
+  socket.on("delete_thread", () => {
+    routeToThreads()
   });
 
   function showOverlay() {

@@ -86,6 +86,9 @@ export async function getThreadList(){
 
     /**
    * TODO: write the function documentation
+   * @param {*} thread_id 
+   * @param {*} thread_name 
+   * @param {*} urgency 
    * @returns 
    */
   export async function editThread(thread_id, thread_name, urgency){
@@ -94,7 +97,27 @@ export async function getThreadList(){
       message:"initial message"
     }
     await Thread.editThread(thread_id, thread_name, urgency).then((res)=>{
-      returnJson.message = "Fetch thread list successful"
+      returnJson.message = "Edit thread list successful"
+      returnJson.data = res;
+    })
+
+    return returnJson
+  }
+
+    /**
+   * TODO: write the function documentation
+   * @param {*} thread_id 
+   * @param {*} thread_name 
+   * @param {*} urgency 
+   * @returns 
+  */
+  export async function deleteThread(thread_id){
+    let returnJson = {
+      data:[],
+      message:"initial message"
+    }
+    await Thread.deleteThread(thread_id).then((res)=>{
+      returnJson.message = "Delete thread list successful"
       returnJson.data = res;
     })
 

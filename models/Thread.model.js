@@ -170,9 +170,7 @@ export class Thread {
         return await this.model.destroy({
             where: {
                 thread_id: threadId
-            }
-
-            
+            } 
         });
     }
 

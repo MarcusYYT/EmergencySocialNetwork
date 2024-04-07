@@ -69,3 +69,16 @@ export async function editThread(req, res){
         res.status(500).json({ message: 'Error updating user', error: error.message });
     }
 }
+
+export async function deleteThread(req, res){
+    try{
+        const thread_id = req.params.thread_id
+        await threadService.deleteThread(thread_id).then((resolve)=>{
+            io.emit('delete_thread')
+            res.status(200).json({success: resolve.success, message: resolve.message});
+        })
+
+    } catch(error){
+        res.status(500).json({ message: 'Error updating user', error: error.message });
+    }
+}

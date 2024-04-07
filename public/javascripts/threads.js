@@ -41,14 +41,17 @@ function constructThread(msgData, user_id) {
   }
 
   function renderEditOverlay(msgData){
-    console.log("edit")
-
     let editOverlay = document.createElement("div")
     editOverlay.setAttribute("id", "overlay")
     let body = document.getElementsByTagName("body")[0]
     let postWrapper = document.getElementById("post-wrapper")
     let editModal = document.createElement("div")
     editModal.setAttribute("id", "editModal")
+
+    let cancelButton = document.createElement("i")
+    cancelButton.setAttribute("class", "bi bi-x")
+    cancelButton.addEventListener("click", () => {removeEditOverlay()})
+
     let editHeader = document.createElement("h2")
     editHeader.setAttribute("id", "editHeader")
     editHeader.appendChild(document.createTextNode("Edit Thread"))
@@ -57,6 +60,7 @@ function constructThread(msgData, user_id) {
     let urgencyWrapper = createUrgencyWrapper(msgData.urgency);
     let buttonWrapper = createEditButttonWrapper(msgData.thread_id);
 
+    editModal.appendChild(cancelButton)
     editModal.appendChild(editHeader)
     editModal.appendChild(threadNameWrapper)
     editModal.appendChild(urgencyWrapper)
@@ -84,9 +88,7 @@ function constructThread(msgData, user_id) {
     let threadWrapper = document.getElementById("threadWrapper")
     removeChildElements(threadWrapper)
     for (const msgData of threadlist) {
-
-      let creator = msgData.Creator.username;
-      
+      let creator = msgData.Creator.username;     
       let messageDetails = createThreadObject(msgData, creator);
       let messageElement = constructThread(messageDetails, user_id);
       
@@ -273,12 +275,12 @@ function constructThread(msgData, user_id) {
     let createThreadButtonText = document.createTextNode("Save Changes")
     createThreadButton.appendChild(createThreadButtonText)
     createThreadButton.addEventListener("click", () => {editThread(thread_id)})
-    let cancelButton = document.createElement("button")
-    cancelButton.className = "cancel btn btn-danger"
-    let cancelButtonText = document.createTextNode("Cancel")
-    cancelButton.appendChild(cancelButtonText)
-    cancelButton.addEventListener("click", () => {removeEditOverlay()})
-    buttonWrapper.appendChild(cancelButton)
+    let deleteButton = document.createElement("button")
+    deleteButton.className = "delete btn btn-danger"
+    let deleteButtonText = document.createTextNode("Delete Thread")
+    deleteButton.appendChild(deleteButtonText)
+    deleteButton.addEventListener("click", () => {deleteThread(thread_id)})
+    buttonWrapper.appendChild(deleteButton)
     buttonWrapper.appendChild(createThreadButton)
     return buttonWrapper
   }

@@ -489,8 +489,8 @@ div#urgencyWrapper {
     margin-bottom: 1vh;
 }
 
-.cancel {
-    width: 28vw;
+.delete {
+    width: 32vw;
 }
 
 #threadWrapper {
@@ -555,5 +555,13 @@ div#editModal {
     left: 50%;
     transform: translate(-50%, -50%);
     border-radius: 15px;
-    padding: 10vw;
+    padding: 8.5vw;
+}
+
+.bi-x {
+    font-size: 30px;
+    position: fixed;
+    top: 1vh;
+    left: 3vh;
+    color: #031926;
 }
