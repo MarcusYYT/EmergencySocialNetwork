@@ -303,7 +303,11 @@ script.
     }    
     let threadElement = constructThread(msgData, user_id);
     threadWrapper.appendChild(threadElement);
-    document.getElementById("threadWrapper").scrollTop = threadWrapper.scrollHeight;
+
+    if (threadData.creator_id === user_id){
+      document.getElementById("threadWrapper").scrollTop = threadWrapper.scrollHeight;
+    }
+    
   });
 
   //refreshes data upon edit
