@@ -45,6 +45,7 @@ export async function updateEmergencyContact(req, res){
         const userId = req.body.user_id;
         const updateAtrribute = req.body.updateAt;
         const updateValue = req.body.updateValue;
+        const updateId = req.body.updateId;
         if (updateAtrribute === "primary_contact_id" || updateAtrribute === "alternative_contact_id") {
             await User.ifUserExist(updateValue).then(async (result)=>{
                 if (result !== true) {
@@ -53,13 +54,14 @@ export async function updateEmergencyContact(req, res){
                 } else {
                     await User.getOneUser(updateValue).then(async (result)=>{
                         if (updateAtrribute === "primary_contact_id") {
-                            await emergencyContactService.changePrimaryContact(userId, updateValue).then((resolve)=>{
-                                io.emit('primary_update')
+                            console.log(updateValue)
+                            await emergencyContactService.changePrimaryContact(userId, updateId).then((resolve)=>{
+                                //io.emit('primary_update')
                                 res.status(200).json({success: resolve.success, message: resolve.message});
                         })
                         } else {
-                            await emergencyContactService.changeAlternativeContact(userId, updateValue).then((resolve)=>{
-                                io.emit('alternative_update')
+                            await emergencyContactService.changeAlternativeContact(userId, updateId).then((resolve)=>{
+                                //io.emit('alternative_update')
                                 res.status(200).json({success: resolve.success, message: resolve.message});
                         })}
                     })
@@ -67,11 +69,11 @@ export async function updateEmergencyContact(req, res){
             })
         } else {
             await emergencyContactService.changeEmergencyMessage(userId, updateValue).then((resolve)=>{
-                io.emit('message_update')
                 res.status(200).json({success: resolve.success, message: resolve.message});
             })
         }
     } catch(error){
+        console.log("there is a problem")
         res.status(500).json({ message: 'Error updating user emergency contact', error: error.message });
     }
 }

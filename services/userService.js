@@ -56,6 +56,28 @@ export async function getUserById(user_id){
 }
 
 /**
+ * get user by the username
+ * @param {*} username
+ * @returns 
+ */
+export async function getUserByUsername(username){
+  let returnJson = {
+    exist: null,
+    data:[]
+  }
+  await User.getOneUser(username).then((res) => {
+    if(res != null){
+      returnJson.exist = true;
+      returnJson.data.push(res) 
+    } else {
+      returnJson.exist = false;
+    }
+  })
+
+  return returnJson;
+}
+
+/**
  * TODO: write the function documentation
  * @returns 
  */

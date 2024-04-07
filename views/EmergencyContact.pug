@@ -85,21 +85,39 @@ script.
             headers: {
             'Content-Type': 'application/json',
         },
-        }).then(response => response.json()).then((data) => {            alternative_username = data.data[0].username;
+        }).then(response => response.json()).then((data) => {            
+            alternative_username = data.data[0].username;
             renderEmergencyContact(primary_username, alternative_username, emergency_message);
         })
       }
 
     async function changePrimaryContact() {
         const userId = #{user_id};
+        let primaryId = '';
         let primaryForm = document.getElementById('primary-contact-form');
-        let primary = primaryForm.primary.value.trim();
-        primaryForm.value = '';
+        primary_username = primaryForm.primary.value.trim();
+        primaryForm.querySelector('[name="primary"]').value = ''; // Reset input value
+
+        const response = await fetch(`/users/username/${primary_username}`, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+        });
+
+        if (response.ok) {
+            const data = await response.json();
+            primaryId = data.data[0][0].user_id;
+            console.log(primaryId); 
+        } else {
+            console.error('Failed to fetch user data');
+        }
 
         const requestBody = {
             user_id: userId,
             updateAt: "primary_contact_id",
-            updateValue: primary
+            updateValue: primary_username,
+            updateId: primaryId
         }
 
         const updatePrimary = await fetch(`/emergencyContacts/${userId}`, {
@@ -109,18 +127,38 @@ script.
             },
             body: JSON.stringify(requestBody),
             })
+        renderEmergencyContact(primary_username, alternative_username, emergency_message);
     }
 
-        async function changeAlternativeContact() {
+    async function changeAlternativeContact() {
         const userId = #{user_id};
+        let alternativeId = ';'
         let alternativeForm = document.getElementById('alternative-contact-form');
-        let alternative = alternativeForm.alternative.value.trim();
+        alternative_username = alternativeForm.alternative.value.trim();
         alternativeForm.value = '';
+        alternativeForm.querySelector('[name="alternative"]').value = ''; // Reset input value
+
+
+        const response = await fetch(`/users/username/${alternative_username}`, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+        });
+
+        if (response.ok) {
+            const data = await response.json();
+            alternativeId = data.data[0][0].user_id;
+            console.log(alternativeId); 
+        } else {
+            console.error('Failed to fetch user data');
+        }
 
         const requestBody = {
             user_id: userId,
             updateAt: "alternative_contact_id",
-            updateValue: alternative
+            updateValue: alternative_username,
+            updateId: alternativeId
         }
 
         const updateAlternative = await fetch(`/emergencyContacts/${userId}`, {
@@ -130,18 +168,20 @@ script.
             },
             body: JSON.stringify(requestBody),
             })
+
+        renderEmergencyContact(primary_username, alternative_username, emergency_message);
     }
 
     async function changeEmergencyMessage() {
         const userId = #{user_id};
         let messageArea = document.getElementById("emergency-message");
-        let messageContent = messageArea.value;
+        emergency_message = messageArea.value;
         messageArea.value = '';
 
         const requestBody = {
             user_id: userId,
             updateAt: "emergency-message",
-            updateValue: messageContent
+            updateValue: emergency_message
         }
 
         const updateMessage = await fetch(`/emergencyContacts/${userId}`, {
@@ -151,6 +191,8 @@ script.
             },
             body: JSON.stringify(requestBody),
             })
+
+        renderEmergencyContact(primary_username, alternative_username, emergency_message);
     }
 
     function routeToDirectory() {
