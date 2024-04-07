@@ -58,7 +58,7 @@ function constructThread(msgData, user_id) {
 
     let threadNameWrapper = createGroupNameWrapper(msgData.thread_name);
     let urgencyWrapper = createUrgencyWrapper(msgData.urgency);
-    let buttonWrapper = createEditButttonWrapper(msgData.thread_id);
+    let buttonWrapper = createEditButttonWrapper(msgData.thread_id, msgData.thread_name);
 
     editModal.appendChild(cancelButton)
     editModal.appendChild(editHeader)
@@ -267,14 +267,14 @@ function constructThread(msgData, user_id) {
     document.getElementById("createModal").remove();
   }
 
-  function createEditButttonWrapper(thread_id){
+  function createEditButttonWrapper(thread_id, prev_thred_name){
     let buttonWrapper = document.createElement("div")
     buttonWrapper.setAttribute("id", "buttonWrapper")
     let createThreadButton = document.createElement("button")
     createThreadButton.className = "btn btn-primary"
     let createThreadButtonText = document.createTextNode("Save Changes")
     createThreadButton.appendChild(createThreadButtonText)
-    createThreadButton.addEventListener("click", () => {editThread(thread_id)})
+    createThreadButton.addEventListener("click", () => {editThread(thread_id, prev_thred_name)})
     let deleteButton = document.createElement("button")
     deleteButton.className = "delete btn btn-danger"
     let deleteButtonText = document.createTextNode("Delete Thread")

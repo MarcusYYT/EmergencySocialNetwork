@@ -94,11 +94,13 @@ export async function getThreadList(){
   export async function editThread(thread_id, thread_name, urgency){
     let returnJson = {
       data:[],
-      message:"initial message"
+      message:"initial message",
+      success: false
     }
     await Thread.editThread(thread_id, thread_name, urgency).then((res)=>{
       returnJson.message = "Edit thread list successful"
       returnJson.data = res;
+      returnJson.success = true
     })
 
     return returnJson

@@ -57,13 +57,28 @@ export async function editThread(req, res){
     try{
         // const userId = req.body.user_id;
         const thread_id = req.body.thread_id
+        const prev_thread_name = req.body.prev_thread_name;
         const thread_name = req.body.thread_name
         const urgency = req.body.urgency
 
-        await threadService.editThread(thread_id, thread_name, urgency).then((resolve)=>{
-            io.emit('edit_thread', thread_name)
-            res.status(200).json({success: resolve.success, message: resolve.message});
-        })
+        //checks first if the name is getting changed
+        if(thread_name != prev_thread_name){
+            if (await threadService.ifThreadNameExists(thread_name)) {
+                res.status(500).json({ success: false, message: "Thread name already exists."});
+            }
+            else{
+                await threadService.editThread(thread_id, thread_name, urgency).then((resolve)=>{
+                    io.emit('edit_thread', thread_name)
+                    res.status(200).json({success: resolve.success, message: resolve.message});
+                })
+            }
+        } else{
+            await threadService.editThread(thread_id, thread_name, urgency).then((resolve)=>{
+                io.emit('edit_thread', thread_name)
+                res.status(200).json({success: resolve.success, message: resolve.message});
+            })
+        }
+        
 
     } catch(error){
         res.status(500).json({ message: 'Error updating user', error: error.message });

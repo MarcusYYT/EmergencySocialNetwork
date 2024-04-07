@@ -82,6 +82,11 @@ script.
     let threadInput = document.getElementById("threadNameInput")
     let threadName = threadInput.value
 
+    if (threadName === ""){
+      alert("The topic can not be blank")
+      return
+    }
+
     let urgencySelect = document.getElementById("urgencySelect")
     let urgency = urgencySelect.value
 
@@ -130,9 +135,15 @@ script.
           });
   }
 
-  async function editThread(thread_id){
+  async function editThread(thread_id, prev_thread_name){
     let threadInput = document.getElementById("threadNameInput")
     let threadName = threadInput.value
+    console.log("prev_thread_name: " + prev_thread_name)
+    if (threadName === ""){
+      alert("The topic can not be blank")
+      return
+    }
+
     let urgencySelect = document.getElementById("urgencySelect")
     let urgency = urgencySelect.value
 
@@ -140,6 +151,7 @@ script.
 
     const threadData = {
       thread_name: threadName,
+      prev_thread_name: prev_thread_name,
       thread_id: thread_id,
       urgency: urgency
     };
@@ -152,6 +164,10 @@ script.
           body: JSON.stringify(threadData)})
           .then(response => response.json())
           .then(data => {
+
+            if(!data.success){
+                alert(data.message)
+            }
               console.log(data);
           })
           .catch(error => {
