@@ -34,7 +34,7 @@ export async function postThread(req, res){
 
         // makes sure that the thread is unique
         if (await threadService.ifThreadNameExists(thread_name)) {
-            res.status(500).send({ success: false, message: "thread name already exists."});
+            res.status(500).json({ success: false, message: "Thread name already exists."});
         }
         else{
             await threadService.createNewThread(creator_id, thread_name, urgency).then(async () => {

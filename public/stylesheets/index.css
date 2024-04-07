@@ -420,6 +420,13 @@ select#search-select {
     border: none;
 }
 
+select#urgencySelect {
+    width: 35vw;
+    font-size: 4vw;
+    height: 4.5vh;
+    border: none;
+}
+
 option{
     font-size: 3.5vw;
 }
@@ -497,6 +504,10 @@ div#urgencyWrapper {
 }
 
 h2#createHeader {
+    text-align: center;
+}
+
+h2#editHeader {
     text-align: center;
 }
 
