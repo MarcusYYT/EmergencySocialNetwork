@@ -33,6 +33,7 @@ const router = express.Router();
  *                    type: integer
  *                message:
  *                  type: string
+ * /preferences: 
  *  post:
  *    tags:
  *      - Preferences
