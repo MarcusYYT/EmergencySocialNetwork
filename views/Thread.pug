@@ -55,70 +55,6 @@ script.
     window.location.href = `/threadWall/${thread_id}/${user_id}`;
   }
 
-  function createGroupNameWrapper(){
-    let threadNameWrapper = document.createElement("div")
-    threadNameWrapper.setAttribute("id", "threadNameWrapper")
-    let threadNameLabel = document.createElement("label")
-    threadNameLabel.setAttribute("id", "threadNameLabel")
-    let threadNameLabelText = document.createTextNode("Thread Topic:")
-    threadNameLabel.appendChild(threadNameLabelText)
-    let threadNameInput = document.createElement("input")
-    threadNameInput.setAttribute("class", "form-control")
-    threadNameInput.setAttribute("id", "threadNameInput")
-    threadNameInput.setAttribute("type", "text")
-    threadNameWrapper.appendChild(threadNameLabel)
-    threadNameWrapper.appendChild(threadNameInput)
-    return threadNameWrapper
-  }
-
-  function createUrgencyWrapper(){
-    let urgencyWrapper = document.createElement("div")
-    urgencyWrapper.setAttribute("id", "urgencyWrapper")
-    let urgencySelect = document.createElement("select")
-    urgencySelect.setAttribute("class", "form-select-sm")
-    urgencySelect.setAttribute("id", "urgencySelect")
-    let urgencyLabel = document.createElement("label")
-    urgencyLabel.setAttribute("id", "urgencyLabel")
-    let urgencyLabelText =  document.createTextNode("Urgency Level:")
-    urgencyLabel.appendChild(urgencyLabelText)
-    urgencyWrapper.appendChild(urgencyLabel)
-    let urgencyHigh = document.createElement("option")
-    urgencyHigh.setAttribute("value", "High Priority")
-    let urgencyHighText = document.createTextNode("High Priority")
-    urgencyHigh.appendChild(urgencyHighText)
-    let urgencyNormal = document.createElement("option")
-    urgencyNormal.setAttribute("value", "Normal Priority")
-    let urgencyNormalText = document.createTextNode("Normal Priority")
-    urgencyNormal.appendChild(urgencyNormalText)
-    let urgencyLow = document.createElement("option")
-    urgencyLow.setAttribute("value", "Low Priority")
-    let urgencyLowText = document.createTextNode("Low Priority")
-    urgencyLow.appendChild(urgencyLowText)
-    urgencySelect.appendChild(urgencyHigh)
-    urgencySelect.appendChild(urgencyNormal)
-    urgencySelect.appendChild(urgencyLow)
-    urgencyWrapper.appendChild(urgencySelect)
-    return urgencyWrapper
-  }
-
-  function createButttonWrapper(){
-    let buttonWrapper = document.createElement("div")
-    buttonWrapper.setAttribute("id", "buttonWrapper")
-    let createThreadButton = document.createElement("button")
-    createThreadButton.className = "btn btn-primary"
-    let createThreadButtonText = document.createTextNode("Create Thread")
-    createThreadButton.appendChild(createThreadButtonText)
-    createThreadButton.addEventListener("click", () => {createThread()})
-    let cancelButton = document.createElement("button")
-    cancelButton.className = "cancel btn btn-danger"
-    let cancelButtonText = document.createTextNode("Cancel")
-    cancelButton.appendChild(cancelButtonText)
-    cancelButton.addEventListener("click", () => {removeCreateOverlay()})
-    buttonWrapper.appendChild(cancelButton)
-    buttonWrapper.appendChild(createThreadButton)
-    return buttonWrapper
-  }
-
   function showCreateThreadOverlay(){
     let threadOverlay = document.createElement("div")
     threadOverlay.setAttribute("id", "overlay")
@@ -142,10 +78,9 @@ script.
     body.insertBefore(createModal, postWrapper)
   }
 
-  function removeCreateOverlay(){
-    document.getElementById("overlay").remove();
-    document.getElementById("createModal").remove();
-  }
+  
+
+
 
   async function createThread(){
     let threadInput = document.getElementById("threadNameInput")
@@ -179,30 +114,68 @@ script.
           });
   }
 
-    function filterStopWords(userInput){
-        const stopWords = [
-          "a","able","about","across","after","all","almost","also","am","among","an","and","any","are","as","at","be",
-          "because","been","but","by","can","cannot","could","dear","did","do","does","either","else","ever","every",
-          "for","from","get","got","had","has","have","he","her","hers","him","his","how","however","i","if","in",
-          "into","is","it","its","just","least","let","like","likely","may","me","might","most","must","my","neither",
-          "no","nor","not","of","off","often","on","only","or","other","our","own","rather","said","say","says","she",
-          "should","since","so","some","than","that","the","their","them","then","there","these","they","this","tis",
-          "to","too","twas","us","wants","was","we","were","what","when","where","which","while","who","whom","why",
-          "will","with","would","yet","you","your"
-        ];
+  async function editThread(){
+    let threadInput = document.getElementById("threadNameInput")
+    let threadName = threadInput.value
 
-        let userInputWordArray = userInput.split(/\s+/);
+    let urgencySelect = document.getElementById("urgencySelect")
+    let urgency = urgencySelect.value
 
-        let filteredInput = userInput;
+    let userId = #{user_id}
+    removeCreateOverlay()
 
-        for (word of userInputWordArray) {
-          if (stopWords.includes(word)) {
-              filteredInput = filteredInput.replace(word, "")
-          } 
-        }
+    const threadData = {
+      creator: username,
+      creator_id: userId,
+      thread_name: threadName,
+      urgency: urgency
+    };
 
-        return filteredInput;
+    const requestBody = {
+      user_id: userId,
+      updateAt: "thread_name",
+      updateValue: threadName
     }
+
+    await fetch('/threads', {
+          method: 'PUT',
+          headers: {
+              'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(threadData)})
+          .then(response => response.json())
+          .then(data => {
+              console.log(data);
+          })
+          .catch(error => {
+              console.error('Error fetching data:', error);
+          });
+  }
+
+  function filterStopWords(userInput){
+      const stopWords = [
+        "a","able","about","across","after","all","almost","also","am","among","an","and","any","are","as","at","be",
+        "because","been","but","by","can","cannot","could","dear","did","do","does","either","else","ever","every",
+        "for","from","get","got","had","has","have","he","her","hers","him","his","how","however","i","if","in",
+        "into","is","it","its","just","least","let","like","likely","may","me","might","most","must","my","neither",
+        "no","nor","not","of","off","often","on","only","or","other","our","own","rather","said","say","says","she",
+        "should","since","so","some","than","that","the","their","them","then","there","these","they","this","tis",
+        "to","too","twas","us","wants","was","we","were","what","when","where","which","while","who","whom","why",
+        "will","with","would","yet","you","your"
+      ];
+
+      let userInputWordArray = userInput.split(/\s+/);
+
+      let filteredInput = userInput;
+
+      for (word of userInputWordArray) {
+        if (stopWords.includes(word)) {
+            filteredInput = filteredInput.replace(word, "")
+        } 
+      }
+
+      return filteredInput;
+  }
 
     //- async function submitSearch() {
     //-     event.preventDefault()

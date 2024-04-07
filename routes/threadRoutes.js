@@ -1,5 +1,5 @@
 import express from 'express';
-import {getThreadById, getThreadList, postThread} from '../controllers/threadController.js'
+import {getThreadById, getThreadList, postThread, editThread} from '../controllers/threadController.js'
 
 const router = express.Router();
 
@@ -170,5 +170,6 @@ const router = express.Router();
 router.get('', getThreadList);
 router.get('/:thread_id', getThreadById);
 router.post('', postThread);
+router.put('/:thread_id', editThread);
 
 export default router;

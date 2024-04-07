@@ -1,7 +1,7 @@
 function constructThread(msgData, user_id) {
     const threadDiv = document.createElement('div');
     threadDiv.className = 'thread row g-0 justify-content-between';
-    threadDiv.addEventListener("click", () => {routeToThreadChat(msgData.thread_id)})
+    
     const threadHeader = document.createElement('div');
     threadHeader.className = 'thread-name';
 
@@ -17,23 +17,52 @@ function constructThread(msgData, user_id) {
     threadHeader.appendChild(urgencyFieldImage);
     threadHeader.appendChild(document.createTextNode(msgData.thread_name))
     const threadCreatorHeader = document.createElement('div');
-    threadCreatorHeader.className = 'creator col-11';
+    threadCreatorHeader.className = 'creator col-12';
     const creatorSpan = document.createElement('span');
     creatorSpan.className = 'thread-creator';
     creatorSpan.appendChild(document.createTextNode("By: " + msgData.creator));
     
     threadCreatorHeader.appendChild(threadHeader);
     threadCreatorHeader.appendChild(creatorSpan);
+    threadCreatorHeader.addEventListener("click", () => {routeToThreadChat(msgData.thread_id)})
+
     threadDiv.appendChild(threadCreatorHeader);
 
     if(msgData.creator_id === user_id){
+      threadCreatorHeader.className = 'creator col-11';
       const editImage = document.createElement("i");
       editImage.setAttribute("class", "col-1 bi  bi-pencil-fill");
+      editImage.addEventListener("click", () => {renderEditOverlay(msgData)});
       threadDiv.appendChild(editImage);
       console.log("crea")
     }
     //threadDiv.appendChild(urgencyFieldImage);
     return threadDiv;
+  }
+
+  function renderEditOverlay(msgData){
+    console.log("edit")
+
+    let editOverlay = document.createElement("div")
+    editOverlay.setAttribute("id", "overlay")
+    let body = document.getElementsByTagName("body")[0]
+    let postWrapper = document.getElementById("post-wrapper")
+    let editModal = document.createElement("div")
+    editModal.setAttribute("id", "editModal")
+    let editHeader = document.createElement("h2")
+    editHeader.setAttribute("id", "editHeader")
+    editHeader.appendChild(document.createTextNode("Edit Thread"))
+
+    let threadNameWrapper = createGroupNameWrapper(msgData.thread_name);
+    let urgencyWrapper = createUrgencyWrapper(msgData.urgency);
+    let buttonWrapper = createEditButttonWrapper();
+
+    editModal.appendChild(editHeader)
+    editModal.appendChild(threadNameWrapper)
+    editModal.appendChild(urgencyWrapper)
+    editModal.appendChild(buttonWrapper)
+    body.insertBefore(editOverlay, postWrapper)
+    body.insertBefore(editModal, postWrapper)
   }
   
   async function renderThreads(threadlist, user_id) {
@@ -51,8 +80,6 @@ function constructThread(msgData, user_id) {
     }
   }
 
-
-  
 //   function slice(array, size){   
 //     let slicedArray = [];
 //     for (let i = 0; i < Math.ceil(array.length / size); i++) {
@@ -135,4 +162,114 @@ function constructThread(msgData, user_id) {
     while (element.firstChild) {
         element.removeChild(element.lastChild);
     }
+  }
+
+  function createGroupNameWrapper(selectedName){
+    let threadNameWrapper = document.createElement("div")
+    threadNameWrapper.setAttribute("id", "threadNameWrapper")
+    let threadNameLabel = document.createElement("label")
+    threadNameLabel.setAttribute("id", "threadNameLabel")
+    let threadNameLabelText = document.createTextNode("Thread Topic:")
+    threadNameLabel.appendChild(threadNameLabelText)
+    let threadNameInput = document.createElement("input")
+    threadNameInput.setAttribute("class", "form-control")
+    threadNameInput.setAttribute("id", "threadNameInput")
+    threadNameInput.setAttribute("type", "text")
+    if(selectedName != ""){
+      threadNameInput.value = selectedName
+    }
+    threadNameWrapper.appendChild(threadNameLabel)
+    threadNameWrapper.appendChild(threadNameInput)
+    return threadNameWrapper
+  }
+
+  function createUrgencyWrapper(selected){
+    let urgencyWrapper = document.createElement("div")
+    urgencyWrapper.setAttribute("id", "urgencyWrapper")
+    let urgencySelect = document.createElement("select")
+    urgencySelect.setAttribute("class", "form-select-sm")
+    urgencySelect.setAttribute("id", "urgencySelect")
+    let urgencyLabel = document.createElement("label")
+    urgencyLabel.setAttribute("id", "urgencyLabel")
+    let urgencyLabelText =  document.createTextNode("Urgency Level:")
+    urgencyLabel.appendChild(urgencyLabelText)
+    urgencyWrapper.appendChild(urgencyLabel)
+    let urgencyHigh = document.createElement("option")
+    urgencyHigh.setAttribute("value", "High Priority")
+    let urgencyHighText = document.createTextNode("High Priority")
+    urgencyHigh.appendChild(urgencyHighText)
+    let urgencyNormal = document.createElement("option")
+    urgencyNormal.setAttribute("value", "Normal Priority")
+    let urgencyNormalText = document.createTextNode("Normal Priority")
+    urgencyNormal.appendChild(urgencyNormalText)
+    let urgencyLow = document.createElement("option")
+    urgencyLow.setAttribute("value", "Low Priority")
+    let urgencyLowText = document.createTextNode("Low Priority")
+
+
+    //pre-selects the urgency level chosen
+    if(selected == "High Priority"){
+      urgencyHigh.setAttribute("selected", true)
+    }
+
+    else if(selected == "Normal Priority"){
+      urgencyNormal.setAttribute("selected", true)
+    }
+
+    else if(selected == "Low Priority"){
+      urgencyLow.setAttribute("selected", true)
+    }
+
+    urgencyLow.appendChild(urgencyLowText)
+    urgencySelect.appendChild(urgencyHigh)
+    urgencySelect.appendChild(urgencyNormal)
+    urgencySelect.appendChild(urgencyLow)
+    urgencyWrapper.appendChild(urgencySelect)
+    return urgencyWrapper
+  }
+
+  function createButttonWrapper(){
+    let buttonWrapper = document.createElement("div")
+    buttonWrapper.setAttribute("id", "buttonWrapper")
+    let createThreadButton = document.createElement("button")
+    createThreadButton.className = "btn btn-primary"
+    let createThreadButtonText = document.createTextNode("Create Thread")
+    createThreadButton.appendChild(createThreadButtonText)
+    createThreadButton.addEventListener("click", () => {createThread()})
+    let cancelButton = document.createElement("button")
+    cancelButton.className = "cancel btn btn-danger"
+    let cancelButtonText = document.createTextNode("Cancel")
+    cancelButton.appendChild(cancelButtonText)
+    cancelButton.addEventListener("click", () => {removeCreateOverlay()})
+    buttonWrapper.appendChild(cancelButton)
+    buttonWrapper.appendChild(createThreadButton)
+    return buttonWrapper
+  }
+
+  function removeCreateOverlay(){
+    document.getElementById("overlay").remove();
+    document.getElementById("createModal").remove();
+  }
+
+  function createEditButttonWrapper(){
+    let buttonWrapper = document.createElement("div")
+    buttonWrapper.setAttribute("id", "buttonWrapper")
+    let createThreadButton = document.createElement("button")
+    createThreadButton.className = "btn btn-primary"
+    let createThreadButtonText = document.createTextNode("Save Changes")
+    createThreadButton.appendChild(createThreadButtonText)
+    createThreadButton.addEventListener("click", () => {editThread()})
+    let cancelButton = document.createElement("button")
+    cancelButton.className = "cancel btn btn-danger"
+    let cancelButtonText = document.createTextNode("Cancel")
+    cancelButton.appendChild(cancelButtonText)
+    cancelButton.addEventListener("click", () => {removeEditOverlay()})
+    buttonWrapper.appendChild(cancelButton)
+    buttonWrapper.appendChild(createThreadButton)
+    return buttonWrapper
+  }
+
+  function removeEditOverlay(){
+    document.getElementById("overlay").remove();
+    document.getElementById("editModal").remove();
   }

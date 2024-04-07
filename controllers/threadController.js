@@ -52,3 +52,24 @@ export async function postThread(req, res){
         res.status(500).send(error.message);
     }
 }
+
+export async function editThread(req, res){
+    try{
+        const userId = req.body.user_id;
+        const updateAtrribute = req.body.updateAt;
+        if(updateAtrribute === "online_status"){
+            const updateStatus = req.body.updateValue;
+            await userService.changeOnlineStatus(userId, updateStatus).then((resolve)=>{
+                res.status(200).json({success: resolve.success, message: resolve.message});
+        })}
+        if(updateAtrribute === "status"){
+            const updateStatus = req.body.updateValue;
+            await userService.changeStatus(userId, updateStatus).then((resolve)=>{
+                io.emit('status_update')
+                res.status(200).json({success: resolve.success, message: resolve.message});
+        })}
+
+    } catch(error){
+        res.status(500).json({ message: 'Error updating user', error: error.message });
+    }
+}
