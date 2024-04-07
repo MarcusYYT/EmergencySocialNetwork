@@ -436,16 +436,57 @@ div#show-more {
     background-color: #78caff;
     width: 80vw;
     border-radius: 15px;
-    height: 85vh;
+    height: 86vh;
     position: relative;
     display: flex;
     margin: auto;
-    top: 2vh;
+    top: 1.5;
     flex-direction: column;
+    text-align: center;
 }
 
 #emergency-header {
     text-align: center;
-    padding: 15px 0px 10px 0px;
+    padding: 20px 0px 10px 0px;
     font-size: 8vw;
+}
+
+#primary-contact-form,
+#alternative-contact-form,
+#emergency-message-form {
+    display: flex;
+    flex-direction: column;
+}
+
+#primary-contact,
+#alternative-contact,
+#user-message {
+    font-size: 20px;
+    font-style: italic;
+    font-weight: 800;
+}
+
+#primary-input,
+#alternative-input {
+    width: 50vw;
+    height: 10vw;
+    border-radius: 5px;
+    padding-left: 10px;
+    margin: 0px auto 15px auto;
+}
+
+#primary-button,
+#alternative-button,
+#message-button {
+    width: 25vw;
+    margin: auto;
+    margin-bottom: 5px;
+}
+
+#emergency-message {
+    height: 10vh;
+    width: 65vw;
+    border-radius: 5px;
+    margin: auto;
+    margin-bottom: 15px;
 }

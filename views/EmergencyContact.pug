@@ -16,16 +16,16 @@ html(lang='en')
       h1#emergency-header My Contact
       form#primary-contact-form(method='put')
         h2 Primary Contact
-        input(type='text', name='primary', value='', placeholder='New Contact' required='')
-        button.btn.btn-primary(type='button' onclick='changePrimaryContact()') Save
+        input#primary-input(type='text', name='primary', value='', placeholder='New Contact' required='')
+        button#primary-button.btn.btn-primary(type='button' onclick='changePrimaryContact()') Save
       form#alternative-contact-form(method='put')
         h2 Alternative Contact
-        input(type='text', name='alternative', value='', placeholder='New Contact' required='')
-        button.btn.btn-primary(type='button' onclick='changeAlternativeContact()') Save
+        input#alternative-input(type='text', name='alternative', value='', placeholder='New Contact' required='')
+        button#alternative-button.btn.btn-primary(type='button' onclick='changeAlternativeContact()') Save
       form#emergency-message-form(method='put')
         h2 Message
         textarea#emergency-message(placeholder='Type your personalized emergency message here...' required='')
-        button.btn.btn-primary(type='button' onclick='changeEmergencyMessage()') Save
+        button#message-button.btn.btn-primary(type='button' onclick='changeEmergencyMessage()') Save
     
 
 script(src='https://cdn.socket.io/4.7.4/socket.io.min.js')
@@ -93,9 +93,12 @@ script.
 
     async function changePrimaryContact() {
         const userId = #{user_id};
-        let primaryId = '';
         let primaryForm = document.getElementById('primary-contact-form');
         primary_username = primaryForm.primary.value.trim();
+        if (!primary_username) {
+            alert("You cannot have empty input!")
+            return; 
+        }
         primaryForm.querySelector('[name="primary"]').value = ''; // Reset input value
 
         const response = await fetch(`/users/username/${primary_username}`, {
@@ -107,37 +110,45 @@ script.
 
         if (response.ok) {
             const data = await response.json();
-            primaryId = data.data[0][0].user_id;
-            console.log(primaryId); 
+            primary_id = data.data[0][0].user_id;
         } else {
             console.error('Failed to fetch user data');
         }
 
-        const requestBody = {
-            user_id: userId,
-            updateAt: "primary_contact_id",
-            updateValue: primary_username,
-            updateId: primaryId
-        }
+        if (userId === primary_id) {
+            alert("You cannot set yourself as contact!")
+            console.log("You cannnot set yourself as contact!")
+        } else if (primary_id === alternative_id) {
+            alert("You cannot set both contact to the same person")
+            console.log("You cannot set both contact to the same person")
+        } else {
+            const requestBody = {
+                user_id: userId,
+                updateAt: "primary_contact_id",
+                updateValue: primary_username,
+                updateId: primary_id
+            }
 
-        const updatePrimary = await fetch(`/emergencyContacts/${userId}`, {
-            method: 'PUT',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(requestBody),
-            })
-        renderEmergencyContact(primary_username, alternative_username, emergency_message);
+            const updatePrimary = await fetch(`/emergencyContacts/${userId}`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(requestBody),
+                })
+            renderEmergencyContact(primary_username, alternative_username, emergency_message);
+        }
     }
 
     async function changeAlternativeContact() {
         const userId = #{user_id};
-        let alternativeId = ';'
         let alternativeForm = document.getElementById('alternative-contact-form');
         alternative_username = alternativeForm.alternative.value.trim();
-        alternativeForm.value = '';
+        if (!alternative_username) {
+            alert("You cannot have empty input!")
+            return; 
+        } 
         alternativeForm.querySelector('[name="alternative"]').value = ''; // Reset input value
-
 
         const response = await fetch(`/users/username/${alternative_username}`, {
             method: 'GET',
@@ -148,34 +159,46 @@ script.
 
         if (response.ok) {
             const data = await response.json();
-            alternativeId = data.data[0][0].user_id;
-            console.log(alternativeId); 
+            alternative_id = data.data[0][0].user_id;
         } else {
             console.error('Failed to fetch user data');
         }
 
-        const requestBody = {
-            user_id: userId,
-            updateAt: "alternative_contact_id",
-            updateValue: alternative_username,
-            updateId: alternativeId
-        }
 
-        const updateAlternative = await fetch(`/emergencyContacts/${userId}`, {
-            method: 'PUT',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(requestBody),
-            })
+        if (userId === alternative_id) {
+            alert("You cannot set yourself as contact!")
+            console.log("You cannnot set yourself as contact!")
+        } else if (primary_id === alternative_id) {
+            alert("You cannot set both contact to the same person")
+            console.log("You cannot set both contact to the same person")
+        } else {
+            const requestBody = {
+                user_id: userId,
+                updateAt: "alternative_contact_id",
+                updateValue: alternative_username,
+                updateId: alternative_id
+            }
 
-        renderEmergencyContact(primary_username, alternative_username, emergency_message);
+            const updateAlternative = await fetch(`/emergencyContacts/${userId}`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(requestBody),
+                })
+
+            renderEmergencyContact(primary_username, alternative_username, emergency_message);
+        } 
     }
 
     async function changeEmergencyMessage() {
         const userId = #{user_id};
         let messageArea = document.getElementById("emergency-message");
         emergency_message = messageArea.value;
+        if (!emergency_message) {
+            alert("You cannot have empty input!")
+            return; 
+        } 
         messageArea.value = '';
 
         const requestBody = {
