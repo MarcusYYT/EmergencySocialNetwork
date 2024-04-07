@@ -196,6 +196,7 @@ script.
 
   function renderChatName(){
     let header = document.getElementById("message-header")
+    removePostElements(header)
     let headerText = document.createTextNode(chatName)
     header.appendChild(headerText)
   }
@@ -231,6 +232,13 @@ script.
     let messageElement = constructChatMessage(msgData);
     messageBoard.appendChild(messageElement);
     document.getElementById("message-board").scrollTop = messageBoard.scrollHeight;
+  });
+
+  //the new thread name
+  socket.on("edit_thread", (thread_name) => {
+    chatName = thread_name;
+    console.log("kik: " + thread_name)
+    renderChatName();
   });
 
   function showOverlay() {

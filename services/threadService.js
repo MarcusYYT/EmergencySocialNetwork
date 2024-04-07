@@ -84,3 +84,20 @@ export async function getThreadList(){
     return returnJson
   }
 
+    /**
+   * TODO: write the function documentation
+   * @returns 
+   */
+  export async function editThread(thread_id, thread_name, urgency){
+    let returnJson = {
+      data:[],
+      message:"initial message"
+    }
+    await Thread.editThread(thread_id, thread_name, urgency).then((res)=>{
+      returnJson.message = "Fetch thread list successful"
+      returnJson.data = res;
+    })
+
+    return returnJson
+  }
+

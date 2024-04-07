@@ -142,6 +142,25 @@ export class Thread {
         });
     }
 
+
+
+    /**
+     * Change the online status of the sepcific user id
+     * @param {integer} thread_id The thread id
+     * @param {string} thread_name The name of the thread it's to be changed to
+     * @param {string} urgency The name of the thread it's to be changed to
+     */
+    static async editThread(thread_id, thread_name, urgency){
+        return await this.model.update({
+                thread_name: thread_name,
+                urgency: urgency
+            },{
+                where: {
+                    thread_id: thread_id
+                }
+        })
+    }
+
     /**
      * Delete a thread
      * @param {number} threadId - The ID of the thread to delete

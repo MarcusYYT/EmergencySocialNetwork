@@ -55,7 +55,7 @@ function constructThread(msgData, user_id) {
 
     let threadNameWrapper = createGroupNameWrapper(msgData.thread_name);
     let urgencyWrapper = createUrgencyWrapper(msgData.urgency);
-    let buttonWrapper = createEditButttonWrapper();
+    let buttonWrapper = createEditButttonWrapper(msgData.thread_id);
 
     editModal.appendChild(editHeader)
     editModal.appendChild(threadNameWrapper)
@@ -77,6 +77,20 @@ function constructThread(msgData, user_id) {
       
       threadWrapper.appendChild(messageElement);
       threadWrapper.scrollTop = threadWrapper.scrollHeight;
+    }
+  }
+
+  async function renderEditedThreads(threadlist, user_id) {
+    let threadWrapper = document.getElementById("threadWrapper")
+    removeChildElements(threadWrapper)
+    for (const msgData of threadlist) {
+
+      let creator = msgData.Creator.username;
+      
+      let messageDetails = createThreadObject(msgData, creator);
+      let messageElement = constructThread(messageDetails, user_id);
+      
+      threadWrapper.appendChild(messageElement);
     }
   }
 
@@ -175,7 +189,7 @@ function constructThread(msgData, user_id) {
     threadNameInput.setAttribute("class", "form-control")
     threadNameInput.setAttribute("id", "threadNameInput")
     threadNameInput.setAttribute("type", "text")
-    if(selectedName != ""){
+    if(selectedName != undefined){
       threadNameInput.value = selectedName
     }
     threadNameWrapper.appendChild(threadNameLabel)
@@ -251,14 +265,14 @@ function constructThread(msgData, user_id) {
     document.getElementById("createModal").remove();
   }
 
-  function createEditButttonWrapper(){
+  function createEditButttonWrapper(thread_id){
     let buttonWrapper = document.createElement("div")
     buttonWrapper.setAttribute("id", "buttonWrapper")
     let createThreadButton = document.createElement("button")
     createThreadButton.className = "btn btn-primary"
     let createThreadButtonText = document.createTextNode("Save Changes")
     createThreadButton.appendChild(createThreadButtonText)
-    createThreadButton.addEventListener("click", () => {editThread()})
+    createThreadButton.addEventListener("click", () => {editThread(thread_id)})
     let cancelButton = document.createElement("button")
     cancelButton.className = "cancel btn btn-danger"
     let cancelButtonText = document.createTextNode("Cancel")
