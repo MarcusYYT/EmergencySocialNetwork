@@ -493,6 +493,10 @@ div#urgencyWrapper {
     width: 32vw;
 }
 
+.cancel {
+    width: 28vw;
+}
+
 #threadWrapper {
     overflow: scroll;
     max-height: 61vh;
