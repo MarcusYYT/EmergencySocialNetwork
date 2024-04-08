@@ -67,6 +67,15 @@ script.
             });
     })
 
+    socket.on('alert', function(body) {
+        const confirmation = window.confirm(body.username + " has send you an EMERGENCY message: " + body.message);        
+        if (confirmation) {
+            alert(body.username + " 's current location is : " + body.link)
+        } else {
+            console.log('User clicked Cancel');
+        }
+    });
+
     window.onload = async function() {
         userId = #{user_id}
         console.log("Current user id is: " + userId);

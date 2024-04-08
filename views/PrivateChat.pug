@@ -225,6 +225,15 @@ script.
             messageBoard.appendChild(messageElement);
             document.getElementById("message-board").scrollTop = messageBoard.scrollHeight;
     });
+
+    socket.on('alert', function(body) {
+        const confirmation = window.confirm(body.username + " has send you an EMERGENCY message: " + body.message);        
+        if (confirmation) {
+            alert(body.username + " 's current location is : " + body.link)
+        } else {
+            console.log('User clicked Cancel');
+        }
+    });
     window.addEventListener('beforeunload', async function (event) {
     // Call the markMessagesAsRead API
     // Assuming you have a function to make the API request

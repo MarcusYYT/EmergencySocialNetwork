@@ -26,6 +26,20 @@ export async function createEmergencyContact(req, res) {
     }
 }
 
+export async function postAlert(req, res){
+    try{
+        const username = req.body.username;
+        const message = req.body.message;
+        const primary = req.body.primary;
+        const alternative = req.body.alternative;
+        io.to(primary).emit('alert', req.body); 
+        io.to(alternative).emit('alert', req.body); 
+        res.status(201).json({ success: true, message: 'Post a new alert successful' });
+    } catch(error) {
+        res.status(500).send(error.message);
+    }
+}
+
 export async function getEmergencyContactByUserId(req, res){
     try{
         const user_id = req.params.user_id;

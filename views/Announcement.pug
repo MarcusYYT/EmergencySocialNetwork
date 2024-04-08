@@ -207,6 +207,15 @@ script.
     document.getElementById("announcement-board").scrollTop = announcementBoard.scrollHeight;
   });
 
+  socket.on('alert', function(body) {
+    const confirmation = window.confirm(body.username + " has send you an EMERGENCY message: " + body.message);        
+    if (confirmation) {
+      alert(body.username + " 's current location is : " + body.link)
+    } else {
+      console.log('User clicked Cancel');
+    }
+  });
+
   function showOverlay() {
     document.getElementById('overlayForTest').style.display = 'flex';
   }
