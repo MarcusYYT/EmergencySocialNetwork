@@ -306,7 +306,53 @@ html(lang='en')
               }
           }
          
-        renderMyStatus(username, selectedValue);       
+        renderMyStatus(username, selectedValue);  
+
+        if (selectedValue === 'emergency') {
+          let primary_id = '';
+          let alternative_id = '';
+          let emergency_message = '';
+          let location_allow = '';
+          let location_link = '';
+
+          await fetch(`/emergencyContacts/${userId}`, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+          }).then(response => response.json()).then((data) => {
+              primary_id = data.data[0][0].primary_contact_id;
+              alternative_id = data.data[0][0].alternative_contact_id;
+              emergency_message = data.data[0][0].emergency_message;
+              location_allow = data.data[0][0].location_allow;
+              location_link = data.data[0][0].location_link;
+              //console.log("Primary id is: " + primary_id)
+              //console.log("Alternative id is: " + alternative_id)
+              //console.log("Emergency message is: " + emergency_message)
+              console.log("Location allow is: " + location_allow)
+              console.log("Location link is: " + location_link)
+          })
+          await fetch(`/emergencyContacts/${primary_id}/${alternative_id}`, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+        }).then(response => response.json()).then((data) => {
+            primary_socketId = data.data.primarySocketId
+            alternative_socketId = data.data.alternativeSocketId
+            console.log("Primary socket id is: " + primary_socketId)
+            console.log("Alternative socket id is: " + alternative_socketId)
+        })
+        let alert_message = ''
+        if (location_allow === 'yes') {
+            alert_message = username + " has send you an emergency message: " + emergency_message + " " + username + " is located at " + location_link;
+        } else {
+          alert_message = username + " has send you an emergency message: " + emergency_message;
+        }
+        console.log(alert_message);
+        //- io.to(primary_socketId).emit('emergency_message', alert_message); // Emit alert to primary user
+        //- io.to(alternative_socketId).emit('emergency_message', alert_message); // Emit alert to primary user
+        }   
       }
 
       socket.on("status_update", async ()=> { 

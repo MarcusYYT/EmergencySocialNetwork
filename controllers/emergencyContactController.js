@@ -1,6 +1,7 @@
 import * as emergencyContactService from '../services/emergencyContactService.js'
 import { EmergencyContact } from "../models/EmergencyContact.model.js";
 import { User } from "../models/User.model.js";
+import { io, getSocketIdByUserId} from "../config/socketConfig.js"
 
 
 export async function createEmergencyContact(req, res) {
@@ -36,6 +37,27 @@ export async function getEmergencyContactByUserId(req, res){
             }
         })
     }  catch (error) {
+        res.status(500).send(error.message);
+    }
+}
+
+export async function getEmergencyContactSocketId(req, res){
+    try{
+        const primary_id = req.params.primary_id;
+        const alternative_id = req.params.alternative_id;
+        
+        // Use Promise.all to execute both database queries concurrently
+        const [primarySocketId, alternativeSocketId] = await Promise.all([
+            getSocketIdByUserId(primary_id),
+            getSocketIdByUserId(alternative_id)
+        ]);
+
+        console.log("Primary socketid is: " + primarySocketId);
+        console.log("Alternative socketid is: " + alternativeSocketId);
+        
+        // Send back both socket IDs in the response
+        res.status(200).json({ success: true, data: { primarySocketId, alternativeSocketId }, message: "Socket IDs retrieved successfully" });
+    } catch (error) {
         res.status(500).send(error.message);
     }
 }
@@ -84,42 +106,3 @@ export async function updateEmergencyContact(req, res){
         res.status(500).json({ message: 'Error updating user emergency contact', error: error.message });
     }
 }
-
-// export async function changePrimaryContact(req, res){
-//     try{
-//         const userId = req.body.user_id;
-//         const newPrimaryContact = req.body.updateValue;
-//         await emergencyContactService.changePrimaryContact(userId, newPrimaryContact).then((resolve)=>{
-//             io.emit('primary_update')
-//             res.status(200).json({success: resolve.success, message: resolve.message});
-//         })
-//     } catch(error){
-//         res.status(500).json({ message: 'Error updating primary contact', error: error.message });
-//     }
-// }
-
-// export async function changeAlternativeContact(req, res){
-//     try{
-//         const userId = req.body.user_id;
-//         const newAlternativeContact = req.body.updateValue;
-//         await emergencyContactService.changeAlternativeContact(userId, newAlternativeContact).then((resolve)=>{
-//             io.emit('alternative_update')
-//             res.status(200).json({success: resolve.success, message: resolve.message});
-//         })
-//     } catch(error){
-//         res.status(500).json({ message: 'Error updating alternative contact', error: error.message });
-//     }
-// }
-
-// export async function changeEmergencyMessage(req, res){
-//     try{
-//         const userId = req.body.user_id;
-//         const newMessage = req.body.updateValue;
-//         await emergencyContactService.changeEmergencyMessage(userId, newMessage).then((resolve)=>{
-//             io.emit('message_update')
-//             res.status(200).json({success: resolve.success, message: resolve.message});
-//         })
-//     } catch(error){
-//         res.status(500).json({ message: 'Error updating emergency message', error: error.message });
-//     }
-// }
