@@ -210,9 +210,9 @@ script.
   });
 
   socket.on('alert', function(body) {
-      const confirmation = window.confirm(body.username + " has send you an EMERGENCY message: \n\"" + body.message + "\"\nClick \"OK\" will redirect you to Google Map of " + body.username + "'s location\nPlease allow redirect permission if nothing happen :)");        
+      const confirmation = window.confirm("USER \"" + body.username + "\" has send you an EMERGENCY message: \n\"" + body.message + "\"\nClick \"OK\" will redirect you to Google Map of " + body.username + "'s location\nPlease allow redirect permission if nothing happen :)");        
       if (confirmation) {
-          //- alert(body.username + " 's current location is : \n" + body.link)
+        //- alert(body.username + " 's current location is : \n" + body.link)
           window.open(body.link);
       } else {
           console.log('User clicked Cancel');

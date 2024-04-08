@@ -390,7 +390,7 @@ html(lang='en')
       });
 
       socket.on('alert', function(body) {
-        const confirmation = window.confirm(body.username + " has send you an EMERGENCY message: \n\"" + body.message + "\"\nClick \"OK\" will redirect you to Google Map of " + body.username + "'s location\nPlease allow redirect permission if nothing happen :)");        
+        const confirmation = window.confirm("USER \"" + body.username + "\" has send you an EMERGENCY message: \n\"" + body.message + "\"\nClick \"OK\" will redirect you to Google Map of " + body.username + "'s location\nPlease allow redirect permission if nothing happen :)");        
         if (confirmation) {
             //- alert(body.username + " 's current location is : \n" + body.link)
             window.open(body.link);
@@ -468,37 +468,35 @@ html(lang='en')
             },
           });
 
-          console.log(response.ok)
-
-          if (response.ok) {
+          if (response.status === 200) {
             const responseData = await response.json();
-            if (responseData.data[0][0].user_id === userId) {
+            if (responseData.data[0].length !== 0) {
               console.log('Emergency contact data already exists.');
               return; // Exit the function if the GET request is successful and the user ID exists
-            }
-          }
+            } else {
+              const postData = {
+                user_id: userId,
+                primary_id: 1,
+                alternative_id: 2,
+                emergency_message: 'I need HELP!!!',
+              };
 
-          const postData = {
-            user_id: userId,
-            primary_id: 1,
-            alternative_id: 2,
-            emergency_message: 'I need HELP!!!',
-          };
-
-          await fetch('/emergencyContacts', {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(postData),
-          })
-            .then((response) => response.json())
-            .then((data) => {
-              console.log(data);
-            })
-            .catch((error) => {
-              console.error('Error fetching data:', error);
-            });
+              await fetch('/emergencyContacts', {
+                method: 'POST',
+                headers: {
+                  'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(postData),
+              })
+                .then((response) => response.json())
+                .then((data) => {
+                  console.log(data);
+                })
+                .catch((error) => {
+                  console.error('Error fetching data:', error);
+                });
+                }
+              }
         } catch (error) {
           console.error('Error fetching data:', error);
         }
