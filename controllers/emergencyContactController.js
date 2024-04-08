@@ -52,23 +52,30 @@ export async function updateEmergencyContact(req, res){
                     console.log("The contact you select does not exist")
                     res.status(404).json({ success: false, message: 'User not exist' });
                 } else {
+                    console.log("User exist")
                     await User.getOneUser(updateValue).then(async (result)=>{
                         if (updateAtrribute === "primary_contact_id") {
                             console.log(updateValue)
                             await emergencyContactService.changePrimaryContact(userId, updateId).then((resolve)=>{
-                                //io.emit('primary_update')
                                 res.status(200).json({success: resolve.success, message: resolve.message});
                         })
                         } else {
                             await emergencyContactService.changeAlternativeContact(userId, updateId).then((resolve)=>{
-                                //io.emit('alternative_update')
                                 res.status(200).json({success: resolve.success, message: resolve.message});
                         })}
                     })
                 }
             })
-        } else {
+        } else if (updateAtrribute === "emergency_message") {
             await emergencyContactService.changeEmergencyMessage(userId, updateValue).then((resolve)=>{
+                res.status(200).json({success: resolve.success, message: resolve.message});
+            })
+        } else if (updateAtrribute === "location_allow"){
+            await emergencyContactService.changeLocationPermission(userId, updateValue).then((resolve)=>{
+                res.status(200).json({success: resolve.success, message: resolve.message});
+            })
+        } else {
+            await emergencyContactService.changeLocationLink(userId, updateValue).then((resolve)=>{
                 res.status(200).json({success: resolve.success, message: resolve.message});
             })
         }

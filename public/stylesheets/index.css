@@ -436,13 +436,14 @@ div#show-more {
     background-color: #78caff;
     width: 80vw;
     border-radius: 15px;
-    height: 86vh;
+    height: 88vh;
     position: relative;
     display: flex;
     margin: auto;
     top: 1.5;
     flex-direction: column;
     text-align: center;
+    padding: 15px;
 }
 
 #emergency-header {
@@ -464,6 +465,7 @@ div#show-more {
     font-size: 20px;
     font-style: italic;
     font-weight: 800;
+    margin-bottom: 10px;
 }
 
 #primary-input,
@@ -489,4 +491,9 @@ div#show-more {
     border-radius: 5px;
     margin: auto;
     margin-bottom: 15px;
+}
+
+#location-sharing-text {
+    font-size: 20px;
+    font-weight: 500;
 }

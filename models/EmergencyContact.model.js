@@ -39,6 +39,14 @@ export class EmergencyContact {
                 type: DataTypes.STRING,
                 allowNull: true,
                 defaultValue: 'I need HELP!' 
+            }, 
+            location_allow: {
+                type: DataTypes.STRING,
+                allowNull: true,
+            },
+            location_link: {
+                type: DataTypes.STRING,
+                allowNull: true
             }
         }, 
         {
@@ -141,6 +149,34 @@ export class EmergencyContact {
      */
     static async changeEmergencyMessage(userId, message) {
         return await this.model.update({ emergency_message: message }, {
+            where: {
+                user_id: userId
+            }
+        });
+    }
+
+    /**
+     * Change the location permission of the specific user id
+     * @param {integer} userId - The user id
+     * @param {string} permission - The location permission
+     * @returns {Promise} A promise indicating the success or failure of the update operation.
+     */
+    static async changeLocationPermission(userId, permission) {
+        return await this.model.update({ location_allow: permission }, {
+            where: {
+                user_id: userId
+            }
+        });
+    }
+
+        /**
+     * Change the location link of the specific user id
+     * @param {integer} userId - The user id
+     * @param {string} link - The location link
+     * @returns {Promise} A promise indicating the success or failure of the update operation.
+     */
+    static async changeLocationLink(userId, link) {
+        return await this.model.update({ location_link: link }, {
             where: {
                 user_id: userId
             }

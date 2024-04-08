@@ -95,3 +95,33 @@ export async function changeEmergencyMessage(id, message){
     });
     return returnJson;
   }
+
+/**
+ * This function will change the location permission for given user id
+ * @param {*} userId 
+ * @param {*} permission 
+ * @returns 
+ */
+export async function changeLocationPermission(id, permission){
+    let returnJson = {success: null, message:"initial message"}
+    await EmergencyContact.changeLocationPermission(id, permission).then(()=>{
+      returnJson.success = true;
+      returnJson.message = "Change Location Permission successfull"
+    });
+    return returnJson;
+}
+
+/**
+ * This function will change the location link for given user id
+ * @param {*} userId 
+ * @param {*} link 
+ * @returns 
+ */
+export async function changeLocationLink(id, link){
+  let returnJson = {success: null, message:"initial message"}
+  await EmergencyContact.changeLocationLink(id, link).then(()=>{
+    returnJson.success = true;
+    returnJson.message = "Change Location Link successfull"
+  });
+  return returnJson;
+}
