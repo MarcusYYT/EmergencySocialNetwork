@@ -13,13 +13,14 @@ export async function search(req, res) {
         const args = searchDomain === 'PrivatePosts' ? [searchQuery, senderId, receiverId] :
             searchDomain === 'StatusHistory' ? [receiverId] :
             searchDomain === 'ThreadPosts' ? [searchQuery, threadId] :
+            searchDomain === 'Threads' ? [searchQuery] :
                 [searchQuery];
 
         const result = await strategy(...args);
         res.status(200).json({
             success: true,
             data: result.data,
-            message: `${searchDomain} query '${searchQuery || receiverId || threadId}' successful.`
+            message: `${searchDomain} query '${searchQuery || receiverId || threadId || threadName}' successful.`
         });
     } catch (error) {
         console.error(error);

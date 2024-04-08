@@ -11,7 +11,8 @@ head
   a.btn.btn-primary(onclick='routeToDirectory()') Back
 #post-wrapper
   h2#message-header Threads
-
+  form.search-form.input-group.mb-3(onsubmit="submitSearch()" onchange="searchFinished()")
+    input.search-input.form-control(type='text', name='search', placeholder='Search...')
   #thread-board
     #threadWrapper.container
     button#thread-btn.btn.btn-primary(type='button' onclick='showCreateThreadOverlay()') Create Thread
@@ -223,51 +224,51 @@ script.
       return filteredInput;
   }
 
-    //- async function submitSearch() {
-    //-     event.preventDefault()
+    async function submitSearch() {
+      event.preventDefault()
 
-    //-     let searchInput = document.getElementsByClassName('search-input')[0];
-    //-     let searchValue = searchInput.value;
+      let searchInput = document.getElementsByClassName('search-input')[0];
+      let searchValue = searchInput.value;
 
-    //-     let filteredSearchValue = filterStopWords(searchValue)
+      let filteredSearchValue = filterStopWords(searchValue)
 
-    //-     if(filteredSearchValue !== ""){
-    //-         await fetch(`/search?q=${filteredSearchValue}&domain=Posts`, {
-    //-         method: 'GET',
-    //-         headers: {
-    //-             'Content-Type': 'application/json',
-    //-         }
-    //-         }).then(response => response.json()).then(async (data) => {
-    //-             console.log("Data in response::")
-    //-             console.log(data.data);
-    //-             isStatus = false;
-    //-             renderSearchedPosts(data.data, false, false)
-    //-         }).catch(error => {
-    //-             console.error(error);
-    //-         })
-    //-     }
-    //-     else{
-    //-         renderEmptyMessage();
-    //-     }
-    //- }
+      if(filteredSearchValue !== ""){
+          await fetch(`/search?q=${filteredSearchValue}&domain=Threads`, {
+          method: 'GET',
+          headers: {
+              'Content-Type': 'application/json',
+          }
+          }).then(response => response.json()).then(async (data) => {
+              console.log("Data in response::")
+              console.log(data.data);
+              isStatus = false;
+              renderSearchedThreads(data.data)
+          }).catch(error => {
+              console.error(error);
+          })
+      }
+      else{
+          renderEmptyMessage();
+      }
+    }
 
-    //- async function searchFinished(){
+    async function searchFinished(){
+      let searchInput = document.getElementsByClassName('search-input')[0];
+      let searchValue = searchInput.value;
+      let userId = #{user_id}
 
-    //-         let searchInput = document.getElementsByClassName('search-input')[0];
-    //-         let searchValue = searchInput.value;
-
-    //-         if (searchValue === ""){
-    //-         await fetch('/posts')
-    //-             .then(response => response.json())
-    //-             .then(data => {
-    //-                 console.log(data);
-    //-                 renderChats(data.data, false)
-    //-             })
-    //-             .catch(error => {
-    //-                 console.error('Error fetching data:', error);
-    //-             });
-    //-         }
-    //-     }
+      if (searchValue === ""){
+        await fetch('/threads')
+          .then(response => response.json())
+          .then(data => {
+              console.log(data);
+              renderThreads(data.data, userId)
+          })
+          .catch(error => {
+              console.error('Error fetching data:', error);
+          });
+      }
+    }
 
   window.onload = async function() {
     const userId = #{user_id}
@@ -282,14 +283,14 @@ script.
     })
 
     await fetch('/threads')
-        .then(response => response.json())
-        .then(data => {
-            console.log(data);
-            renderThreads(data.data, userId)
-        })
-        .catch(error => {
-            console.error('Error fetching data:', error);
-        });
+      .then(response => response.json())
+      .then(data => {
+          console.log(data);
+          renderThreads(data.data, userId)
+      })
+      .catch(error => {
+          console.error('Error fetching data:', error);
+      });
   }
 
   async function logout(){

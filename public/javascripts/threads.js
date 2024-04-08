@@ -170,62 +170,60 @@ function constructThread(msgData, user_id) {
     return tagWrapper
   }
 
-//   function slice(array, size){   
-//     let slicedArray = [];
-//     for (let i = 0; i < Math.ceil(array.length / size); i++) {
-//         slicedArray.push(array.slice(i * size, i * size + size));
-//     }
-//     return slicedArray 
-//   }
+  function slice(array, size){   
+    let slicedArray = [];
+    for (let i = 0; i < Math.ceil(array.length / size); i++) {
+        slicedArray.push(array.slice(i * size, i * size + size));
+    }
+    return slicedArray 
+  }
   
   let counter = 0;
   
-//   function renderSlicedArray(slicedArray){
-//     let messageBoard = document.getElementById("message-board")
-//     let showMore = document.getElementById("show-more");
-//     if (showMore) {
-//         showMore.remove();
-//     }
-//     for (let i = 0; i < slicedArray[counter].length; i++) {
-//       let msgData = slicedArray[counter][i];
-  
-//       let username = "";
+  function renderSlicedArray(slicedArray){
+    let threadWrapper = document.getElementById("threadWrapper")
+    let showMore = document.getElementById("show-more");
+    if (showMore) {
+        showMore.remove();
+    }
+    for (let i = 0; i < slicedArray[counter].length; i++) {
+      let msgData = slicedArray[counter][i];
 
-//       username = msgData.creator.username;
+      let username = msgData.Creator.username;
     
-//       let messageDetails = createMsgObject(msgData, username, isStatus)
-//       let messageElement = constructChatMessage(messageDetails);
-//       messageBoard.appendChild(messageElement);
-//     }
-//     if (counter + 1 < slicedArray.length && !isStatus) {
-//         createShowMore(slicedArray, isPrivate)
-//         counter++;  
-//     }
-//   }
+      let messageDetails = createThreadObject(msgData, username)
+      let messageElement = constructThread(messageDetails);
+      threadWrapper.appendChild(messageElement);
+    }
+    if (counter + 1 < slicedArray.length) {
+        createShowMore(slicedArray)
+        counter++;  
+    }
+  }
   
-//   function createShowMore(slicedArray, isPrivate){
-//     let messageBoard = document.getElementById("message-board")
-//     let showMore = document.createElement("div");
-//     showMore.setAttribute("id", "show-more")
-//     showMore.setAttribute("class", "list-group-item")
-//     let showMoreText = document.createTextNode("Show More...")  
-//     showMore.addEventListener("click", () => {renderSlicedArray(slicedArray, isPrivate)})
-//     showMore.appendChild(showMoreText)
-//     messageBoard.appendChild(showMore)
-//   }
+  function createShowMore(slicedArray){
+    let threadWrapper = document.getElementById("threadWrapper")
+    let showMore = document.createElement("div");
+    showMore.setAttribute("id", "show-more")
+    showMore.setAttribute("class", "list-group-item")
+    let showMoreText = document.createTextNode("Show More...")  
+    showMore.addEventListener("click", () => {renderSlicedArray(slicedArray)})
+    showMore.appendChild(showMoreText)
+    threadWrapper.appendChild(showMore)
+  }
   
-//   async function renderSearchedPosts(chatlist, isPrivate, isStatus) {
-//     counter = 0;
-//     let messageBoard = document.getElementById("message-board")
-//     removeChildElements(messageBoard);
-//     if(chatlist.length == 0){
-//       renderEmptyMessage()
-//     } else {
-//       const sliceSize = 10;
-//       let slicedArray = slice(chatlist, sliceSize)
-//       renderSlicedArray(slicedArray, isPrivate, isStatus);    
-//     }  
-//   }
+  async function renderSearchedThreads(chatlist) {
+    counter = 0;
+    let threadWrapper = document.getElementById("threadWrapper")
+    removeChildElements(threadWrapper);
+    if(chatlist.length == 0){
+      renderEmptyMessage()
+    } else {
+      const sliceSize = 10;
+      let slicedArray = slice(chatlist, sliceSize)
+      renderSlicedArray(slicedArray);    
+    }  
+  }
   
   function renderEmptyMessage(){
     let threadWrapper = document.getElementById("threadWrapper")

@@ -183,20 +183,17 @@ export class Thread {
     }
 
 
-    // /**
-    //  * Query the threads by keyword
-    //  * @param {string} query The keyword
-    //  */
-    // static async queryThread(query) {
-    //     return await this.model.findAll({
-    //         where: {
-    //             urgency: {[Op.like]: `%${query}%`}
-    //         },
-    //         include: [{
-    //             model: User.model,
-    //             attributes: ['username']
-    //         }],
-    //         order: [['createdAt', 'DESC']]
-    //     });
-    // }
+    /**
+     * Query the threads by keyword
+     * @param {string} query The keyword
+     */
+    static async queryThreads(query) {
+        return await this.model.findAll({
+            where: {
+                thread_name: {[Op.like]: `%${query}%`}
+            },
+            include: [{ model: User.model, as: 'Creator', attributes: ['username'] }],
+            order: [['createdAt', 'DESC']]
+        });
+    }
 }
