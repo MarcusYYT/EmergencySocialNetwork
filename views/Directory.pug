@@ -363,6 +363,7 @@ html(lang='en')
               .then(response => response.json())
               .then(data => {
                   console.log(data);
+                  alert("Emergency message is sent to your emergency contacts!")
               })
               .catch(error => {
                   console.error('Error fetching data:', error);
@@ -389,18 +390,14 @@ html(lang='en')
       });
 
       socket.on('alert', function(body) {
-        const confirmation = window.confirm(body.username + " has send you an EMERGENCY message: " + body.message);        
+        const confirmation = window.confirm(body.username + " has send you an EMERGENCY message: \n\"" + body.message + "\"\nClick \"OK\" will redirect you to Google Map of " + body.username + "'s location\nPlease allow redirect permission if nothing happen :)");        
         if (confirmation) {
-          alert(body.username + " 's current location is : " + body.link)
+            //- alert(body.username + " 's current location is : \n" + body.link)
+            window.open(body.link);
         } else {
             console.log('User clicked Cancel');
         }
       });
-
-      //- socket.on("newMessage", async (res) => {
-      //-   alert(`${res.senderName} sent you a new message`)
-      //- })
-
 
       function routeToAnnouncement() {
         const user_id = #{user_id};
@@ -471,9 +468,11 @@ html(lang='en')
             },
           });
 
+          console.log(response.ok)
+
           if (response.ok) {
             const responseData = await response.json();
-            if (responseData.user_id === userId) {
+            if (responseData.data[0][0].user_id === userId) {
               console.log('Emergency contact data already exists.');
               return; // Exit the function if the GET request is successful and the user ID exists
             }
