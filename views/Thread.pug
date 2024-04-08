@@ -13,14 +13,14 @@ head
   a.btn.btn-primary(onclick='routeToDirectory()') Back
 #post-wrapper
   h2#message-header Threads
-  form.search-form(onsubmit="submitSearch()" onchange="searchFinished()")
+  form.search-form(onsubmit="submitSearch()")
     //- select#search-select.form-select-sm
     //-   option(value='Incident Report') Incident Report
     //-   option(value='Status Report') Status Report
     //-   option(value='Info') Info
     //-   option(value='Voluntering') Voluntering
    
-    input.search-input.form-control(type='text', name='search', placeholder='Search...')
+    input.search-input.form-control(type='text', name='search', placeholder='Search...' onchange="searchFinished()")
     #search-terms
       input#filter-disaster.filter-tag.btn-check(type='checkbox', value='Incident Report')
       label.filter-tag.btn.btn-outline-primary(for='filter-disaster') Incident Report
@@ -301,16 +301,26 @@ script.
       }
     }
     else{
-        renderEmptyMessage();
+      return
+        //renderEmptyMessage();
     }
   }
 
   async function searchFinished(){
     let searchInput = document.getElementsByClassName('search-input')[0];
     let searchValue = searchInput.value;
+    
+
     let userId = #{user_id}
 
     if (searchValue === ""){
+      let tags = document.getElementsByClassName("filter-tag")
+      //unchecks every filter when finished search
+      for(element of tags){
+        if(element.checked){
+          element.checked = false;
+        }
+      }
       await fetch('/threads')
         .then(response => response.json())
         .then(data => {
