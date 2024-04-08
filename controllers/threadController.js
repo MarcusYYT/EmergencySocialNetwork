@@ -31,13 +31,14 @@ export async function postThread(req, res){
         const creator_id = req.body.creator_id;
         const thread_name = req.body.thread_name;
         const urgency = req.body.urgency;
+        const tags = req.body.tags;
 
         // makes sure that the thread is unique
         if (await threadService.ifThreadNameExists(thread_name)) {
             res.status(500).json({ success: false, message: "Thread name already exists."});
         }
         else{
-            await threadService.createNewThread(creator_id, thread_name, urgency).then(async () => {
+            await threadService.createNewThread(creator_id, thread_name, urgency, tags).then(async () => {
                 
                 //doing this in order to get the thread Id
                 await threadService.getThreadByName(thread_name).then((resolve) =>{
@@ -60,6 +61,7 @@ export async function editThread(req, res){
         const prev_thread_name = req.body.prev_thread_name;
         const thread_name = req.body.thread_name
         const urgency = req.body.urgency
+        const tags = req.body.tags;
 
         //checks first if the name is getting changed
         if(thread_name != prev_thread_name){
@@ -67,13 +69,13 @@ export async function editThread(req, res){
                 res.status(500).json({ success: false, message: "Thread name already exists."});
             }
             else{
-                await threadService.editThread(thread_id, thread_name, urgency).then((resolve)=>{
+                await threadService.editThread(thread_id, thread_name, urgency, tags).then((resolve)=>{
                     io.emit('edit_thread', thread_name)
                     res.status(200).json({success: resolve.success, message: resolve.message});
                 })
             }
         } else{
-            await threadService.editThread(thread_id, thread_name, urgency).then((resolve)=>{
+            await threadService.editThread(thread_id, thread_name, urgency, tags).then((resolve)=>{
                 io.emit('edit_thread', thread_name)
                 res.status(200).json({success: resolve.success, message: resolve.message});
             })

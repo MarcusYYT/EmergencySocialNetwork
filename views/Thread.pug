@@ -69,10 +69,12 @@ script.
     let threadNameWrapper = createGroupNameWrapper();
     let urgencyWrapper = createUrgencyWrapper();
     let buttonWrapper = createButttonWrapper();
+    let tagWrapper = createTagWrapper()
 
     createModal.appendChild(createHeader)
     createModal.appendChild(threadNameWrapper)
     createModal.appendChild(urgencyWrapper)
+    createModal.appendChild(tagWrapper)
     createModal.appendChild(buttonWrapper)
     body.insertBefore(threadOverlay, postWrapper)
     body.insertBefore(createModal, postWrapper)
@@ -90,13 +92,22 @@ script.
     let urgencySelect = document.getElementById("urgencySelect")
     let urgency = urgencySelect.value
 
+    let tags = document.getElementsByClassName("tag")
+    let selectedTags = []
+
+    for(element of tags){
+      if(element.checked){
+        selectedTags.push(element.value)
+      }
+    }
+
     let userId = #{user_id}
     removeCreateOverlay()
-
     const threadData = {
       creator: username,
       creator_id: userId,
       thread_name: threadName,
+      tags: selectedTags,
       urgency: urgency
     };
 
@@ -144,15 +155,27 @@ script.
       return
     }
 
+    let tags = document.getElementsByClassName("tag")
+    let selectedTags = []
+
+    for(element of tags){
+      if(element.checked){
+        selectedTags.push(element.value)
+      }
+    }
+
     let urgencySelect = document.getElementById("urgencySelect")
     let urgency = urgencySelect.value
 
     removeEditOverlay()
 
+    console.log(selectedTags)
+
     const threadData = {
       thread_name: threadName,
       prev_thread_name: prev_thread_name,
       thread_id: thread_id,
+      tags: selectedTags,
       urgency: urgency
     };
 

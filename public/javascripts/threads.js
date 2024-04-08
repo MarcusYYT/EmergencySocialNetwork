@@ -34,7 +34,6 @@ function constructThread(msgData, user_id) {
       editImage.setAttribute("class", "col-1 bi  bi-pencil-fill");
       editImage.addEventListener("click", () => {renderEditOverlay(msgData)});
       threadDiv.appendChild(editImage);
-      console.log("crea")
     }
     //threadDiv.appendChild(urgencyFieldImage);
     return threadDiv;
@@ -58,12 +57,14 @@ function constructThread(msgData, user_id) {
 
     let threadNameWrapper = createGroupNameWrapper(msgData.thread_name);
     let urgencyWrapper = createUrgencyWrapper(msgData.urgency);
+    let tagWrapper = createTagWrapper(msgData.tags);
     let buttonWrapper = createEditButttonWrapper(msgData.thread_id, msgData.thread_name);
 
     editModal.appendChild(cancelButton)
     editModal.appendChild(editHeader)
     editModal.appendChild(threadNameWrapper)
     editModal.appendChild(urgencyWrapper)
+    editModal.appendChild(tagWrapper)
     editModal.appendChild(buttonWrapper)
     body.insertBefore(editOverlay, postWrapper)
     body.insertBefore(editModal, postWrapper)
@@ -94,6 +95,79 @@ function constructThread(msgData, user_id) {
       
       threadWrapper.appendChild(messageElement);
     }
+  }
+
+  function createButtonLabel(text){
+    let label = document.createElement("label")
+    label.setAttribute("class", "tag btn btn-outline-primary")
+    label = addTextToElement(label, text)
+    return label
+  }
+
+  function createTag(){
+    let input = document.createElement("input")
+    input.setAttribute("class", "tag btn-check")
+    input.setAttribute("type", "checkbox")
+    return input
+  }
+
+  function createTagWrapper(selected){
+    let tagWrapper = document.createElement("div")
+    tagWrapper.setAttribute("id", "tagWrapper")
+    console.log(selected)
+    if(selected == undefined){
+      selected = []
+    }
+
+    let disasterTag = createTag()
+    disasterTag.setAttribute("id", "disaster")
+    disasterTag.setAttribute("value", "Incident Report")
+    if(selected.includes("Incident Report")){
+      disasterTag.setAttribute("checked", true)
+    }
+    let disasterLabel = createButtonLabel("Incident Report")
+    disasterLabel.setAttribute("for", "disaster")
+
+    let statusReportTag =  createTag()
+    statusReportTag.setAttribute("id", "status-report")
+    statusReportTag.setAttribute("value", "Status Report")
+    if(selected.includes("Status Report")){
+      statusReportTag.setAttribute("checked", true)
+    }
+    let statusReportLabel = createButtonLabel("Status Report")
+    statusReportLabel.setAttribute("for", "status-report")
+
+    let infoTag =  createTag()
+    infoTag.setAttribute("id", "info")
+    infoTag.setAttribute("value", "Info")
+    if(selected.includes("Info")){
+      infoTag.setAttribute("checked", true)
+    }
+    let infoLabel = createButtonLabel("Info")
+    infoLabel.setAttribute("for", "info")
+
+    let volunteerTag =  createTag()
+    volunteerTag.setAttribute("id", "volunteer")
+    volunteerTag.setAttribute("value", "Volunteering")
+    if(selected.includes("Volunteering")){
+      volunteerTag.setAttribute("checked", true)
+    }
+    let volunteerLabel = createButtonLabel("Volunteering")
+    volunteerLabel.setAttribute("for", "volunteer")
+
+    let textWrapper = document.createElement("label")
+    textWrapper = addTextToElement(textWrapper, "Choose a tag: ")
+    tagWrapper.appendChild(textWrapper)
+
+    tagWrapper.appendChild(disasterTag)
+    tagWrapper.appendChild(disasterLabel)
+    tagWrapper.appendChild(statusReportTag)
+    tagWrapper.appendChild(statusReportLabel)
+    tagWrapper.appendChild(infoTag)
+    tagWrapper.appendChild(infoLabel)
+    tagWrapper.appendChild(volunteerTag)
+    tagWrapper.appendChild(volunteerLabel)
+    return tagWrapper
   }
 
 //   function slice(array, size){   
@@ -157,9 +231,8 @@ function constructThread(msgData, user_id) {
     let threadWrapper = document.getElementById("threadWrapper")
     removeChildElements(threadWrapper)
     let emptyMessage = document.createElement("h1")
-    let emptyMessageText = document.createTextNode("No results found")
+    emptyMessage = addTextToElement(emptyMessage, "No results found")
     emptyMessage.className = 'empty-message'
-    emptyMessage.appendChild(emptyMessageText)
     threadWrapper.appendChild(emptyMessage);
   }
   
@@ -169,6 +242,7 @@ function constructThread(msgData, user_id) {
       creator_id: msgData.creator_id,
       thread_name: msgData.thread_name,
       thread_id: msgData.thread_id,
+      tags: msgData.tags,
       urgency: msgData.urgency
     }
     return messageDetails;
@@ -185,8 +259,7 @@ function constructThread(msgData, user_id) {
     threadNameWrapper.setAttribute("id", "threadNameWrapper")
     let threadNameLabel = document.createElement("label")
     threadNameLabel.setAttribute("id", "threadNameLabel")
-    let threadNameLabelText = document.createTextNode("Thread Topic:")
-    threadNameLabel.appendChild(threadNameLabelText)
+    threadNameLabel = addTextToElement(threadNameLabel, "Thread Topic:")
     let threadNameInput = document.createElement("input")
     threadNameInput.setAttribute("class", "form-control")
     threadNameInput.setAttribute("id", "threadNameInput")
@@ -207,21 +280,17 @@ function constructThread(msgData, user_id) {
     urgencySelect.setAttribute("id", "urgencySelect")
     let urgencyLabel = document.createElement("label")
     urgencyLabel.setAttribute("id", "urgencyLabel")
-    let urgencyLabelText =  document.createTextNode("Urgency Level:")
-    urgencyLabel.appendChild(urgencyLabelText)
+    urgencyLabel = addTextToElement(urgencyLabel, "Urgency Level:")
     urgencyWrapper.appendChild(urgencyLabel)
     let urgencyHigh = document.createElement("option")
     urgencyHigh.setAttribute("value", "High Priority")
-    let urgencyHighText = document.createTextNode("High Priority")
-    urgencyHigh.appendChild(urgencyHighText)
+    urgencyHigh = addTextToElement(urgencyHigh, "High Priority")
     let urgencyNormal = document.createElement("option")
     urgencyNormal.setAttribute("value", "Normal Priority")
-    let urgencyNormalText = document.createTextNode("Normal Priority")
-    urgencyNormal.appendChild(urgencyNormalText)
+    urgencyNormal = addTextToElement(urgencyNormal, "Normal Priority")
     let urgencyLow = document.createElement("option")
     urgencyLow.setAttribute("value", "Low Priority")
-    let urgencyLowText = document.createTextNode("Low Priority")
-
+    urgencyLow = addTextToElement(urgencyLow, "Low Priority")
 
     //pre-selects the urgency level chosen
     if(selected == "High Priority"){
@@ -236,7 +305,6 @@ function constructThread(msgData, user_id) {
       urgencyLow.setAttribute("selected", true)
     }
 
-    urgencyLow.appendChild(urgencyLowText)
     urgencySelect.appendChild(urgencyHigh)
     urgencySelect.appendChild(urgencyNormal)
     urgencySelect.appendChild(urgencyLow)
@@ -244,18 +312,22 @@ function constructThread(msgData, user_id) {
     return urgencyWrapper
   }
 
+  function addTextToElement(element, text){
+    let textNode = document.createTextNode(text)
+    element.appendChild(textNode)
+    return element
+  }
+
   function createButttonWrapper(){
     let buttonWrapper = document.createElement("div")
     buttonWrapper.setAttribute("id", "buttonWrapper")
     let createThreadButton = document.createElement("button")
     createThreadButton.className = "btn btn-primary"
-    let createThreadButtonText = document.createTextNode("Create Thread")
-    createThreadButton.appendChild(createThreadButtonText)
+    createThreadButton = addTextToElement(createThreadButton, "Create Thread")
     createThreadButton.addEventListener("click", () => {createThread()})
     let cancelButton = document.createElement("button")
     cancelButton.className = "cancel btn btn-danger"
-    let cancelButtonText = document.createTextNode("Cancel")
-    cancelButton.appendChild(cancelButtonText)
+    cancelButton = addTextToElement(cancelButton, "Cancel")
     cancelButton.addEventListener("click", () => {removeCreateOverlay()})
     buttonWrapper.appendChild(cancelButton)
     buttonWrapper.appendChild(createThreadButton)
@@ -272,13 +344,11 @@ function constructThread(msgData, user_id) {
     buttonWrapper.setAttribute("id", "buttonWrapper")
     let createThreadButton = document.createElement("button")
     createThreadButton.className = "btn btn-primary"
-    let createThreadButtonText = document.createTextNode("Save Changes")
-    createThreadButton.appendChild(createThreadButtonText)
+    createThreadButton = addTextToElement(createThreadButton, "Save Changes")
     createThreadButton.addEventListener("click", () => {editThread(thread_id, prev_thred_name)})
     let deleteButton = document.createElement("button")
     deleteButton.className = "delete btn btn-danger"
-    let deleteButtonText = document.createTextNode("Delete Thread")
-    deleteButton.appendChild(deleteButtonText)
+    deleteButton = addTextToElement(deleteButton, "Delete Thread")
     deleteButton.addEventListener("click", () => {deleteThread(thread_id)})
     buttonWrapper.appendChild(deleteButton)
     buttonWrapper.appendChild(createThreadButton)

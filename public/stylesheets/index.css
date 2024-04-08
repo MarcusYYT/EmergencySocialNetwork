@@ -458,12 +458,12 @@ div#createModal {
     z-index: 10;
     position: fixed;
     width: 85vw;
-    max-height: 46vh;
+    max-height: 63vh;
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
     border-radius: 15px;
-    padding: 10vw;
+    padding: 8.5vw;
 }
 
 div#thread-board {
@@ -530,6 +530,7 @@ div#buttonWrapper {
 .thread-name {
     font-weight: bold;
     font-size: 5vw;
+    color:#031926
 }
 
 .lowPriority {
@@ -554,7 +555,7 @@ div#editModal {
     z-index: 10;
     position: fixed;
     width: 85vw;
-    max-height: 46vh;
+    max-height: 63vh;
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
@@ -569,3 +570,12 @@ div#editModal {
     left: 3vh;
     color: #031926;
 }
+
+.tag {
+    margin: 1vw;
+    border-radius: 17px;
+    border-color: #003480;
+    color: #003480;
+    background-color: #c5ebff;
+}
+

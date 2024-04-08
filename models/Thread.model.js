@@ -20,6 +20,11 @@ export class Thread {
                 }
             },
 
+            tags:{
+                type: DataTypes.JSON,
+                allowNull:true,
+            },
+
             thread_name:{
                 type: DataTypes.STRING,
                 allowNull:false,
@@ -52,11 +57,12 @@ export class Thread {
      * @param {string} urgency - The urgency of the thread
      * @returns The created thread
      */
-    static async createThread(creatorId, threadName, urgency) {
+    static async createThread(creatorId, threadName, urgency, tags) {
         return await this.model.create({
             creator_id: creatorId,
             thread_name: threadName,
-            urgency: urgency
+            urgency: urgency,
+            tags: tags
         });
     }
 
@@ -149,11 +155,13 @@ export class Thread {
      * @param {integer} thread_id The thread id
      * @param {string} thread_name The name of the thread it's to be changed to
      * @param {string} urgency The name of the thread it's to be changed to
+     * @param {string} tags The tag of the thread it's to be changed to
      */
-    static async editThread(thread_id, thread_name, urgency){
+    static async editThread(thread_id, thread_name, urgency, tags){
         return await this.model.update({
                 thread_name: thread_name,
-                urgency: urgency
+                urgency: urgency,
+                tags: tags
             },{
                 where: {
                     thread_id: thread_id

@@ -6,8 +6,8 @@ import { Thread } from '../models/Thread.model.js'
  * @param {*} urgency 
  * @returns 
  */
-export async function createNewThread(creatorId, threadName, urgency) {
-  return await Thread.createThread(creatorId, threadName, urgency)
+export async function createNewThread(creatorId, threadName, urgency, tags) {
+  return await Thread.createThread(creatorId, threadName, urgency, tags)
   }
 
 /**
@@ -89,15 +89,16 @@ export async function getThreadList(){
    * @param {*} thread_id 
    * @param {*} thread_name 
    * @param {*} urgency 
+   * @param {*} tags 
    * @returns 
    */
-  export async function editThread(thread_id, thread_name, urgency){
+  export async function editThread(thread_id, thread_name, urgency, tags){
     let returnJson = {
       data:[],
       message:"initial message",
       success: false
     }
-    await Thread.editThread(thread_id, thread_name, urgency).then((res)=>{
+    await Thread.editThread(thread_id, thread_name, urgency, tags).then((res)=>{
       returnJson.message = "Edit thread list successful"
       returnJson.data = res;
       returnJson.success = true
@@ -109,8 +110,6 @@ export async function getThreadList(){
     /**
    * TODO: write the function documentation
    * @param {*} thread_id 
-   * @param {*} thread_name 
-   * @param {*} urgency 
    * @returns 
   */
   export async function deleteThread(thread_id){
