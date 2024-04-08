@@ -458,7 +458,7 @@ div#createModal {
     z-index: 10;
     position: fixed;
     width: 85vw;
-    max-height: 63vh;
+    max-height: 73vh;
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
@@ -555,7 +555,7 @@ div#editModal {
     z-index: 10;
     position: fixed;
     width: 85vw;
-    max-height: 63vh;
+    max-height: 73vh;
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
@@ -577,5 +577,23 @@ div#editModal {
     border-color: #003480;
     color: #003480;
     background-color: #c5ebff;
+}
+
+.filter-tag {
+    margin-right: 1vw;
+    border-radius: 17px;
+    border-color: #003480;
+    color: #003480;
+    background-color: #c5ebff;
+}
+
+div#search-terms {
+    margin: 3vw 0 3vw 0;
+    overflow-x: auto;
+    overflow-y: hidden;
+    display: inline-block;
+    width: 85vw;
+    white-space: nowrap;
+    border-radius: 17px;
 }
 

@@ -7,6 +7,7 @@ export const searchStrategies = {
     'Posts': (query) => searchService.searchPosts(query),
     'ThreadPosts': (query, thread_id) => searchService.searchThreadPosts(thread_id, query),
     'Threads': (query) => searchService.searchThreads(query),
+    'ThreadsWithTags': (query, tags) => searchService.searchThreadsWithTags(query, tags),
     'PrivatePosts': (query, senderId, receiverId) => searchService.searchPrivatePosts(senderId, receiverId, query),
     'StatusHistory': (receiverId) => searchService.searchStatusHistory(receiverId),
 };

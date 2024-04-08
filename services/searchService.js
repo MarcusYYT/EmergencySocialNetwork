@@ -111,6 +111,18 @@ export async function searchThreads(query) {
     return returnJson;
 }
 
+export async function searchThreadsWithTags(query, tags) {
+    let returnJson = {
+        success: false,
+        data: []
+    }
+    await Thread.queryThreadsWithTags(query, tags).then((res) => {
+        returnJson.success = true;
+        returnJson.data = res;
+    });
+    return returnJson;
+}
+
 export async function searchStatusHistory(userId) {
     let returnJson = {
         success: false,

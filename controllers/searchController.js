@@ -2,7 +2,7 @@ import * as searchService from "../services/searchService.js";
 import {searchStrategies} from "../stratrgies/search.strategies.js";
 
 export async function search(req, res) {
-    const { q: searchQuery, domain: searchDomain, senderId, receiverId, threadId } = req.query;
+    const { q: searchQuery, domain: searchDomain, senderId, receiverId, threadId , tags} = req.query;
 
     const strategy = searchStrategies[searchDomain];
     if (!strategy) {
@@ -13,7 +13,7 @@ export async function search(req, res) {
         const args = searchDomain === 'PrivatePosts' ? [searchQuery, senderId, receiverId] :
             searchDomain === 'StatusHistory' ? [receiverId] :
             searchDomain === 'ThreadPosts' ? [searchQuery, threadId] :
-            searchDomain === 'Threads' ? [searchQuery] :
+            searchDomain === 'ThreadsWithTags' ? [searchQuery, tags] :
                 [searchQuery];
 
         const result = await strategy(...args);

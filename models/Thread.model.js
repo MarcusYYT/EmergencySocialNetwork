@@ -196,4 +196,20 @@ export class Thread {
             order: [['createdAt', 'DESC']]
         });
     }
+
+     /**
+     * Query the threads by keyword
+     * @param {string} query The keyword
+     */
+     static async queryThreadsWithTags(query, tags) {
+        console.log(tags)
+        return await this.model.findAll({
+            where: {
+                thread_name: {[Op.like]: `%${query}%`},
+                [Op.and]: this.model.sequelize.literal(`JSON_CONTAINS(tags, '[${tags}]')`)
+            },
+            include: [{ model: User.model, as: 'Creator', attributes: ['username'] }],
+            order: [['createdAt', 'DESC']]
+        });
+    }
 }
