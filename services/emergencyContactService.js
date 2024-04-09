@@ -9,7 +9,7 @@ import {EmergencyContact} from "../models/EmergencyContact.model.js";
  * @param {*} message 
  */
 export async function createEmergencyContact(userId, primary, alternative, message) {
-    let returnJson = {success: false, emergency_id: -1, message: "Create user emergency contact failed"};
+    let returnJson = {success: false, emergency_id: -1, message: "Create user emergency contact failed."};
     try {
       // if (await EmergencyContact.ifEmergencyContactExist(userId)) {
       //   returnJson.message = "User emergency contact already exists.";
@@ -20,7 +20,7 @@ export async function createEmergencyContact(userId, primary, alternative, messa
       returnJson.emergency_id = emergncyContact.emergency_id;
       returnJson.message = "Create emergency contact successfully.";
     } catch (error) {
-      console.log("Error creating user emergency contact:", error);
+      //console.log("Error creating user emergency contact:", error);
       if (error.name === 'SequelizeUniqueConstraintError') {
         returnJson.message = "User emergency contact already exists.";
       } else {
