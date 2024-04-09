@@ -19,6 +19,31 @@ import DatabaseAdapter from './config/DatabaseAdapter.js'
 import { createServer } from 'node:http';
 import cookieParser from 'cookie-parser';
 
+import Mailgun from 'mailgun-js';
+
+// Mailgun configuration
+const mailgunApiKey = '8f6db5dd8cd6980f6e993af986a9019d-4b670513-7293ebc5';
+const mailgunDomain = 'mg.depasinre.xyz';
+const mailgun = new Mailgun({ apiKey: mailgunApiKey, domain: mailgunDomain });
+
+// Function to send an email
+function sendTestEmail() {
+  const emailData = {
+    from: 'ESN <test@mg.depasinre.xyz>',
+    to: 'depasinre@gmail.com',
+    subject: 'Hello from Mailgun',
+    text: 'This is a test email sent using Mailgun.',
+  };
+
+  mailgun.messages().send(emailData, (error, body) => {
+    if (error) {
+      console.error('Mailgun error:', error);
+    } else {
+      console.log('Email sent:', body);
+    }
+  });
+}
+
 
 const swaggerOptions = {
   failOnErrors: true, // Whether or not to throw when parsing errors. Defaults to false.
@@ -106,6 +131,7 @@ export function cleanUpDatabase() {
 server.listen(port, async () => {
   console.log(`Server running at http://localhost:${port}`);
   cleanUpDatabase()
+  // sendTestEmail();
   if(process.env.NODE_ENV === 'test'){
     DatabaseAdapter.setTestDatabaseName("tempdb.sqlite")
     DatabaseAdapter.setCurrentDatabase('test')

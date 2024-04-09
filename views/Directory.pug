@@ -18,6 +18,7 @@ html(lang='en')
       a.navLinks(onclick='routeToAnnouncement()') Annoucements
       a.navLinks(onclick='routeToMessageWall()') New Post
       a.navLinks(onclick='routeToTest()') Speed Test
+      a.navLinks(onclick='routeToSetting()') Setting
     form#directory-search-form.input-group.mb-3(onsubmit="submitSearch()" onchange="searchFinished()")
         select#search-select.form-select-sm
           option(value='User') User
@@ -343,6 +344,10 @@ html(lang='en')
       function routeToTest() {
         const user_id = #{user_id};
         window.location.href = `/test`;
+      }
+      function routeToSetting() {
+        const user_id = #{user_id};
+        window.location.href = `/setting/${user_id}`;
       }
       
       async function logout(){

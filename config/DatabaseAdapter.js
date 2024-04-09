@@ -5,6 +5,7 @@ import {User} from "../models/User.model.js"
 import {Post} from "../models/Post.model.js"
 import {PrivatePost} from "../models/PrivatePost.model.js"
 import {Status} from "../models/Status.model.js"
+import { Preference } from '../models/Preference.model.js';
 
 
 export default class DatabaseAdapter {
@@ -33,12 +34,14 @@ export default class DatabaseAdapter {
         Post.initModel(this.getDatabase());
         PrivatePost.initModel(this.getDatabase());
         Status.initModel(this.getDatabase());
+        Preference.initModel(this.getDatabase());
 
         await User.model.sync();
         await Announcement.model.sync();
         await Post.model.sync();
         await PrivatePost.model.sync();
         await Status.model.sync();
+        await Preference.model.sync();
     }
 
     static switchDatabase(databaseKey) {

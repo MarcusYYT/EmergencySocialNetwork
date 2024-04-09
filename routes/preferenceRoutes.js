@@ -1,5 +1,5 @@
 import express from 'express';
-
+import { upsertPreference } from '../controllers/preferenceController.js';
 const router = express.Router();
 
 /**
@@ -60,4 +60,5 @@ const router = express.Router();
  */
 
 router.get('', ()=>{});
+router.post('', upsertPreference);
 export default router;
