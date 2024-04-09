@@ -120,6 +120,79 @@ import {createEmergencyContact, postAlert, getEmergencyContactByUserId, getEmerg
 *    responses:
 *      201:
 *        description: Database push successful
+*      409:
+*        description: User Emergency Contact Exist
+*      500:
+*        description: Database push failed
+*
+* /emergencyContacts/emergency_alert:
+*  post:
+*    tags:
+*      - Emergency Contact
+*    summary: Send emergency alert to user's emergency contact 
+*    requestBody:
+*      content:
+*        application/json:
+*          schema:
+*            type: object
+*            properties:
+*              user_Id:
+*                type: integer
+*              primary_Contect_id:
+*                type: integer
+*              alternative_Contect_od:
+*                type: integer
+*              emergency_message:
+*                type: string
+*              location_allow:
+*                type: string
+*              location_link:
+*                type: string
+*    responses:
+*      201:
+*        description: Post new alert successful
+*      500:
+*        description: Post new alert failed
+*
+* /emergencyContacts/{primaryId}/{alternativeId}:
+*  Get:
+*    summary: Fetch an user emergency contacts object by the userId and get their socket id
+*    tags:
+*      - Emergency Contact
+*    parameters:
+ *      - in: path
+ *        name: primaryId
+ *        schema:
+ *          type: integer
+ *        description: Numeric ID of the primary contact to get.
+ *      - in: path
+ *        name: alternativeId
+ *        schema:
+ *          type: integer
+ *        description: Numeric ID of the alternative contact to get.
+*    responses:
+*      200:
+*        description: Socket IDs retrieved successfully
+*        content:
+*          application/json:
+*            schema:
+*              type: object
+*              properties:
+*                success:        
+*                  type: boolean
+*                data:         
+*                  type: array
+*                  items:
+*                    type: object
+*                    properties:
+*                      primary_Contect_sockid:
+*                        type: string
+*                      alternative_Contect_sockid:
+*                        type: string
+*                message:
+*                  type: string
+*      500:
+*        description: user emergency contact socket id not found
 */
 
 router.get('/:user_id', getEmergencyContactByUserId);

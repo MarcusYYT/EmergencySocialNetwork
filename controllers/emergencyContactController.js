@@ -12,10 +12,8 @@ export async function createEmergencyContact(req, res) {
         const emergencyMessage = req.body.emergency_message;
             await EmergencyContact.ifEmergencyContactExist(userID).then(async (result)=>{
                 if(result === true){
-                    console.log("The User emergency contact is exist")
                     res.status(409).json({ success: false, message: 'User Emergency Contact Exist' });
                 } else{
-                    console.log("The User emergency contact is not exist")
                         await emergencyContactService.createEmergencyContact(userID, primaryContact, alternativeContact, emergencyMessage).then((contact)=>{
                             res.status(201).json({ success: true, message: 'create a new User Emergency Contact successfully'});
                         })    
