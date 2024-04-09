@@ -70,8 +70,11 @@ script.
     socket.on('alert', function(body) {
         const confirmation = window.confirm("USER \"" + body.username + "\" has send you an EMERGENCY message: \n\"" + body.message + "\"\nClick \"OK\" will redirect you to Google Map of " + body.username + "'s location\nPlease allow redirect permission if nothing happen :)");        
         if (confirmation) {
-            //- alert(body.username + " 's current location is : \n" + body.link)
-            window.open(body.link);
+            if (body.link === 'does not allow location sharing') {
+                alert("\"" + body.username + "\" " + body.link);
+            } else {
+                window.open(body.link);
+            }
         } else {
             console.log('User clicked Cancel');
         }
@@ -122,14 +125,19 @@ script.
     async function changePrimaryContact() {
         const userId = #{user_id};
         let primaryForm = document.getElementById('primary-contact-form');
-        primary_username = primaryForm.primary.value.trim();
-        if (!primary_username) {
-            alert("You cannot have empty input!")
+        let new_primary_username = primaryForm.primary.value.trim();
+        if (!new_primary_username) {
+            alert("You cannot have empty input!");
             return; 
         }
-        primaryForm.querySelector('[name="primary"]').value = ''; // Reset input value
 
-        const response = await fetch(`/users/username/${primary_username}`, {
+        primaryForm.querySelector('[name="primary"]').value = ''; // Reset input value
+        if (primary_username === new_primary_username) {
+            alert(primary_username + " is already your primary contact!");
+            return; 
+        }
+
+        const response = await fetch(`/users/username/${new_primary_username}`, {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json',
@@ -151,6 +159,7 @@ script.
                 alert("You cannot set both contact to the same person")
                 console.log("You cannot set both contact to the same person")
             } else {
+                primary_username = new_primary_username;
                 const requestBody = {
                     user_id: userId,
                     updateAt: "primary_contact_id",
@@ -175,14 +184,19 @@ script.
     async function changeAlternativeContact() {
         const userId = #{user_id};
         let alternativeForm = document.getElementById('alternative-contact-form');
-        alternative_username = alternativeForm.alternative.value.trim();
-        if (!alternative_username) {
+        let new_alternative_username = alternativeForm.alternative.value.trim();
+        if (!new_alternative_username) {
             alert("You cannot have empty input!")
             return; 
         } 
-        alternativeForm.querySelector('[name="alternative"]').value = ''; // Reset input value
 
-        const response = await fetch(`/users/username/${alternative_username}`, {
+        alternativeForm.querySelector('[name="alternative"]').value = ''; // Reset input value
+        if (alternative_username === new_alternative_username) {
+            alert(alternative_username + " is already your alternative contact!");
+            return; 
+        }
+
+        const response = await fetch(`/users/username/${new_alternative_username}`, {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json',
@@ -207,6 +221,7 @@ script.
                 alert("You cannot set both contact to the same person")
                 console.log("You cannot set both contact to the same person")
             } else {
+                alternative_username = new_alternative_username
                 const requestBody = {
                     user_id: userId,
                     updateAt: "alternative_contact_id",

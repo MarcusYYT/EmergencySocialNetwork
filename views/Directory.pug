@@ -341,7 +341,7 @@ html(lang='en')
 
         let link = ''
         if (location_allow === 'no') {
-            link = 'User does not allow location sharing'
+            link = 'does not allow location sharing'
         } else {
             link = location_link;
         }
@@ -392,8 +392,11 @@ html(lang='en')
       socket.on('alert', function(body) {
         const confirmation = window.confirm("USER \"" + body.username + "\" has send you an EMERGENCY message: \n\"" + body.message + "\"\nClick \"OK\" will redirect you to Google Map of " + body.username + "'s location\nPlease allow redirect permission if nothing happen :)");        
         if (confirmation) {
-            //- alert(body.username + " 's current location is : \n" + body.link)
-            window.open(body.link);
+            if (body.link === 'does not allow location sharing') {
+                alert("\"" + body.username + "\" " + body.link);
+            } else {
+                window.open(body.link);
+            }
         } else {
             console.log('User clicked Cancel');
         }
