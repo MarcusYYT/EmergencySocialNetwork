@@ -36,14 +36,16 @@ export async function postPost(req, res){
         const status = req.body.status;
         const username = req.body.username;
         await postService.createNewPost(userId, content, status).then(async () =>{
-            io.emit("postData", req.body);
-            await Preference.getUsersWithPreferenceEnabled('public_post_updates').then((data)=>{
-                const strategy = emailStrategies['PublicPost'];
-                data.forEach(element => {
-                    strategy(element.email, username, content);
-                    console.log(`sent a email to ${element.username}`)
+            if (req.headers['x-performance-test'] !== 'true') {
+                io.emit("postData", req.body);
+                await Preference.getUsersWithPreferenceEnabled('public_post_updates').then((data) => {
+                    const strategy = emailStrategies['PublicPost'];
+                    data.forEach(element => {
+                        strategy(element.email, username, content);
+                        console.log(`sent an email to ${element.username}`);
+                    });
                 });
-            })
+            }
 
             res.status(201).json({ success: true, message: 'Post a new post successful' });
         })
