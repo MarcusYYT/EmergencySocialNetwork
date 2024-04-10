@@ -7,7 +7,10 @@ async function savePreferences() {
     const privatePostUpdates = document.getElementById('private-post-updates').checked;
     const publicPostUpdates = document.getElementById('public-post-updates').checked;
     const statusChanges = document.getElementById('status-changes').checked;
-
+    if (!validateEmail(email)) {
+      alert('Please enter a valid email address.');
+      return;
+    }
     const data = {
       user_id: userId,
       email: email,
@@ -81,4 +84,8 @@ socket.on('connect', async function() {
         });
     });
 
+  function validateEmail(email) {
+    const re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+    return re.test(String(email).toLowerCase());
+  }
 window.onload = loadPreferences;
