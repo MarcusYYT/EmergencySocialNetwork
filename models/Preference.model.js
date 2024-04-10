@@ -82,23 +82,22 @@ export class Preference {
             where: query,
             include: [{
                 model: User.model,
-                attributes: ['status']
+                attributes: ['status', 'username']
             }]
         });
     
         const filteredPreferences = preferences.filter(preference => {
-            const status = preference.User.status;
+            const status = preference.user.status;
             const emailPreference = preference.email_notification_preference;
             return shouldSendEmailNotification(status, emailPreference);
         });
     
         return filteredPreferences.map(preference => ({
             user_id: preference.user_id,
-            email: preference.email
+            email: preference.email,
+            username: preference.user.username
         }));
     }
-
-
 }
 
 function shouldSendEmailNotification(status, emailPreference) {
@@ -106,9 +105,9 @@ function shouldSendEmailNotification(status, emailPreference) {
         case 'Ok':
             return true;
         case 'Help':
-            return status === 'Help' || status === 'Emergency';
+            return status === 'help' || status === 'emergency';
         case 'Emergency':
-            return status === 'Emergency';
+            return status === 'emergency';
         case 'off':
         default:
             return false;

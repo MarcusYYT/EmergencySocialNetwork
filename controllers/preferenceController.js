@@ -17,3 +17,13 @@ export async function upsertPreference(req, res){
         res.status(500).send(error.message);
     }
 }
+
+export async function getPreference(req, res){
+    try{
+        await preferenceService.getPreference(req.params.user_id).then((data)=>{
+            res.status(201).json({success:true, data: data, message:"fetch user preference successful"})
+        })
+    } catch (err){
+        console.log(err)
+    }
+}

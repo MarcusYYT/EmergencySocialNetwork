@@ -1,25 +1,22 @@
 import express from 'express';
-import { upsertPreference } from '../controllers/preferenceController.js';
+import { upsertPreference, getPreference} from '../controllers/preferenceController.js';
 const router = express.Router();
 
 /**
  * @swagger
- * /preferences/{preferenceType}:
+ * /preferences/{userId}:
  *  get:
  *    tags:
  *      - Preferences
- *    summary: Fetch user IDs with a specific SMS alert preference enabled
+ *    summary: Fetch user's preferences
  *    parameters:
  *      - in: path
- *        name: preferenceType
+ *        name: userId
  *        required: true
- *        schema:
- *          type: string
- *          enum: [announcement_updates, private_post_updates, public_post_updates, status_changes]
  *        description: The type of SMS alert preference to check.
  *    responses:
  *      200:
- *        description: Successful return of user IDs with the specified preference enabled.
+ *        description: Successful return the preference for a specific user id
  *        content:
  *          application/json:
  *            schema:
@@ -44,7 +41,9 @@ const router = express.Router();
  *          schema:
  *            type: object
  *            properties:
- *              phone_number:
+ *              email:
+ *                type: string
+ *              email_notification_preference:
  *                type: string
  *              announcement_updates:
  *                type: boolean
@@ -59,6 +58,6 @@ const router = express.Router();
  *        description: Preferences set successfully.
  */
 
-router.get('', ()=>{});
+router.get('/:user_id', getPreference);
 router.post('', upsertPreference);
 export default router;
