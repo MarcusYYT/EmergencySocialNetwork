@@ -8,7 +8,20 @@ import { ThreadPost } from "../models/ThreadPost.model.js";
  * @returns 
  */
 export async function createNewThreadPost(userId, content, status, threadId) {
-    return await ThreadPost.createThreadPost(userId, content, status, threadId)
+  let returnJson = {
+    success: false,
+    data:[],
+    message:"initial message"
+  }
+
+  await ThreadPost.createThreadPost(userId, content, status, threadId).then((res)=>{
+    returnJson.success = true
+    returnJson.message = "Create thread post successful"
+    returnJson.data = res;
+  })
+
+  return returnJson
+
   }
 
 

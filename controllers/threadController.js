@@ -38,14 +38,20 @@ export async function postThread(req, res){
             res.status(500).json({ success: false, message: "Thread name already exists."});
         }
         else{
-            await threadService.createNewThread(creator_id, thread_name, urgency, tags).then(async () => {
-                
+            await threadService.createNewThread(creator_id, thread_name, urgency, tags).then(async (result) => {
+                // console.log("hello")
+                // console.log(thing.data[0])
                 //doing this in order to get the thread Id
-                await threadService.getThreadByName(thread_name).then((resolve) =>{
-                    io.emit("threadData", resolve.data[0]);
-                    res.status(201).json({ success: true, message: 'Post a new thread successfuli'});
-                })
-        
+                if (result.success){
+                    await threadService.getThreadByName(thread_name).then((resolve) =>{
+                        io.emit("threadData", resolve.data[0]);
+                        res.status(201).json({ success: true, message: 'Post a new thread successfuli'});
+                    })
+                }
+                else{
+                    res.status(500).json({ success: false, message: 'Error posting a new thread' });
+                }
+
             })
         }
        
@@ -76,6 +82,7 @@ export async function editThread(req, res){
             }
         } else{
             await threadService.editThread(thread_id, thread_name, urgency, tags).then((resolve)=>{
+                console.log(resolve.data)
                 io.emit('edit_thread', thread_name)
                 res.status(200).json({success: resolve.success, message: resolve.message});
             })

@@ -7,8 +7,21 @@ import { Thread } from '../models/Thread.model.js'
  * @returns 
  */
 export async function createNewThread(creatorId, threadName, urgency, tags) {
-  return await Thread.createThread(creatorId, threadName, urgency, tags)
+
+  let returnJson = {
+    success: false,
+    data:[],
+    message:"initial message"
   }
+
+  await Thread.createThread(creatorId, threadName, urgency, tags).then((res)=>{
+    returnJson.success = true
+    returnJson.message = "Create thread successful"
+    returnJson.data = res;
+  })
+
+  return returnJson
+}
 
 /**
  * TODO

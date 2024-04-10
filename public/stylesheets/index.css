@@ -499,7 +499,7 @@ div#urgencyWrapper {
 
 #threadWrapper {
     overflow: scroll;
-    max-height: 61vh;
+    max-height: 55vh;
     margin-top: 4vh;
     margin-bottom: 2vh;
     border-radius: 10px;
@@ -574,7 +574,7 @@ div#editModal {
 .tag {
     margin: 1vw;
     border-radius: 17px;
-    border-color: #003480;
+    border-color: #ffffff00;
     color: #003480;
     background-color: #c5ebff;
 }
@@ -582,7 +582,7 @@ div#editModal {
 .filter-tag {
     margin-right: 1vw;
     border-radius: 17px;
-    border-color: #003480;
+    border-color: #ffffff00;
     color: #003480;
     background-color: #c5ebff;
 }

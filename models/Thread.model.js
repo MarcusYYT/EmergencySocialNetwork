@@ -63,7 +63,7 @@ export class Thread {
             thread_name: threadName,
             urgency: urgency,
             tags: tags
-        });
+        } );
     }
 
     /**
