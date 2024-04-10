@@ -11,8 +11,9 @@ beforeAll(async () => {
   database = DatabaseAdapter.getDatabase()
   await database.authenticate();// Connect to the database
   await DatabaseAdapter.reinitializeModels();
-  await createNewUser('Tommy', 'password')
+  await createNewUser('Person2', 'password')
   await createNewThread(1, 'need assistance', 'High Pirioity', ["Info"])
+  
 });
 
 afterAll(async () => {
@@ -22,9 +23,10 @@ afterAll(async () => {
 });
 
 describe('You should be able to create a thread post and get its id', () => {
-
+    
     test('You should be able to create a thread post', async () => {
-        expect(await createNewThreadPost(1, 'need help', 'emergency', 1)).toMatchObject({
+
+        expect(await createNewThreadPost(1, 'I need help', 'emergency', 1)).toMatchObject({
             success: true, 
             data: expect.any(Object), 
             message: "Create thread post successful"

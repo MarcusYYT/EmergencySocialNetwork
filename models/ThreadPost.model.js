@@ -82,33 +82,6 @@ export class ThreadPost {
     }
 
     /**
-     * Get all posts by a specific user
-     * @param {number} userId - The ID of the user
-     * @returns An array of posts created by the user
-     */
-    static async getThreadPostsByUser(userId) {
-        return await this.model.findAll({
-            where: {
-                user_id: userId
-            }
-        });
-    }
-
-    /**
-     * Get all posts by a specific username
-     * @param {string} username - The username of the user
-     * @returns An array of posts created by the user with the given username
-     */
-    static async getThreadPostsByUsername(username) {
-        return await this.model.findAll({
-            include: [{
-                model: User.model,
-                where: { username: username }
-            }]
-        });
-    }
-
-    /**
      * Get all posts
      * @returns An array of all posts
      */

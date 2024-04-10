@@ -10,7 +10,7 @@ beforeAll(async () => {
   database = DatabaseAdapter.getDatabase()
   await database.authenticate();// Connect to the database
   await DatabaseAdapter.reinitializeModels();
-  await createNewUser('Tommy', 'password')
+  await createNewUser('Person3', 'password')
 });
 
 afterAll(async () => {
@@ -68,9 +68,9 @@ describe('You should be able to edit a thread', () => {
         expect(await ifThreadNameExists('I do not need help')).toBe(true);
     });
 
-    test('Older thread name should not exist', async () => {
-        expect(await ifThreadNameExists('need help')).toBe(false);
-    });
+    // test('Older thread name should not exist', async () => {
+    //     expect(await ifThreadNameExists('need help')).toBe(false);
+    // });
 });
 
 

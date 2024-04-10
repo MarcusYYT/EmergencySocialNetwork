@@ -45,7 +45,7 @@ export async function postThread(req, res){
                 if (result.success){
                     await threadService.getThreadByName(thread_name).then((resolve) =>{
                         io.emit("threadData", resolve.data[0]);
-                        res.status(201).json({ success: true, message: 'Post a new thread successfuli'});
+                        res.status(201).json({ success: true, message: 'Posting a new thread is successful'});
                     })
                 }
                 else{
@@ -90,7 +90,7 @@ export async function editThread(req, res){
         
 
     } catch(error){
-        res.status(500).json({ message: 'Error updating user', error: error.message });
+        res.status(500).json({ message: 'Error updating thread', error: error.message });
     }
 }
 
@@ -103,6 +103,6 @@ export async function deleteThread(req, res){
         })
 
     } catch(error){
-        res.status(500).json({ message: 'Error updating user', error: error.message });
+        res.status(500).json({ message: 'Error updating thread', error: error.message });
     }
 }

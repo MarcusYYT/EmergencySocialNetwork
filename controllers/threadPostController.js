@@ -39,6 +39,6 @@ export async function postThreadPost(req, res){
             res.status(201).json({ success: true, message: 'ThreadPost a new post successful' });
         })
     } catch(error) {
-        res.status(500).send(error.message);
+        res.status(500).json({ success: false, message: error.message });
     }
 }
