@@ -187,29 +187,73 @@ export class Thread {
      * Query the threads by keyword
      * @param {string} query The keyword
      */
-    static async queryThreads(query) {
-        return await this.model.findAll({
-            where: {
-                thread_name: {[Op.like]: `%${query}%`}
-            },
-            include: [{ model: User.model, as: 'Creator', attributes: ['username'] }],
-            order: [['createdAt', 'DESC']]
-        });
+    static async queryThreads(query, urgency) {
+
+        if(query !== ""){
+            if(urgency === "Filter"){
+                return await this.model.findAll({
+                    where: {
+                        thread_name: {[Op.like]: `%${query}%`}
+                    },
+                    include: [{ model: User.model, as: 'Creator', attributes: ['username'] }],
+                    order: [['createdAt', 'DESC']]
+                });
+            }
+
+            else{
+                return await this.model.findAll({
+                    where: {
+                        thread_name: {[Op.like]: `%${query}%`},
+                        urgency: urgency
+                    },
+                    include: [{ model: User.model, as: 'Creator', attributes: ['username'] }],
+                    order: [['createdAt', 'DESC']]
+                });
+            }
+        }
+        else{    
+            return await this.model.findAll({
+                where: {
+                    urgency: urgency
+                },
+                include: [{ model: User.model, as: 'Creator', attributes: ['username'] }],
+                order: [['createdAt', 'DESC']]
+            }); 
+        }
+        
     }
+
+    
 
      /**
      * Query the threads by keyword
      * @param {string} query The keyword
      */
-     static async queryThreadsWithTags(query, tags) {
+     static async queryThreadsWithTags(query, tags, urgency) {
         console.log(tags)
-        return await this.model.findAll({
-            where: {
-                thread_name: {[Op.like]: `%${query}%`},
-                [Op.and]: this.model.sequelize.literal(`JSON_CONTAINS(tags, '[${tags}]')`)
-            },
-            include: [{ model: User.model, as: 'Creator', attributes: ['username'] }],
-            order: [['createdAt', 'DESC']]
-        });
+
+        if(urgency === "Filter"){
+            return await this.model.findAll({
+                where: {
+                    thread_name: {[Op.like]: `%${query}%`},
+                    [Op.and]: this.model.sequelize.literal(`JSON_CONTAINS(tags, '[${tags}]')`)
+                },
+                include: [{ model: User.model, as: 'Creator', attributes: ['username'] }],
+                order: [['createdAt', 'DESC']]
+            });
+        }
+
+        else{
+            return await this.model.findAll({
+                where: {
+                    thread_name: {[Op.like]: `%${query}%`},
+                    [Op.and]: this.model.sequelize.literal(`JSON_CONTAINS(tags, '[${tags}]')`),
+                    urgency: urgency
+                },
+                include: [{ model: User.model, as: 'Creator', attributes: ['username'] }],
+                order: [['createdAt', 'DESC']]
+            });
+        }
+        
     }
 }

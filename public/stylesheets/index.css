@@ -499,8 +499,7 @@ div#urgencyWrapper {
 
 #threadWrapper {
     overflow: scroll;
-    max-height: 55vh;
-    margin-top: 4vh;
+    max-height: 53vh;
     margin-bottom: 2vh;
     border-radius: 10px;
     width: 68vw;
@@ -597,3 +596,28 @@ div#search-terms {
     border-radius: 17px;
 }
 
+select#search-select-filter {
+    width: 31vw;
+    font-size: 4vw;
+    height: 5vh;
+    border-radius: 15px;
+    background-color: #78caff;
+    border: none;
+    margin-left: auto;
+    position: relative;
+    display: block;
+    right: 7vw;
+}
+
+select#search-select-filter {
+    width: 37vw;
+    font-size: 4vw;
+    height: 5vh;
+    border-radius: 15px;
+    background-color: #78caff;
+    border: none;
+    margin-right: auto;
+    position: relative;
+    display: block;
+    right: 18vw;
+}

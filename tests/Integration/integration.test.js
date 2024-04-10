@@ -344,7 +344,7 @@ describe('search Test', () => {
   test('search a thread', async () => {
     const searchValue = "test"
     const getresponse = await supertest(app)
-      .get(`/search?q=${searchValue}&domain=Threads`);
+      .get(`/search?q=${searchValue}&domain=Threads&urgency=Filter`);
     expect(getresponse.status).toBe(200);
     expect(getresponse.body.success).toBe(true);
     expect(getresponse.body.message).toBeDefined();
@@ -356,7 +356,7 @@ describe('search Test', () => {
     const searchValue = "test"
     const thread_id = 2
     const getresponse = await supertest(app)
-      .get(`/search?q=${searchValue}&domain=ThreadPosts&threadId=${thread_id}`);
+      .get(`/search?q=${searchValue}&domain=ThreadPosts&threadId=${thread_id}&urgency="Filter"`);
     expect(getresponse.status).toBe(200);
     expect(getresponse.body.success).toBe(true);
     expect(getresponse.body.message).toBeDefined();

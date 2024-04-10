@@ -187,12 +187,12 @@ describe('Search Thread', () => {
         await createNewThread(1, 'test14', "High Priority" , ["Info"])
         await createNewThread(1, 'test15', "High Priority" , ["Info"])
 
-        let result = await searchThreads("test")
+        let result = await searchThreads("test", "Filter")
         expect(result.data.length).toBe(5);
     });
 
     test('search for threads: should have 0', async () => {
-        let result = await searchThreads("shouldnt")
+        let result = await searchThreads("shouldnt", "Filter")
         expect(result.data.length).toBe(0);
     });
 

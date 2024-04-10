@@ -99,24 +99,24 @@ export async function searchThreadPosts(threadId, query) {
     return returnJson;
 }
 
-export async function searchThreads(query) {
+export async function searchThreads(query, urgency) {
     let returnJson = {
         success: false,
         data: []
     }
-    await Thread.queryThreads(query).then((res) => {
+    await Thread.queryThreads(query, urgency).then((res) => {
         returnJson.success = true;
         returnJson.data = res;
     });
     return returnJson;
 }
 
-export async function searchThreadsWithTags(query, tags) {
+export async function searchThreadsWithTags(query, tags, urgency) {
     let returnJson = {
         success: false,
         data: []
     }
-    await Thread.queryThreadsWithTags(query, tags).then((res) => {
+    await Thread.queryThreadsWithTags(query, tags, urgency).then((res) => {
         returnJson.success = true;
         returnJson.data = res;
     });

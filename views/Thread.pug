@@ -13,13 +13,7 @@ head
   a.btn.btn-primary(onclick='routeToDirectory()') Back
 #post-wrapper
   h2#message-header Threads
-  form.search-form(onsubmit="submitSearch()")
-    //- select#search-select.form-select-sm
-    //-   option(value='Incident Report') Incident Report
-    //-   option(value='Status Report') Status Report
-    //-   option(value='Info') Info
-    //-   option(value='Voluntering') Voluntering
-   
+  form.search-form(onsubmit="submitSearch()")   
     input.search-input.form-control(type='text', name='search', placeholder='Search...' onchange="searchFinished()")
     #search-terms
       input#filter-disaster.filter-tag.btn-check(type='checkbox', value='Incident Report')
@@ -31,6 +25,11 @@ head
       input#filter-volunteer.filter-tag.btn-check(type='checkbox', value='Volunteering')
       label.filter-tag.btn.btn-outline-primary(for='filter-volunteer') Volunteering
   #thread-board
+    select#search-select-filter.form-select-sm(onchange="submitSearch()")
+      option.filter-options(value='Filter') Filter:
+      option.filter-options(value='High Priority') High Priority
+      option.filter-options(value='Normal Priority') Normal Priority
+      option.filter-options(value='Low Priority') Low Priority
     #threadWrapper.container
     button#thread-btn.btn.btn-primary(type='button' onclick='showCreateThreadOverlay()') Create Thread
    
@@ -248,6 +247,7 @@ script.
   };
 
   async function submitSearch() {
+
     event.preventDefault()
 
     let searchInput = document.getElementsByClassName('search-input')[0];
@@ -265,46 +265,147 @@ script.
       }
     }
 
+    let urgency = document.getElementsByClassName("filter-options")
+    for(element of urgency){
+      if(element.selected){
+        urgency = element.value 
+        break
+      }
+    }
+
+    console.log(urgency)
+
     let encodedParameters = encodeArrayToUrl(selectedTags)
 
-    if(filteredSearchValue !== ""){
-      //if there are tags then search with tags
-      if(selectedTags.length > 0){
-        await fetch(`/search?q=${filteredSearchValue}&domain=ThreadsWithTags&tags=${encodedParameters}`, {
-          method: 'GET',
-          headers: {
-              'Content-Type': 'application/json',
-          }
-        }).then(response => response.json()).then(async (data) => {
-            console.log("Data in response::")
-            console.log(data.data);
-            isStatus = false;
-            renderSearchedThreads(data.data)
-        }).catch(error => {
-            console.error(error);
-        })
+    if (urgency !== "Filter") {
+      let searchUrl = `/search?q=${filteredSearchValue}&domain=Threads&urgency=${urgency}`;
+
+      if (filteredSearchValue !== "") {
+        if (selectedTags.length > 0) {
+          searchUrl = `/search?q=${filteredSearchValue}&domain=ThreadsWithTags&tags=${encodedParameters}&urgency=${urgency}`;
+        }
       }
-      else{
-        await fetch(`/search?q=${filteredSearchValue}&domain=Threads`, {
-          method: 'GET',
-          headers: {
-              'Content-Type': 'application/json',
-          }
-        }).then(response => response.json()).then(async (data) => {
-            console.log("Data in response::")
-            console.log(data.data);
-            isStatus = false;
-            renderSearchedThreads(data.data)
-        }).catch(error => {
-            console.error(error);
-        })
+      await fetchData(searchUrl);
+    } 
+    
+    else {
+      if (filteredSearchValue == "") {
+        return
       }
+      let searchUrl = `/search?q=${filteredSearchValue}&domain=Threads&urgency=${urgency}`;
+      if (filteredSearchValue !== "" && selectedTags.length > 0) {
+        searchUrl = `/search?q=${filteredSearchValue}&domain=ThreadsWithTags&tags=${encodedParameters}&urgency=${urgency}`;
+      }
+      await fetchData(searchUrl);
     }
-    else{
-      return
-        //renderEmptyMessage();
-    }
+
+    
+
   }
+
+  async function fetchData(url) {
+      try {
+        const response = await fetch(url, {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json',
+          }
+        });
+        const data = await response.json();
+        console.log("Data in response:");
+        console.log(data.data);
+        isStatus = false;
+        renderSearchedThreads(data.data);
+      } catch (error) {
+        console.error(error);
+      }
+  }
+
+  //-   if (urgency !== "Filter"){
+  //-     if(filteredSearchValue !== ""){
+  //-     //if there are tags then search with tags
+  //-       if(selectedTags.length > 0){
+  //-         await fetch(`/search?q=${filteredSearchValue}&domain=ThreadsWithTags&tags=${encodedParameters}&urgency=${urgency}`, {
+  //-           method: 'GET',
+  //-           headers: {
+  //-               'Content-Type': 'application/json',
+  //-           }
+  //-         }).then(response => response.json()).then(async (data) => {
+  //-             console.log("Data in response::")
+  //-             console.log(data.data);
+  //-             isStatus = false;
+  //-             renderSearchedThreads(data.data)
+  //-         }).catch(error => {
+  //-             console.error(error);
+  //-         })
+  //-       }
+  //-       else{
+  //-         await fetch(`/search?q=${filteredSearchValue}&domain=Threads&urgency=${urgency}`, {
+  //-           method: 'GET',
+  //-           headers: {
+  //-               'Content-Type': 'application/json',
+  //-           }
+  //-         }).then(response => response.json()).then(async (data) => {
+  //-             console.log("Data in response::")
+  //-             console.log(data.data);
+  //-             isStatus = false;
+  //-             renderSearchedThreads(data.data)
+  //-         }).catch(error => {
+  //-             console.error(error);
+  //-         })
+  //-       }
+  //-     }
+  //-     else{
+  //-       await fetch(`/search?q=${filteredSearchValue}&domain=Threads&urgency=${urgency}`, {
+  //-           method: 'GET',
+  //-           headers: {
+  //-               'Content-Type': 'application/json',
+  //-           }
+  //-         }).then(response => response.json()).then(async (data) => {
+  //-             console.log("Data in response::")
+  //-             console.log(data.data);
+  //-             isStatus = false;
+  //-             renderSearchedThreads(data.data)
+  //-         }).catch(error => {
+  //-             console.error(error);
+  //-         })
+  //-     }
+  //-   }
+
+  //-   else{
+  //-     if(selectedTags.length > 0){
+  //-         await fetch(`/search?q=${filteredSearchValue}&domain=ThreadsWithTags&tags=${encodedParameters}&urgency=${urgency}`, {
+  //-           method: 'GET',
+  //-           headers: {
+  //-               'Content-Type': 'application/json',
+  //-           }
+  //-         }).then(response => response.json()).then(async (data) => {
+  //-             console.log("Data in response::")
+  //-             console.log(data.data);
+  //-             isStatus = false;
+  //-             renderSearchedThreads(data.data)
+  //-         }).catch(error => {
+  //-             console.error(error);
+  //-         })
+  //-     }
+  //-     else{
+  //-       await fetch(`/search?q=${filteredSearchValue}&domain=Threads&urgency=${urgency}`, {
+  //-         method: 'GET',
+  //-         headers: {
+  //-             'Content-Type': 'application/json',
+  //-         }
+  //-       }).then(response => response.json()).then(async (data) => {
+  //-           console.log("Data in response::")
+  //-           console.log(data.data);
+  //-           isStatus = false;
+  //-           renderSearchedThreads(data.data)
+  //-       }).catch(error => {
+  //-           console.error(error);
+  //-       }) 
+  //-     }  
+  //-   }
+    
+  //- }
 
   async function searchFinished(){
     let searchInput = document.getElementsByClassName('search-input')[0];
