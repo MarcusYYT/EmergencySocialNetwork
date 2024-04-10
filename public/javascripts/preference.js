@@ -58,6 +58,10 @@ function routeToDirectory(){
     window.location.href=`/directory/${window.userId}`
 }
 
+function routeToSubscriber(){
+  window.location.href=`/subscriber/${window.userId}`
+}
+
 socket.on('connect', async function() {
     console.log('Connected to server');
     console.log('Socket ID:', socket.id);

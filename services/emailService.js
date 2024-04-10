@@ -58,3 +58,20 @@ export function sendPrivatePostUpdateEmail(email, sender, content) {
     });
 }
 
+export function sendStatusUpdateEmail(email, sender, content) {
+  const emailData = {
+      from: 'ESN <ESN@mg.depasinre.xyz>',
+      to: email,
+      subject: `ESN: Status Update`,
+      text: `User \"${sender}\" change his/her status to: \n \n ${content}`,
+  };
+
+  mailgun.messages().send(emailData, (error, body) => {
+      if (error) {
+      console.error('Mailgun error:', error);
+      } else {
+      console.log('Email sent:', body);
+      }
+  });
+}
+

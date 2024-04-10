@@ -127,7 +127,7 @@ export class Preference {
     }
 }
 
-function shouldSendEmailNotification(status, emailPreference) {
+export function shouldSendEmailNotification(status, emailPreference) {
     switch (emailPreference) {
         case 'Ok':
             return true;

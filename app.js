@@ -3,8 +3,10 @@ import express from 'express'
 import path from 'path'
 import swaggerJSDoc from 'swagger-jsdoc'
 import swaggerUI from 'swagger-ui-express'
+
 import socketConfig from './config/socketConfig.js'
 import passport from './config/passportConfig.js'
+
 import authRoutes from './routes/authRoutes.js'
 import userRoutes from './routes/userRoutes.js'
 import postRoutes from './routes/postRoutes.js'
@@ -15,7 +17,9 @@ import statusRoutes from './routes/statusRoutes.js'
 import searchRoutes from './routes/searchRoutes.js'
 import testRoute from './routes/testRoutes.js'
 import preferenceRoute from './routes/preferenceRoutes.js'
+import subscriberRoutes from './routes/subscriberRoutes.js'
 import DatabaseAdapter from './config/DatabaseAdapter.js'
+
 import { createServer } from 'node:http';
 import cookieParser from 'cookie-parser';
 
@@ -81,6 +85,7 @@ app.use('/announcements', announcementRoutes)
 app.use('/search', searchRoutes)
 app.use('/test', testRoute);
 app.use('/preference', preferenceRoute);
+app.use('/subscribers', subscriberRoutes);
 
 
 // setup swagger

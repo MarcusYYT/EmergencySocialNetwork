@@ -263,7 +263,8 @@ html(lang='en')
         const requestBody = {
           user_id: userId,
           updateAt: "status",
-          updateValue: selectedValue
+          updateValue: selectedValue, 
+          username: username
         }
         await fetch('/status', {
           method: 'POST', 
@@ -355,7 +356,7 @@ html(lang='en')
         const requestBody = {
           user_id: userId,
           updateAt: "online_status",
-          updateValue: "offline"
+          updateValue: "offline",
         }
         await fetch(`/users/${userId}`, {
           method: 'PUT',

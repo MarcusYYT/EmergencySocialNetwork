@@ -57,6 +57,16 @@ router.get('/setting/:user_id', passport.authenticate('jwt', { session: false })
     }
 });
 
+router.get('/subscriber/:user_id', passport.authenticate('jwt', { session: false }), (req, res) => {
+    const user_id = req.user.data[0].user_id;
+    if (user_id != req.params.user_id) {
+        res.status(401).json({message: "Unauthorized access."});
+    }
+    else {
+        res.render('Subscriber', {user_id: user_id});
+    }
+});
+
 router.get('/test', (req, res) => {
     res.render('Test');
 })
