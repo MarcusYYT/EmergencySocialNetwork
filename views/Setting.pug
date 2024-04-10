@@ -38,8 +38,10 @@ html(lang='en')
             input.form-check-input(type="checkbox", name="status_changes", id="status-changes")
             label.form-check-label(for="status-changes") Status Changes
         button.btn.btn-primary(type="button" onclick="routeToSubscriber()") Manage Status Subcribers
+        | &nbsp;  
         button.btn.btn-primary(type="button" onclick="savePreferences()") Save Preferences
-        button.btn.btn-primary(type="button" onclick="routeToDirectory()") Go Back
+        | &nbsp;  
+        button.btn.btn-primary(type="button" onclick="routeToDirectory()" style="margin-top: 10px; margin-bottom: 10px;") Go Back
     script.
       window.userId = #{user_id}
     script(src='/javascripts/preference.js')

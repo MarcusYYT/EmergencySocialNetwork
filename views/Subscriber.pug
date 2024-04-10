@@ -12,12 +12,12 @@ html(lang='en')
   body
     .container
       h1 Manage Subscribers
-      button.btn.btn-primary(type="button" onclick="routeToSetting()") Go Back
+      button.btn.btn-primary(type="button" onclick="routeToSetting()", style="margin-top: 10px; margin-bottom: 10px;") Go Back
       .row.mb-3
         .col-md-8
-          input#subscriber-username.form-control(type='text', placeholder='Enter username to subscribe')
+          input#subscriber-username.form-control(type='text', placeholder='Enter username to subscribe', style="margin-top: 10px; margin-bottom: 10px;")
         .col-md-4
-          button#add-subscriber.btn.btn-primary(type='button', onclick='addSubscriber()') Add Subscriber
+          button#add-subscriber.btn.btn-primary(type='button', onclick='addSubscriber()', style="margin-top: 10px; margin-bottom: 10px;") Add Subscriber
           
       table.table
         thead
