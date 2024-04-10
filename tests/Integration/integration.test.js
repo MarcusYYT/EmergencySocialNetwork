@@ -154,43 +154,6 @@ describe('Post Announcement Test', () => {
   });
 });
 
-describe('search Test', () => {
-
-  test('search a user', async () => {
-    const searchValue = "test"
-    const getresponse = await supertest(app)
-      .get(`/search?q=${searchValue}&domain=User`);
-    expect(getresponse.status).toBe(200);
-    expect(getresponse.body.success).toBe(true);
-    expect(getresponse.body.message).toBeDefined();
-    expect(Array.isArray(getresponse.body.data)).toBe(true);
-    expect(getresponse.body.data.length).toBe(2);
-  });
-
-  test('search a announcements', async () => {
-    const searchValue = "test"
-    const getresponse = await supertest(app)
-      .get(`/search?q=${searchValue}&domain=Announcements`);
-    expect(getresponse.status).toBe(200);
-    expect(getresponse.body.success).toBe(true);
-    expect(getresponse.body.message).toBeDefined();
-    expect(Array.isArray(getresponse.body.data)).toBe(true);
-    expect(getresponse.body.data.length).toBe(1);
-    });
-
-    test('search a private post', async () => {
-      const searchValue = "Hello"
-      const senderId = 2;
-      const receiverId = 1;
-      const getresponse = await supertest(app)
-        .get(`/search?q=${searchValue}&domain=PrivatePosts&senderId=${senderId}&receiverId=${receiverId}`);
-      expect(getresponse.status).toBe(200);
-      expect(getresponse.body.success).toBe(true);
-      expect(getresponse.body.message).toBeDefined();
-      expect(Array.isArray(getresponse.body.data)).toBe(true);
-      expect(getresponse.body.data.length).toBe(1);
-  });
-});
 
 
 describe('Post Thread Test', () => {
@@ -320,7 +283,7 @@ describe('Post a Thread Post Test', () => {
         status: "emergency",
         thread_id: 2
       });
-      //expect(postResponse.statusCode).toBe(201);
+      expect(postResponse.statusCode).toBe(201);
       expect(postResponse.body).toEqual({
         success: true,
         message: 'ThreadPost a new post successful'
@@ -341,3 +304,63 @@ describe('Post a Thread Post Test', () => {
 
 });
 
+describe('search Test', () => {
+
+  test('search a user', async () => {
+    const searchValue = "test"
+    const getresponse = await supertest(app)
+      .get(`/search?q=${searchValue}&domain=User`);
+    expect(getresponse.status).toBe(200);
+    expect(getresponse.body.success).toBe(true);
+    expect(getresponse.body.message).toBeDefined();
+    expect(Array.isArray(getresponse.body.data)).toBe(true);
+    expect(getresponse.body.data.length).toBe(2);
+  });
+
+  test('search a announcements', async () => {
+    const searchValue = "test"
+    const getresponse = await supertest(app)
+      .get(`/search?q=${searchValue}&domain=Announcements`);
+    expect(getresponse.status).toBe(200);
+    expect(getresponse.body.success).toBe(true);
+    expect(getresponse.body.message).toBeDefined();
+    expect(Array.isArray(getresponse.body.data)).toBe(true);
+    expect(getresponse.body.data.length).toBe(1);
+    });
+
+    test('search a private post', async () => {
+      const searchValue = "Hello"
+      const senderId = 2;
+      const receiverId = 1;
+      const getresponse = await supertest(app)
+        .get(`/search?q=${searchValue}&domain=PrivatePosts&senderId=${senderId}&receiverId=${receiverId}`);
+      expect(getresponse.status).toBe(200);
+      expect(getresponse.body.success).toBe(true);
+      expect(getresponse.body.message).toBeDefined();
+      expect(Array.isArray(getresponse.body.data)).toBe(true);
+      expect(getresponse.body.data.length).toBe(1);
+  });
+
+  test('search a thread', async () => {
+    const searchValue = "test"
+    const getresponse = await supertest(app)
+      .get(`/search?q=${searchValue}&domain=Threads`);
+    expect(getresponse.status).toBe(200);
+    expect(getresponse.body.success).toBe(true);
+    expect(getresponse.body.message).toBeDefined();
+    expect(Array.isArray(getresponse.body.data)).toBe(true);
+    expect(getresponse.body.data.length).toBe(1);
+  });
+
+  test('search a thread', async () => {
+    const searchValue = "test"
+    const thread_id = 2
+    const getresponse = await supertest(app)
+      .get(`/search?q=${searchValue}&domain=ThreadPosts&threadId=${thread_id}`);
+    expect(getresponse.status).toBe(200);
+    expect(getresponse.body.success).toBe(true);
+    expect(getresponse.body.message).toBeDefined();
+    expect(Array.isArray(getresponse.body.data)).toBe(true);
+    expect(getresponse.body.data.length).toBe(1);
+  });
+});
