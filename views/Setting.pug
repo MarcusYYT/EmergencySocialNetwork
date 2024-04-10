@@ -11,13 +11,14 @@ html(lang='en')
     title Preference Settings
   body
     .container
-      h1 Preferences
+      h1(style="margin-top: 70px; margin-bottom: 10px; display: flex; justify-content: center; ") Preferences
       form#preference-form
         .mb-3
           label(for="email") Email Address
           input#email.form-control(type="email", name="email", placeholder="Enter your email")
         .mb-3
-          label(for="email-preference") Email Notification Preference
+          h6 Under which status would you like to recieve email notification? 
+          label(for="email-preference") Email Notification Status Threshold
           select#email-preference.form-select(name="email_preference")
             option(value="off") Off
             option(value="Ok") Ok
