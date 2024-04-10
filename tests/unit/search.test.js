@@ -1,12 +1,13 @@
 import DatabaseAdapter from '../../config/DatabaseAdapter.js';
 import {sync as rimrafSync} from "rimraf";
-import {searchUser, searchPosts, searchPrivatePosts, searchStatusHistory, searchAnnouncements} from "../../services/searchService.js";
+import {searchUser, searchPosts, searchPrivatePosts, searchStatusHistory, searchAnnouncements, searchThreads, searchThreadsWithTags} from "../../services/searchService.js";
 import { createNewUser } from "../../services/userService.js";
 import { checkIfStopWord } from '../../services/searchService.js';
 import { createNewPost } from '../../services/postService.js';
 import { createPrivatePost } from '../../services/privatePostService.js';
 import { createNewStatus } from '../../services/statusService.js';
 import { createNewAnnouncement } from '../../services/announcementService.js';
+import { createNewThread } from '../../services/threadService.js';
 
 let database;
 
@@ -174,6 +175,25 @@ describe('Search Users', () => {
     test('Stop word 2', async () => {
         expect(await checkIfStopWord("about")).toMatchObject({success: false});
     });
+  
+});
 
-    
+
+describe('Search Thread', () => {
+    test('search threads: should have 5', async () => {
+        await createNewThread(1, 'test1', "High Priority" , ["Info"])
+        await createNewThread(1, 'test12', "High Priority" , ["Info"])
+        await createNewThread(1, 'test13', "High Priority" , ["Volunteering"])
+        await createNewThread(1, 'test14', "High Priority" , ["Info"])
+        await createNewThread(1, 'test15', "High Priority" , ["Info"])
+
+        let result = await searchThreads("test")
+        expect(result.data.length).toBe(5);
+    });
+
+    test('search for threads: should have 0', async () => {
+        let result = await searchThreads("shouldnt")
+        expect(result.data.length).toBe(0);
+    });
+
 });

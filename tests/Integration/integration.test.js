@@ -352,7 +352,7 @@ describe('search Test', () => {
     expect(getresponse.body.data.length).toBe(1);
   });
 
-  test('search a thread', async () => {
+  test('search for threadPosts', async () => {
     const searchValue = "test"
     const thread_id = 2
     const getresponse = await supertest(app)
