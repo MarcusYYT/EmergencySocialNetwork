@@ -5,11 +5,11 @@ const router = express.Router();
 
 /**
  * @swagger
- * /threads/{threadId}:
+ * /threadPosts/{thread_id}:
  *  get:
  *    tags:
- *      - Thread
- *    summary: fetch a thread object by the threadId
+ *      - Thread Posts
+ *    summary: fetch thread post list by the threadId
  *    parameters:
  *      - in: path
  *        name: threadId
@@ -32,11 +32,11 @@ const router = express.Router();
  *                  properties:
  *                    thread_Id:
  *                      type: integer
- *                    thread_name:
- *                      type: string
- *                    creator_id:
+ *                    sender_id:
  *                      type: integer
- *                    urgency:
+ *                    status:
+ *                      type: string
+ *                    content:
  *                      type: string
  *                message:
  *                  type: string
@@ -44,7 +44,7 @@ const router = express.Router();
  *        description: thread not found
  *  post:
  *    tags:
- *      - Thread
+ *      - Thread Posts
  *    summary: Push a new post into the thread into the database
  *    parameters:
  *      - in: path
@@ -63,60 +63,18 @@ const router = express.Router();
  *                type: integer
  *              thread_id:
  *                type: integer
- *              sender_status:
+ *              status:
  *                type: string
  *              content:
  *                type: string
  *    responses:
  *      '201':
  *        description: Database push successful
- *  put:
- *    tags:
- *      - Thread
- *    summary: Edit a thread in the database
- *    parameters:
- *      - in: path
- *        name: threadId
- *        required: true
- *        schema:
- *          type: integer
- *        description: Numeric ID of the thread to edit.
- *    requestBody:
- *      content:
- *        application/json:
- *          schema:
- *            type: object
- *            properties:
- *              thread_id:
- *                type: integer
- *              thread_name:
- *                type: string
- *              creator_id:
- *                type: integer
- *              urgency:
- *                type: string
- *    responses:
- *      '201':
- *        description: Database push successful
- *  delete:
- *    tags:
- *      - Thread
- *    summary: Delete a thread from the database
- *    parameters:
- *      - in: path
- *        name: threadId
- *        required: true
- *        schema:
- *          type: integer
- *        description: Numeric ID of the thread to delete.
- *    responses:
- *      '201':
- *        description: Database push successful
- * /threads:
+ * /threadPosts/{thread_id}/{post_id}:
  *  get:
  *    tags:
- *      - Thread
- *    summary: fetch a list of all thread objects
+ *      - Thread Posts
+ *    summary: fetch a post using the threadId and postId
  *    responses:
  *      '200':
  *        description: Successful return the threadlist.
@@ -134,37 +92,16 @@ const router = express.Router();
  *                    properties:
  *                      thread_Id:
  *                        type: integer
- *                      thread_name:
- *                        type: string
- *                      creator_id:
+ *                      sender_id:
  *                        type: integer
- *                      urgency:
+ *                      status:
+ *                        type: string
+ *                      content:
  *                        type: string
  *                message:
  *                  type: string
- *  post:
- *    tags:
- *      - Thread
- *    summary: Push a new thread into database
- *    requestBody:
- *      content:
- *        application/json:
- *          schema:
- *            type: object
- *            properties:
- *              thread_Id:
- *                type: integer
- *              thread_name:
- *                type: string
- *              creator_id:
- *                type: integer
- *              urgency:
- *                type: string
- *              message:
- *                type: string
- *    responses:
- *      '201':
- *        description: Database push successful
+ *      '404':
+ *        description: threadPost not found
  */
 
 router.get('/:thread_id', getThreadPostList);

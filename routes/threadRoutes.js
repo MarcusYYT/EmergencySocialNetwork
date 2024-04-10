@@ -5,7 +5,7 @@ const router = express.Router();
 
 /**
  * @swagger
- * /threads/{threadId}:
+ * /threads/{thread_id}:
  *  get:
  *    tags:
  *      - Thread
@@ -42,34 +42,6 @@ const router = express.Router();
  *                  type: string
  *      '404':
  *        description: thread not found
- *  post:
- *    tags:
- *      - Thread
- *    summary: Push a new post into the thread into the database
- *    parameters:
- *      - in: path
- *        name: threadId
- *        required: true
- *        schema:
- *          type: integer
- *        description: Numeric ID of the thread to post in.
- *    requestBody:
- *      content:
- *        application/json:
- *          schema:
- *            type: object
- *            properties:
- *              sender_id:
- *                type: integer
- *              thread_id:
- *                type: integer
- *              sender_status:
- *                type: string
- *              content:
- *                type: string
- *    responses:
- *      '201':
- *        description: Database push successful
  *  put:
  *    tags:
  *      - Thread
