@@ -37,7 +37,7 @@ async function loadSubscribers() {
             row.innerHTML = `
                 <td>${subscriber.User.username}</td>
                 <td>
-                    <button class="btn btn-danger btn-sm" onclick="removeSubscriber('${subscriber.user_id}', '${userId}')">Remove</button>
+                    <button class="btn btn-danger btn-sm" onclick="removeSubscriber('${subscriber.master_id}', '${userId}')">Remove</button>
                 </td>
             `;
             subscriberList.appendChild(row);  

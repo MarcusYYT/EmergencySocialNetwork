@@ -108,7 +108,7 @@ export class Preference {
         });
     
         if (!preference) {
-            console.error('Preference not found for user:', userId);
+            console.log('Preference not found for user:', userId);
             return { shouldSend: false };
         }
     

@@ -7,7 +7,7 @@ export class Subscriber {
 
     static initModel(sequelize) {
         this.model = sequelize.define('subscriber', {
-            user_id: {
+            master_id: {
                 type: DataTypes.INTEGER,
                 allowNull: false,
                 references: {
@@ -26,24 +26,17 @@ export class Subscriber {
         },
         {
             freezeTableName: true,
-            indexes: [
-                {
-                    unique: true,
-                    fields: ['user_id', 'subscriber_id']
-                }
-            ]
         });
 
-        User.model.hasMany(this.model, { foreignKey: 'user_id', onDelete: 'CASCADE' });
-        User.model.hasMany(this.model, { foreignKey: 'subscriber_id', onDelete: 'CASCADE' });
-        this.model.belongsTo(User.model, { as: 'User', foreignKey: 'user_id' });
+        User.model.hasMany(this.model, { foreignKey: 'master_id', onDelete: 'CASCADE' });
+        this.model.belongsTo(User.model, { as: 'User', foreignKey: 'master_id' });
         this.model.belongsTo(User.model, { as: 'Subscriber', foreignKey: 'subscriber_id' });
     }
 
     static async addSubscriber(userId, subscriberId) {
         const existingSubscription = await this.model.findOne({
             where: {
-                user_id: userId,
+                master_id: userId,
                 subscriber_id: subscriberId
             }
         });
@@ -52,7 +45,7 @@ export class Subscriber {
             return false;
         }
         return await this.model.create({
-            user_id: userId,
+            master_id: userId,
             subscriber_id: subscriberId
         });
     }
@@ -73,7 +66,7 @@ export class Subscriber {
     static async removeSubscriber(userId, subscriberId) {
         return await this.model.destroy({
             where: {
-                user_id: userId,
+                master_id: userId,
                 subscriber_id: subscriberId
             }
         });
@@ -81,7 +74,7 @@ export class Subscriber {
 
     static async getSubscribersWithDetails(userId) {
         const subscribers =  await this.model.findAll({
-            where: { user_id: userId },
+            where: { master_id: userId },
             include: [
                 {
                     model: User.model,
@@ -92,9 +85,10 @@ export class Subscriber {
                             model: Preference.model,
                             attributes: ['email', 'status_changes', 'email_notification_preference']
                         }
-                    ]
+                    ], 
                 }
-            ]
+            ], 
+            attributes: { exclude: ['createdAt', 'updatedAt'] }
         });
 
         return subscribers.map(element => {

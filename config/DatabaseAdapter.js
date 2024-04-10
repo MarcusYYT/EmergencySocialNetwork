@@ -38,13 +38,17 @@ export default class DatabaseAdapter {
         Preference.initModel(this.getDatabase());
         Subscriber.initModel(this.getDatabase());
 
-        await User.model.sync();
-        await Announcement.model.sync();
-        await Post.model.sync();
-        await PrivatePost.model.sync();
-        await Status.model.sync();
-        await Preference.model.sync();
-        await Subscriber.model.sync();
+        try{
+            await User.model.sync();
+            await Announcement.model.sync();
+            await Post.model.sync();
+            await PrivatePost.model.sync();
+            await Status.model.sync();
+            await Preference.model.sync();
+            await Subscriber.model.sync();
+        } catch (error){
+            console.log(error)
+        }
     }
 
     static switchDatabase(databaseKey) {
