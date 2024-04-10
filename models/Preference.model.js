@@ -98,6 +98,33 @@ export class Preference {
             username: preference.user.username
         }));
     }
+    static async checkPrivatePostUpdatesPreference(userId) {
+        const preference = await this.model.findOne({
+            where: { user_id: userId },
+            include: [{
+                model: User.model,
+                attributes: ['status']
+            }]
+        });
+    
+        if (!preference) {
+            console.error('Preference not found for user:', userId);
+            return { shouldSend: false };
+        }
+    
+        if (!preference.private_post_updates) {
+            return { shouldSend: false };
+        }
+    
+        const status = preference.user.status;
+        const emailPreference = preference.email_notification_preference;
+        const shouldSend = shouldSendEmailNotification(status, emailPreference);
+    
+        return {
+            shouldSend: shouldSend,
+            email: shouldSend ? preference.email : null
+        };
+    }
 }
 
 function shouldSendEmailNotification(status, emailPreference) {

@@ -5,7 +5,7 @@ import {User} from "../models/User.model.js"
 import {Post} from "../models/Post.model.js"
 import {PrivatePost} from "../models/PrivatePost.model.js"
 import {Status} from "../models/Status.model.js"
-import { Preference } from '../models/Preference.model.js';
+import {Preference} from '../models/Preference.model.js';
 
 
 export default class DatabaseAdapter {

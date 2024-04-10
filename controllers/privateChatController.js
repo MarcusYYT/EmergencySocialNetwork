@@ -1,5 +1,7 @@
 import * as privatePostService from '../services/privatePostService.js'
 import { io, getSocketIdByUserId} from "../config/socketConfig.js"
+import {emailStrategies} from '../stratrgies/email.strategies.js'
+import {Preference} from '../models/Preference.model.js'
 
 export async function getPrivatePostById(req, res){
     try{
@@ -36,8 +38,6 @@ export async function postPrivatePost(req, res){
         const content = req.body.content;
         const senderName = req.body.sender_name;
 
-        //const status = req.body.status;
-        //await privatePostService.createNewPrivatePost(userId, content, status).then(() =>{
         await privatePostService.createPrivatePost(senderId, receiverId, content, status).then(async () =>{
             const roomName = [senderId, receiverId].sort().join('_');
             io.to(roomName).emit("postPrivatePost", req.body);
@@ -49,6 +49,12 @@ export async function postPrivatePost(req, res){
                 }
             })
             console.log(`sent messsage to  ${roomName}`);
+            await Preference.checkPrivatePostUpdatesPreference(receiverId).then((data) => {
+                if(data.shouldSend === true){
+                    const strategy = emailStrategies['PrivatePost'];
+                    strategy(data.email, senderName, content);
+                }   
+            });
             res.status(201).json({ success: true, message: 'Post a new post successful' });
         })
     } catch(error) {
