@@ -242,8 +242,14 @@ script.
   });
 
   //kicking everyone out
-  socket.on("delete_thread", () => {
-    routeToThreads()
+  socket.on("delete_thread", (threadId) => {
+    const current_thread = #{thread_id}
+    console.log(current_thread)
+    console.log(threadId)
+    if(threadId == current_thread){
+      routeToThreads()
+    }
+    //
   });
 
   function showOverlay() {

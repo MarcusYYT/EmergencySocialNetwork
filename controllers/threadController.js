@@ -98,7 +98,7 @@ export async function deleteThread(req, res){
     try{
         const thread_id = req.params.thread_id
         await threadService.deleteThread(thread_id).then((resolve)=>{
-            io.emit('delete_thread')
+            io.emit('delete_thread', thread_id)
             res.status(200).json({success: resolve.success, message: resolve.message});
         })
 
