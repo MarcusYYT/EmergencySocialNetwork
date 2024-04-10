@@ -1,6 +1,6 @@
 import express from 'express';
 const router = express.Router();
-import {createEmergencyContact, postAlert, getEmergencyContactByUserId, getEmergencyContactSocketId, updateEmergencyContact} from '../controllers/emergencyContactController.js'
+import {createEmergencyContact, postAlert, getEmergencyContactByUserId, getEmergencyContactSocketId, updateEmergencyContact, deleteEmergencyContact} from '../controllers/emergencyContactController.js'
 
 
 /**
@@ -200,5 +200,7 @@ router.get('/:primary_id/:alternative_id', getEmergencyContactSocketId);
 router.put('/:user_id', updateEmergencyContact);
 router.post('', createEmergencyContact);
 router.post('/emergency_alert', postAlert);
+router.delete('/:user_id', deleteEmergencyContact);
+
 
 export default router;

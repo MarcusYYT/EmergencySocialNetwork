@@ -11,10 +11,6 @@ import {EmergencyContact} from "../models/EmergencyContact.model.js";
 export async function createEmergencyContact(userId, primary, alternative, message) {
     let returnJson = {success: false, emergency_id: -1, message: "Create user emergency contact failed."};
     try {
-      // if (await EmergencyContact.ifEmergencyContactExist(userId)) {
-      //   returnJson.message = "User emergency contact already exists.";
-      //   return returnJson;
-      // }
       const emergncyContact = await EmergencyContact.createEmergencyContact(userId, primary, alternative, message);
       returnJson.success = true;
       returnJson.emergency_id = emergncyContact.emergency_id;
@@ -123,5 +119,18 @@ export async function changeLocationLink(id, link){
     returnJson.success = true;
     returnJson.message = "Change Location Link successfull"
   });
+  return returnJson;
+}
+
+
+export async function deleteEmergencyContact(userId) {
+  let returnJson = {success: false, message: "Delete user emergency contact failed."};
+  try {
+    const emergncyContact = await EmergencyContact.deleteEmergencyContact(userId);
+    returnJson.success = true;
+    returnJson.message = "Delete emergency contact successfully.";
+  } catch (error) {
+      returnJson.message = "An unexpected error occurred.";
+  }
   return returnJson;
 }

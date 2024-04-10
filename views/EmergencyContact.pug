@@ -154,10 +154,8 @@ script.
 
             if (userId === primary_id) {
                 alert("You cannot set yourself as contact!")
-                console.log("You cannnot set yourself as contact!")
             } else if (primary_id === alternative_id) {
                 alert("You cannot set both contact to the same person")
-                console.log("You cannot set both contact to the same person")
             } else {
                 primary_username = new_primary_username;
                 const requestBody = {
@@ -213,13 +211,10 @@ script.
 
             if (primary_id === 1) {
                 alert("You need to set up primary contact first!")
-                console.log("You need to set up primary contact first!")
             } else if (userId === alternative_id) {
                 alert("You cannot set yourself as contact!")
-                console.log("You cannnot set yourself as contact!")
             } else if (primary_id === alternative_id) {
                 alert("You cannot set both contact to the same person")
-                console.log("You cannot set both contact to the same person")
             } else {
                 alternative_username = new_alternative_username
                 const requestBody = {
@@ -312,7 +307,6 @@ script.
 
     async function updateLocationLink() {
         const userId = #{user_id}; // Assuming user_id is obtained from somewhere
-        //const googleMapLink = `https://maps.google.com/?q=${latitude},${longitude}`;
         const link = googleMapLink
 
         const requestBody = {

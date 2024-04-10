@@ -169,7 +169,7 @@ export class EmergencyContact {
         });
     }
 
-        /**
+    /**
      * Change the location link of the specific user id
      * @param {integer} userId - The user id
      * @param {string} link - The location link
@@ -182,6 +182,19 @@ export class EmergencyContact {
             }
         });
     }
+
+        /**
+     * Delete specific user id
+     * @param {integer} userId - The user id
+     * @returns {Promise} A promise indicating the deletion of given user.
+     */
+        static async deleteEmergencyContact(userId) {
+            return await this.model.destroy({
+                where: {
+                    user_id: userId
+                }
+            });
+        }
 
     
     /**

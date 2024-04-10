@@ -38,6 +38,21 @@ export async function postAlert(req, res){
     }
 }
 
+export async function deleteEmergencyContact(req, res){
+    try{
+        const user_id = req.params.user_id;
+        await emergencyContactService.deleteEmergencyContact(user_id).then((resolve)=>{
+            if(resolve.exist==true){
+                res.status(200).json({success:true, message:"Delete emergency contact successful"});
+            } else {
+                res.status(404).json({success:false, message: resolve.message});
+            }
+        })
+    }  catch (error) {
+        res.status(500).send(error.message);
+    }
+}
+
 export async function getEmergencyContactByUserId(req, res){
     try{
         const user_id = req.params.user_id;
@@ -63,9 +78,6 @@ export async function getEmergencyContactSocketId(req, res){
             getSocketIdByUserId(primary_id),
             getSocketIdByUserId(alternative_id)
         ]);
-
-        console.log("Primary socketid is: " + primarySocketId);
-        console.log("Alternative socketid is: " + alternativeSocketId);
         
         // Send back both socket IDs in the response
         res.status(200).json({ success: true, data: { primarySocketId, alternativeSocketId }, message: "Socket IDs retrieved successfully" });
@@ -83,13 +95,10 @@ export async function updateEmergencyContact(req, res){
         if (updateAtrribute === "primary_contact_id" || updateAtrribute === "alternative_contact_id") {
             await User.ifUserExist(updateValue).then(async (result)=>{
                 if (result !== true) {
-                    console.log("The contact you select does not exist")
                     res.status(404).json({ success: false, message: 'User not exist' });
                 } else {
-                    console.log("User exist")
                     await User.getOneUser(updateValue).then(async (result)=>{
                         if (updateAtrribute === "primary_contact_id") {
-                            console.log(updateValue)
                             await emergencyContactService.changePrimaryContact(userId, updateId).then((resolve)=>{
                                 res.status(200).json({success: resolve.success, message: resolve.message});
                         })
@@ -114,7 +123,6 @@ export async function updateEmergencyContact(req, res){
             })
         }
     } catch(error){
-        console.log("there is a problem")
         res.status(500).json({ message: 'Error updating user emergency contact', error: error.message });
     }
 }

@@ -65,7 +65,7 @@ describe('Only allow users and emergency contacts that are already in User table
         expect(await createEmergencyContact(-1, 1, 2, "HELP!")).not.toMatchObject({
             success: true,
             emergency_id: expect.any(Number),
-            message: "Create user successfully."
+            message: "Create emergency contact successfully"
         });
     });
 
@@ -73,7 +73,7 @@ describe('Only allow users and emergency contacts that are already in User table
         expect(await createEmergencyContact(5, 10, 20, "HELP!")).not.toMatchObject({
             success: true,
             emergency_id: expect.any(Number),
-            message: "Create user successfully."
+            message: "Create emergency contact successfully"
         });
     });
 })
