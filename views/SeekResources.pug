@@ -10,7 +10,7 @@ head
 .links
   a.btn.btn-primary(onclick='routeToResources()') Back
 #post-wrapper
-    h2#message-header Shared Resources
+    h2#message-header Resources Shared by Others
     #announcement-board
         #resourceList.resource-list
 script(src='https://cdn.socket.io/4.7.4/socket.io.min.js')
@@ -122,15 +122,13 @@ script.
 
   function displayResources(groups) {
       const listElement = document.getElementById('resourceList');
-      listElement.innerHTML = ''; // 清除现有内容
+      listElement.innerHTML = '';
 
-      // 创建表格
       const table = document.createElement('table');
-      table.className = 'table table-hover'; // 使用 Bootstrap 的 hover 样式表格
+      table.className = 'table table-hover';
 
-      // 创建表头
       const thead = document.createElement('thead');
-      const headers = ['Type', 'Total Amount', 'Users Involved'];
+      const headers = ['Resource Type', 'Total Amount', 'Users Involved'];
       const headerRow = document.createElement('tr');
       headers.forEach(headerText => {
           const header = document.createElement('th');
@@ -140,7 +138,7 @@ script.
       thead.appendChild(headerRow);
       table.appendChild(thead);
 
-      // 创建表体
+
       const tbody = document.createElement('tbody');
       groups.forEach(group => {
           console.log("group")

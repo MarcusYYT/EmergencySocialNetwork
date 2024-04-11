@@ -46,7 +46,7 @@ export async function postResource(req, res){
         const resourceName = req.body.resource_name;
         const resourceAmount = req.body.resource_amount;
         const resourceUnitId = req.body.resource_unit_id;
-        const note = req.body.note;
+        const note = req.body.resource_note;
         const latitude = req.body.latitude;
         const longitude = req.body.longitude;
         const tel = req.body.tel;

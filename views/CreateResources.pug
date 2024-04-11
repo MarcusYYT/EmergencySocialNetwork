@@ -285,15 +285,6 @@ script.
       document.querySelector('button.btn-success').style.display = 'block';
   }
 
-  function getLocation() {
-      return new Promise((resolve, reject) => {
-          if (navigator.geolocation) {
-              navigator.geolocation.getCurrentPosition(resolve, reject);
-          } else {
-              reject(new Error("Geolocation is not supported by this browser."));
-          }
-      });
-  }
   async function toggleLocationSharing(checkbox) {
       const latitudeInput = document.getElementById('latitude');
       const longitudeInput = document.getElementById('longitude');

@@ -1,90 +1,33 @@
-function constructChatMessage(msgData) {
-  const messageDiv = document.createElement('div');
-  messageDiv.className = 'list-group-item';
-  const messageHeader = document.createElement('div');
-  messageHeader.className = 'd-flex w-100 justify-content-between';
-  const messageUsernameHeader = document.createElement('div');
-  messageUsernameHeader.className = 'd-flex w-100 justify-content-between';
-  const senderSpan = document.createElement('span');
-  senderSpan.className = 'message-sender';
-  senderSpan.textContent = msgData.sender;
-  const dateSpan = document.createElement('span');
-  dateSpan.className = 'message-date';
-  dateSpan.textContent = new Date(msgData.dateTime).toLocaleString();
-  const statusFieldImage = document.createElement("i");
-  if (msgData.status == "OK") {
-    statusFieldImage.setAttribute("class", "bi bi-check-circle-fill");
-  } else if (msgData.status == "emergency") {
-    statusFieldImage.setAttribute("class", "bi bi-bandaid-fill");
-  } else if (msgData.status == "help") {
-    statusFieldImage.setAttribute("class", "bi bi-exclamation-circle-fill");
-  }
-  messageUsernameHeader.appendChild(senderSpan);
-  messageHeader.appendChild(dateSpan);
-  messageUsernameHeader.appendChild(statusFieldImage);
-  messageDiv.appendChild(messageUsernameHeader);
-  messageDiv.appendChild(messageHeader);
-  if (!msgData.isStatus){
-    const messageBody = document.createElement('div');
-    messageBody.className = 'message-body';
-    messageBody.textContent = msgData.message;
-    messageDiv.appendChild(messageBody);  
-  }
-  return messageDiv;
-}
 
-async function renderChats(chatlist, isPrivate) {
-  let messageBoard = document.getElementById("message-board")
-  let isStatus = false;
-  removePostElements(messageBoard)
-  for (const msgData of chatlist) {
-    let username = ""
-    if (isPrivate) {
-      username = msgData.Sender.username;
+function getLocation() {
+  return new Promise((resolve, reject) => {
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(resolve, reject);
     } else {
-      username = msgData.user.username;
+      reject(new Error("Geolocation is not supported by this browser."));
     }
-    let messageDetails = createMsgObject(msgData, username, isStatus);
-    let messageElement = constructChatMessage(messageDetails);
-    messageBoard.appendChild(messageElement);
-    messageBoard.scrollTop = messageBoard.scrollHeight;
-  }
+  });
 }
 
-function slice(array, size){   
-  let slicedArray = [];
-  for (let i = 0; i < Math.ceil(array.length / size); i++) {
-      slicedArray.push(array.slice(i * size, i * size + size));
-  }
-  return slicedArray 
+function calculateDistance(lat1, lon1, lat2, lon2) {
+  if(lat1 == lat2 || lon1 == lon2) return -1;
+  const R = 6371; // Radius of the earth in km
+  const dLat = toRad(lat2 - lat1);
+  const dLon = toRad(lon2 - lon1);
+  lat1 = toRad(lat1);
+  lat2 = toRad(lat2);
+
+  const a = Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+      Math.sin(dLon / 2) * Math.sin(dLon / 2) * Math.cos(lat1) * Math.cos(lat2);
+  const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+  const distance = R * c; // Distance in km
+  return (distance / 1.609344).toFixed(1); // Distance in miles
 }
 
-let counter = 0;
-
-function renderSlicedArray(slicedArray, isPrivate, isStatus){
-  let messageBoard = document.getElementById("message-board")
-  let showMore = document.getElementById("show-more");
-  if (showMore) {
-      showMore.remove();
-  }
-  for (let i = 0; i < slicedArray[counter].length; i++) {
-    let msgData = slicedArray[counter][i];
-
-    let username = "";
-    if (isPrivate && !isStatus) {
-      username = msgData.Sender.username;
-    } else {
-      username = msgData.user.username;
-    }
-    let messageDetails = createMsgObject(msgData, username, isStatus)
-    let messageElement = constructChatMessage(messageDetails);
-    messageBoard.appendChild(messageElement);
-  }
-  if (counter + 1 < slicedArray.length && !isStatus) {
-      createShowMore(slicedArray, isPrivate)
-      counter++;  
-  }
+function toRad(Value) {
+  return Value * Math.PI / 180;
 }
+
 
 function createShowMore(slicedArray, isPrivate){
   let messageBoard = document.getElementById("message-board")

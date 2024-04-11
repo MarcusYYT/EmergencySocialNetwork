@@ -1,6 +1,7 @@
 import express from 'express';
 import passport from '../config/passportConfig.js';
 import { io,registerNewSocket } from "../config/socketConfig.js"
+import { getResourceById } from "../services/resourceService.js";
 
 const router = express.Router();
 router.get('/', (req, res) => {
@@ -78,8 +79,13 @@ router.get('/resources/shared/create/:user_id', passport.authenticate('jwt', { s
 });
 
 router.get('/resources/shared/edit/:resource_id', passport.authenticate('jwt', { session: false }), (req, res) => {
-    res.render('CreateResources', {user_id: req.user.data[0].user_id, mode: 'edit', resource_id: req.params.resource_id});
-
+    getResourceById(req.params.resource_id).then((result) => {
+        if (result.data[0].user_id != req.user.data[0].user_id) {
+            res.status(401).json({message: "Unauthorized access."});
+        } else {
+            res.render('CreateResources', {user_id: req.user.data[0].user_id, mode: 'edit', resource_id: req.params.resource_id});
+        }
+    });
 });
 
 router.get('/resources/seek/:user_id', passport.authenticate('jwt', { session: false }), (req, res) => {

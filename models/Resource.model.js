@@ -193,7 +193,7 @@ export class Resource {
             },
             include: [{
                 model: User.model,
-                attributes: ['username']
+                attributes: ['username', 'online_status']
             }, {
                 model: ResourceType.model,
                 attributes: ['name']
