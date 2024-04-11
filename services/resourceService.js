@@ -3,7 +3,7 @@ import {ResourceType} from "../models/ResourceType.model.js";
 import {ResourceUnit} from "../models/ResourceUnit.model.js";
 
 export async function createNewResource(userId, resourceTypeId, resourceName, resourceAmount, resourceUnitId, note, latitude, longitude, tel) {
-    return await Resource.createResourcePost(userId, resourceTypeId, resourceName, resourceAmount, resourceUnitId, note, latitude, longitude, tel)
+    return await Resource.createResource(userId, resourceTypeId, resourceName, resourceAmount, resourceUnitId, note, latitude, longitude, tel)
 }
 
 

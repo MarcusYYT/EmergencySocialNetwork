@@ -82,7 +82,7 @@ export class Resource {
         });
     }
 
-    static async createResourcePost(userId, resourceTypeId, resourceName, resourceAmount, resourceUnitId, note, latitude, longitude, tel) {
+    static async createResource(userId, resourceTypeId, resourceName, resourceAmount, resourceUnitId, note, latitude, longitude, tel) {
         try {
             return await this.model.create({
                 user_id: userId,
