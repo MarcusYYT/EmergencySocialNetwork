@@ -250,7 +250,7 @@ describe('Resouece Management tests', () => {
 
     test('Update an existing resource', async () => {
         const resourceResponse = await supertest(app)
-            .put('/resources/post')
+            .put('/resources/update')
             .send({
                 resource_id: 1,
                 user_id: 1,

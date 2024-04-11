@@ -194,7 +194,7 @@ router.get('/grouped', getResourceGrouped);
 router.get('/get/:resourceId', getResourceById);
 router.get('/list', getResourceList);
 router.post('/post', postResource);
-router.put('/post', updateResource);
+router.put('/update', updateResource);
 router.delete('/delete/:resourceId', deleteResource);
 router.get('/units', getResourceUnits);
 router.get('/types', getResourceTypes);

@@ -357,7 +357,7 @@ script.
       }
       const formData = new URLSearchParams(new FormData(document.querySelector('form[action="/resources/post"]')));
       formData.append('resource_id', resourceId);
-      fetch('/resources/post', {
+      fetch('/resources/update', {
           method: 'PUT',
           headers: {
               'Content-Type': 'application/x-www-form-urlencoded'
