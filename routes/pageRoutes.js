@@ -82,6 +82,22 @@ router.get('/resources/shared/edit/:resource_id', passport.authenticate('jwt', {
 
 });
 
+router.get('/resources/seek/:user_id', passport.authenticate('jwt', { session: false }), (req, res) => {
+    const user_id = req.user.data[0].user_id;
+    if (user_id != req.params.user_id) {
+        res.status(401).json({message: "Unauthorized access."});
+    }
+    else {
+        res.render('SeekResources', {user_id: req.user.data[0].user_id});
+    }
+});
+
+router.get('/resources/typeview/:type_id/:type_name', passport.authenticate('jwt', { session: false }), (req, res) => {
+    const user_id = req.user.data[0].user_id;
+
+    res.render('TypeOfResources', {user_id: req.user.data[0].user_id, type_id: req.params.type_id, type_name: req.params.type_name});
+});
+
 router.get('/test', (req, res) => {
     res.render('Test');
 })

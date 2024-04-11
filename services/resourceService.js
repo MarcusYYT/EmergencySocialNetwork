@@ -39,13 +39,13 @@ export async function getResourcePosts(){
     return returnJson
 }
 
-export async function getResourceGrouped(userLat, userLong){
+export async function getResourceGrouped(){
     let returnJson = {
         data:[],
         message:"initial message"
     }
 
-    await Resource.getResourcePostsGrouped(userLat, userLong).then((res)=>{
+    await Resource.getResourceGrouped().then((res)=>{
         returnJson.message = "Fetch resource list successful"
         returnJson.data = res;
     })
@@ -158,6 +158,20 @@ export async function getResourceByUserId(userId){
     }
 
     await Resource.getResourceByUser(userId).then((res)=>{
+        returnJson.message = "Fetch resource list successful"
+        returnJson.data = res;
+    })
+
+    return returnJson
+}
+
+export async function getResourceByType(typeId){
+    let returnJson = {
+        data:[],
+        message:"initial message"
+    }
+
+    await Resource.getResourceByType(typeId).then((res)=>{
         returnJson.message = "Fetch resource list successful"
         returnJson.data = res;
     })

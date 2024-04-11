@@ -6,7 +6,7 @@ import {
     updateResource,
     getResourceById,
     addResourceUnit,
-    addResourceType, deleteResource, getResourceTypes, getResourceUnits, getResourceByUserId
+    addResourceType, deleteResource, getResourceTypes, getResourceUnits, getResourceByUserId, getResourceByType
 } from "../controllers/resourceController.js";
 
 
@@ -351,5 +351,7 @@ router.get('/types', getResourceTypes);
 router.post('/addUnit', addResourceUnit);
 router.post('/addType', addResourceType);
 router.get('/list/:userId', getResourceByUserId);
+router.get('/grouped', getResourceGrouped);
+router.get('/type/:typeId', getResourceByType);
 
 export default router;

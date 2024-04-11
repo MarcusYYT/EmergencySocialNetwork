@@ -30,9 +30,7 @@ export async function getResourceList(req, res){
 
 export async function getResourceGrouped(req, res){
     try {
-        const userLat = req.query.lat;
-        const userLong = req.query.long;
-        await resourceService.getResourceGrouped(userLat, userLong).then((resolve)=>{
+        await resourceService.getResourceGrouped().then((resolve)=>{
             res.status(200).json({success:true, data: resolve.data, message:resolve.message});
         })
     } catch (error){
@@ -145,6 +143,17 @@ export async function getResourceByUserId(req, res){
     try {
         const userId = req.params.userId;
         await resourceService.getResourceByUserId(userId).then((resolve)=>{
+            res.status(200).json({success:true, data: resolve.data, message:resolve.message});
+        })
+    } catch (error){
+        res.status(500).send(error.message);
+    }
+}
+
+export async function getResourceByType(req, res){
+    try {
+        const typeId = req.params.typeId;
+        await resourceService.getResourceByType(typeId).then((resolve)=>{
             res.status(200).json({success:true, data: resolve.data, message:resolve.message});
         })
     } catch (error){

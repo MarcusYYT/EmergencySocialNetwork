@@ -1,0 +1,316 @@
+doctype html
+head
+  meta(charset='UTF-8')
+  meta(name='viewport' content='width=device-width, initial-scale=1.0')
+  link(href='https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css' rel='stylesheet' integrity='sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3' crossorigin='anonymous')
+  link(rel='stylesheet', href='https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css')
+  link(rel='stylesheet' type='text/css' href='/stylesheets/index.css')
+  script(src='/javascripts/announcements.js')
+  title Type of Resources
+.links
+  a.btn.btn-primary(onclick='routeToResources()') Back
+#post-wrapper
+    h2#message-header Shared Resources
+    #announcement-board
+        #resourceList.resource-list
+script(src='https://cdn.socket.io/4.7.4/socket.io.min.js')
+script.
+
+  const socket = io();
+  socket.on('connect', async function() {
+        console.log('Connected to server');
+        console.log('Socket ID:', socket.id);
+        const userId = #{user_id};
+        await fetch(`/sockets`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({user_id: userId, socket_id: socket.id, operation:'register'})})
+                .then(response => response.json())
+            .then(data => {
+                console.log(data);
+            })
+            .catch(error => {
+                console.error('Error register socket:', error);
+            });
+  })
+  let username = "";
+
+  function routeToResources(){
+    const user_id = #{user_id}
+    window.location.href = `/resources/seek/${user_id}`
+  }
+
+  function getLocation() {
+      return new Promise((resolve, reject) => {
+          if (navigator.geolocation) {
+              navigator.geolocation.getCurrentPosition(resolve, reject);
+          } else {
+              reject(new Error("Geolocation is not supported by this browser."));
+          }
+      });
+  }
+
+  let userId = ""
+  let typeId = ""
+  let typeName = ""
+  let latitude = 0
+  let longitude = 0
+
+
+  window.onload = async function() {
+    userId = #{user_id}
+    typeId = #{type_id}
+    typeName = `#{type_name}`
+    await fetch(`/users/${userId}`, {
+      method: 'GET',
+      headers: {
+          'Content-Type': 'application/json',
+      },
+    }).then(response => response.json()).then((data) => {
+      console.log(data.data[0].username);
+      username = data.data[0].username;
+    })
+    document.getElementById('message-header').textContent = `${typeName} Resources`;
+    const response = await fetch(`/users/${userId}`, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    }).then(response => response.json()).then((data) => {
+      console.log(data.data[0].username);
+      username = data.data[0].username;
+    })
+
+
+    await fetch(`/resources/type/${typeId}`)
+         .then(response => response.json())
+         .then(data => {
+             console.log(data);
+             // renderAnnouncements(data.data)
+             // displayResources(data.data)
+                displayResources(data.data)
+         })
+         .catch(error => {
+             console.error('Error fetching data:', error);
+         });
+  }
+
+  async function logout(){
+    const userId = #{user_id};
+    const requestBody = {
+      user_id: userId,
+      updateAt: "online_status",
+      updateValue: "offline"
+    }
+
+    await fetch(`/users/${userId}`, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(requestBody),
+      }).then(response=> response.json()).then((data)=>{
+        console.log(data.message)
+      })
+      window.location.href = `/`;
+  }
+
+  function calculateDistance(lat1, lon1, lat2, lon2) {
+      if(lat1 == lat2 || lon1 == lon2) return -1;
+      const R = 6371; // Radius of the earth in km
+      const dLat = toRad(lat2 - lat1);
+      const dLon = toRad(lon2 - lon1);
+      lat1 = toRad(lat1);
+      lat2 = toRad(lat2);
+
+      const a = Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+          Math.sin(dLon / 2) * Math.sin(dLon / 2) * Math.cos(lat1) * Math.cos(lat2);
+      const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+      const distance = R * c; // Distance in km
+      return (distance / 1.609344).toFixed(1); // Distance in miles
+  }
+
+  function toRad(Value) {
+      return Value * Math.PI / 180;
+  }
+
+
+  // async function displayResources(resources) {
+  //     const listElement = document.getElementById('resourceList');
+  //     listElement.innerHTML = ''; // 清除现有内容
+  //
+  //     resources.forEach(resource => {
+  //         const resourceElement = document.createElement('div');
+  //         resourceElement.className = 'card mb-3'; // Bootstrap 卡片
+  //
+  //         const cardBody = document.createElement('div');
+  //         cardBody.className = 'card-body';
+  //
+  //         const nameLink = document.createElement('a');
+  //         nameLink.href = `/resources/shared/edit/${resource.resource_id}`;
+  //         nameLink.className = 'resource-link card-title h5';
+  //         nameLink.textContent = `${resource.resource_name} (${resource.resource_amount} ${resource.resource_unit.name})`;
+  //
+  //         const distanceText = document.createElement('p');
+  //         distanceText.className = 'card-text';
+  //         const distance = calculateDistance(latitude, longitude, resource.resource_latitude, resource.resource_longitude);
+  //         distanceText.textContent = `${distance} mi`;
+  //         if (distance == -1) distanceText.textContent = '';
+  //
+  //         cardBody.appendChild(nameLink);
+  //         cardBody.appendChild(distanceText);
+  //         resourceElement.appendChild(cardBody);
+  //
+  //         listElement.appendChild(resourceElement);
+  //     });
+  //     resources.forEach(resource => {
+  //         const resourceElement = document.createElement('div');
+  //         resourceElement.className = 'card mb-3';
+  //
+  //         const cardBody = document.createElement('div');
+  //         cardBody.className = 'card-body';
+  //
+  //         const nameLink = document.createElement('a');
+  //         nameLink.href = `/resources/shared/edit/${resource.resource_id}`;
+  //         nameLink.className = 'resource-link card-title h5';
+  //         nameLink.textContent = `${resource.resource_name} (${resource.resource_amount} ${resource.resource_unit.name})`;
+  //
+  //         displayDistance(resource.resource_latitude, resource.resource_longitude);
+  //
+  //         cardBody.appendChild(nameLink);
+  //         cardBody.appendChild(distanceText);
+  //         resourceElement.appendChild(cardBody);
+  //
+  //         listElement.appendChild(resourceElement);
+  //     });
+  // }
+  async function displayResources(resources) {
+      const listElement = document.getElementById('resourceList');
+      listElement.innerHTML = ''; // 清除现有内容
+
+      // 首先同步渲染表格，包括距离的占位符
+      resources.forEach(resource => {
+          const resourceElement = document.createElement('div');
+          resourceElement.className = 'card mb-3'; // Bootstrap 卡片
+
+          const cardBody = document.createElement('div');
+          cardBody.className = 'card-body';
+
+          const nameLink = document.createElement('a');
+          nameLink.href = `/resources/shared/edit/${resource.resource_id}`;
+          nameLink.className = 'resource-link card-title h5';
+          nameLink.textContent = `${resource.resource_name} (${resource.resource_amount} ${resource.resource_unit.name})`;
+
+          const distanceText = document.createElement('p');
+          distanceText.className = 'card-text';
+          distanceText.textContent = 'Calculating distance...'; // 占位符文本
+
+          cardBody.appendChild(nameLink);
+          cardBody.appendChild(distanceText);
+          resourceElement.appendChild(cardBody);
+
+          listElement.appendChild(resourceElement);
+
+          resource.distanceElement = distanceText;
+      });
+
+      try {
+          const position = await getLocation();
+          const userLatitude = position.coords.latitude;
+          const userLongitude = position.coords.longitude;
+
+          resources.forEach(resource => {
+              if (userLatitude !== 0 && userLongitude !== 0 &&
+                  resource.resource_latitude !== 0 && resource.resource_longitude !== 0) {
+                  const distance = calculateDistance(userLatitude, userLongitude, resource.resource_latitude, resource.resource_longitude);
+                  resource.distanceElement.textContent = `${distance} mi`;
+              } else {
+                  resource.distanceElement.textContent = ''; // 如果坐标是0，清空距离文本
+              }
+          });
+      } catch (error) {
+          // 如果无法获取位置，则更新所有距离文本为错误消息
+          resources.forEach(resource => {
+              resource.distanceElement.textContent = 'Location not available';
+          });
+          console.error('Error getting location: ', error);
+      }
+  }
+
+
+  // async function displayDistance(res_lat, res_lon) {
+  //     try {
+  //         if (latitude != 0 && longitude != 0) {
+  //             const position = await getLocation();
+  //             latitude = position.coords.latitude;
+  //             longitude = position.coords.longitude;
+  //         }
+  //         const distanceText = document.createElement('p');
+  //         distanceText.className = 'card-text';
+  //         const distance = calculateDistance(latitude, longitude, res_lat, res_lon);
+  //         distanceText.textContent = `${distance} mi`;
+  //         if (distance == -1) distanceText.textContent = '';
+  //     } catch (error) {
+  //         console.error('Error getting location: ', error);
+  //         alert('Error getting location: ' + error.message);
+  //     }
+  // }
+
+  // function displayResources(groups) {
+  //     const listElement = document.getElementById('resourceList');
+  //     listElement.innerHTML = ''; // 清除现有内容
+  //
+  //     // 创建表格
+  //     const table = document.createElement('table');
+  //     table.className = 'table table-hover'; // 使用 Bootstrap 的 hover 样式表格
+  //
+  //     // 创建表头
+  //     const thead = document.createElement('thead');
+  //     const headers = ['Type', 'Total Amount', 'Users Involved'];
+  //     const headerRow = document.createElement('tr');
+  //     headers.forEach(headerText => {
+  //         const header = document.createElement('th');
+  //         header.textContent = headerText;
+  //         headerRow.appendChild(header);
+  //     });
+  //     thead.appendChild(headerRow);
+  //     table.appendChild(thead);
+  //
+  //     // 创建表体
+  //     const tbody = document.createElement('tbody');
+  //     groups.forEach(group => {
+  //         console.log("group")
+  //         console.log(group);
+  //         const row = document.createElement('tr');
+  //         row.addEventListener('click', () => loadTypeDetails(group.resource_type_id)); // 点击时加载该类型的详细列表
+  //
+  //         const typeCell = document.createElement('td');
+  //         typeCell.textContent = group['resource_type.name'];
+  //         row.appendChild(typeCell);
+  //
+  //         const amountCell = document.createElement('td');
+  //         amountCell.textContent = group.amount_sum;
+  //         row.appendChild(amountCell);
+  //
+  //         const userCell = document.createElement('td');
+  //         userCell.textContent = group.user_count;
+  //         row.appendChild(userCell);
+  //
+  //         tbody.appendChild(row);
+  //     });
+  //
+  //     table.appendChild(tbody);
+  //     listElement.appendChild(table);
+  // }
+
+  function loadTypeDetails(typeId) {
+      fetch(`/resources/details?typeId=${typeId}`)
+          .then(response => response.json())
+          .then(data => {
+              console.log(data); // 可以在这里调用 displayResources 来显示具体类型的资源
+              displayResources(data.data); // 假设后端按类型返回具体资源列表
+          })
+          .catch(error => console.error('Error loading resource details:', error));
+  }

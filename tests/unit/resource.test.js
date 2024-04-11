@@ -102,7 +102,7 @@ describe('Create new resource type and unit', () => {
     });
 
     test('Create new resource', async () => {
-        expect(await createNewResource(1, 1, 'Medication', 5, 1, 'note', 1, 1)).toMatchObject({
+        expect(await createNewResource(1, 1, 'Medication', 5, 1, 'note', 1, 1, 123-456-7890)).toMatchObject({
             createdAt: expect.anything(),
             resource_amount: 5,
             resource_id: expect.any(Number),
@@ -139,8 +139,21 @@ describe('Create new resource type and unit', () => {
         });
     });
 
+    test('Get resource grouped', async () => {
+        expect(await getResourceGrouped()).toMatchObject({
+            data: [
+                {
+                    resource_type_id: expect.any(Number),
+                    "resource_type.name": "Medication",
+                    amount_sum: 5,
+                    user_count: 1
+                }
+            ]
+        });
+    });
+
     test('Update resource', async () => {
-        expect(await updateResource(1, 1, 'Medication', 10, 1, 'note', 1, 1)).toMatchObject({
+        expect(await updateResource(1, 1, 1, 'Medication', 10, 1, 'note', 1, 1, 123-456-7890)).toMatchObject({
             data: [
                 1
             ],

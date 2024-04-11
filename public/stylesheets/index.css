@@ -422,7 +422,8 @@ div#show-more {
 
 .resource-item {
     background-color: white;
-    padding: 5px;
+    padding: 10px;
+    margin: 10px;
     border-radius: 15px;
     box-shadow: 0 2px 4px rgba(0,0,0,0.2);
 }
@@ -434,4 +435,78 @@ div#show-more {
 
 .resource-link:hover {
     text-decoration: underline;
+}
+
+
+/*#resourceList .table {*/
+/*    background-color: #78caff;*/
+/*    border-radius: 15px;*/
+/*}*/
+
+/*#resourceList thead th {*/
+/*    background-color: #0d6efd;*/
+/*    color: white;*/
+/*    border-bottom: none;*/
+/*}*/
+
+/*#resourceList tbody tr {*/
+/*    border-bottom: 0px solid #78caff;*/
+/*}*/
+
+/*#resourceList tbody tr:hover {*/
+/*    background-color: #f8f9fa;*/
+/*}*/
+
+/*#resourceList th, #resourceList td {*/
+/*    padding: 1rem;*/
+/*    text-align: left;*/
+/*    border-top: none;*/
+/*}*/
+
+/*.table-container {*/
+/*    margin-top: 2rem;*/
+/*    margin-bottom: 2rem;*/
+/*}*/
+
+.table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 25px 0;
+    font-size: 0.9em;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.15);
+    border-radius: 15px;
+    overflow: hidden;
+}
+
+.table thead tr {
+    background-color: #0d6efd;
+    color: #ffffff;
+    opacity: 80%;
+    text-align: left;
+}
+
+.table tbody tr td:first-child {
+    font-weight: bold;
+}
+
+.table th,
+.table td {
+    padding: 12px 15px;
+}
+
+.table tbody tr {
+    border-bottom: 1px solid #dddddd;
+    background-color: white;
+}
+
+.table tbody tr:nth-of-type(even) {
+    background-color: #f3f3f3;
+}
+
+.table tbody tr:last-of-type {
+    border-bottom: 1px solid #dddddd;
+}
+
+.table tbody tr:hover {
+    background-color: #f1f1f1;
 }

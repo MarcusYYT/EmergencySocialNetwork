@@ -1,4 +1,4 @@
-import {DataTypes, Op}  from "sequelize";
+import {col, DataTypes, fn, literal} from "sequelize";
 import {User} from "./User.model.js";
 import {ResourceType} from "./ResourceType.model.js";
 import {ResourceUnit} from "./ResourceUnit.model.js";
@@ -134,38 +134,24 @@ export class Resource {
         });
     }
 
-    static async getResourcePostsGrouped(userLat, userLong) {
-        const query = `
-        SELECT 
-            resource_name as name,
-            resource_type.name as type,
-            resource_unit as unit,
-            SUM(resource_amount) AS total_amount,
-            (6371 * acos(
-                cos(radians(:userLat)) * cos(radians(resource_latitude)) 
-                * cos(radians(resource_longitude) - radians(:userLong)) 
-                + sin(radians(:userLat)) * sin(radians(resource_latitude))
-            )) AS distance
-        FROM
-            resource, resource_type, resource_unit
-        WHERE
-            resource_amount > 0 and resource.resource_type == resource_type.id and resource.resource_unit == resource_unit.id
-        GROUP BY
-            resource_name, resource_type_id, resource_unit
-        ORDER BY
-            distance
-        LIMIT 1;
-    `;
-
+    static async getResourceGrouped() {
         try {
-            const sequelize = DatabaseAdapter.getDatabase();
-            const aggregatedResources = await sequelize.query(query, {
-                replacements: { userLat: userLat, userLong: userLong },
-                type: sequelize.QueryTypes.SELECT
+            return await this.model.findAll({
+                attributes: [
+                    'resource_type_id',
+                    [fn('sum', col('resource_amount')), 'amount_sum'],
+                    // 使用 literal 来包含 distinct
+                    [fn('count', literal('DISTINCT user_id')), 'user_count']
+                ],
+                include: [{
+                    model: ResourceType.model,
+                    attributes: ['name']
+                }],
+                group: ['resource_type_id'], // Group by type ID and include type ID for grouping
+                raw: true
             });
-            return aggregatedResources;
         } catch (error) {
-            console.error('Error fetching aggregated resources with closest location:', error);
+            console.error('Error fetching grouped resources:', error);
             throw error;
         }
     }
@@ -198,5 +184,23 @@ export class Resource {
                 resource_id: resourceId
             }
         })
+    }
+
+    static async getResourceByType(resourceTypeId) {
+        return await this.model.findAll({
+            where: {
+                resource_type_id: resourceTypeId
+            },
+            include: [{
+                model: User.model,
+                attributes: ['username']
+            }, {
+                model: ResourceType.model,
+                attributes: ['name']
+            }, {
+                model: ResourceUnit.model,
+                attributes: ['name']
+            }]
+        });
     }
 }

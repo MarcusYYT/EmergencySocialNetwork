@@ -35,10 +35,10 @@ h2#message-header Resources
 br
 br
 h3(style='color: white; text-align: center;') What brings you to resources?
-button.btn.btn-primary.btn-lg.d-block.mx-auto.mt-5(onClick='routeToShared()' style='width: 330px; border-radius: 10px;')
+button.btn.btn-primary.btn-lg.d-block.mx-auto.mt-5(onClick='routeToShared()' style='width: 330px; border-radius: 10px; box-shadow: 0 0 20px rgba(0, 0, 0, 0.15);')
     .h4 I Have Something To Share
     .small so I am a resource provider
-button.btn.btn-primary.btn-lg.d-block.mx-auto.mt-5(onClick='routeToSeek()' style='width: 330px; border-radius: 10px;')
+button.btn.btn-primary.btn-lg.d-block.mx-auto.mt-5(onClick='routeToSeek()' style='width: 330px; border-radius: 10px; box-shadow: 0 0 20px rgba(0, 0, 0, 0.15);')
     .h4 I Need Something
     .small so I am seeking for resources
 //#post-wrapper
@@ -314,4 +314,9 @@ script.
   function routeToShared() {
       const user_id = #{user_id};
       window.location.href = `/resources/shared/${user_id}`;
+  }
+
+  function routeToSeek() {
+      const user_id = #{user_id};
+      window.location.href = `/resources/seek/${user_id}`;
   }
