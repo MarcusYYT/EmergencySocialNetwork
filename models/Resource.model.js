@@ -96,7 +96,6 @@ export class Resource {
                 tel: tel
             });
         } catch (error) {
-            console.error("Failed to create resource post:", error);
             throw error;  // Re-throw the error to be handled or logged by the caller
         }
     }
