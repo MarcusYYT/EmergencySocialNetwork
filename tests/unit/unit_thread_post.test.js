@@ -40,16 +40,13 @@ describe('You should be able to create a thread post and get its id', () => {
         });
     });
 
-});
-
-describe('You should be able get a list of thread posts', () => {
-    
-    test('You should be able get a list of thread posts', async () => {
+    test('You should be able to see that a post was added', async () => {
         expect(await getThreadPostList(1)).toMatchObject({
             message: "Fetch post list successful",
             data: expect.any(Array)
         });
     });
+
 });
 
 

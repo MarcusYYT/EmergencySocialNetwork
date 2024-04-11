@@ -38,7 +38,7 @@ describe('Thread Name should not already exist in database', () => {
         expect(await ifThreadNameExists('I do need help')).toBe(false);
     });
 
-    test('Thread Name is not in the database so it should be false', async () => {
+    test('You should be able to see that the thread exists with data', async () => {
         expect(await getThreadById(1)).toMatchObject({
             exist: true, 
             data: expect.any(Object), 
@@ -72,30 +72,19 @@ describe('You should be able to edit a thread', () => {
 
 
 describe('You should be able to delete a thread', () => {
-    test('You should be able to edit a thread', async () => {
+    test('You should be able to delete a thread', async () => {
         expect(await deleteThread(1)).toMatchObject({
             message: "Delete thread list successful",
             data: 1
         });
     });
 
-    test('Thread Name should have been changed', async () => {
+    test('Thread Name should have been changed so the old one should not exist', async () => {
         expect(await ifThreadNameExists('I do not need help')).toBe(false);
     });
 
 });
 
-describe('You should be able get a list of threads', () => {
-    
-    test('You should be able get a list of threads', async () => {
-        await createNewThread(1, 'need more help', 'High Pirioity', ["Info"])
-        expect(await getThreadList()).toMatchObject({
-            message: "Fetch thread list successful",
-            data: expect.any(Array)
-        });
-    });
- 
-});
 
 
   

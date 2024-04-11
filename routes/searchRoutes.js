@@ -20,7 +20,7 @@ const router = express.Router();
  *        name: domain
  *        type: string
  *        required: false
- *        description: The search domain (e.g., announcements, posts, privatePosts, users). Leave empty for a global search.
+ *        description: The search domain (e.g., announcements, posts, privatePosts, users, threads, threadPosts). Leave empty for a global search.
  *    responses:
  *      200:
  *        description: Successful search.
@@ -60,6 +60,38 @@ const router = express.Router();
  *                            type: string
  *                          time:
  *                            type: string
+ *                    threads:
+ *                      type: array
+ *                      items:
+ *                        type: object
+ *                        properties:
+ *                          threadId:
+ *                            type: integer
+ *                          creatorId:
+ *                            type: integer
+ *                          urgency:
+ *                            type: string
+ *                          thread_name:
+ *                            type: string
+ *                          tags:
+ *                            type: array
+ *                            items: 
+ *                              type: string
+ *                    threadPosts:
+ *                      type: array
+ *                      items:
+ *                        type: object
+ *                        properties:
+ *                          threadId:
+ *                            type: integer
+ *                          senderId:
+ *                            type: integer
+ *                          content:
+ *                            type: string
+ *                          status:
+ *                            type: string
+ *                          time:
+ *                            type: integer
  *                    privatePosts:
  *                      type: array
  *                      items:

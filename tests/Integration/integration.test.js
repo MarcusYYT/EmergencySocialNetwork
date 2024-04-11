@@ -233,6 +233,16 @@ describe('Post Thread Test', () => {
         message: 'Delete thread list successful'
       });
   });
+
+  test('no threads should exist after deleting', async () => {
+    const getresponse = await supertest(app)
+      .get(`/threads`);
+    expect(getresponse.status).toBe(200);
+    expect(getresponse.body.success).toBe(true);
+    expect(getresponse.body.message).toBeDefined();
+    expect(Array.isArray(getresponse.body.data)).toBe(true);
+    expect(getresponse.body.data.length).toBe(0);
+  });
 });
 
 describe('Post a Thread Post Test', () => {

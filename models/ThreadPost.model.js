@@ -117,16 +117,4 @@ export class ThreadPost {
         });
     }
 
-    /**
-     * Delete a post
-     * @param {number} postId - The ID of the post to delete
-     * @returns The number of deleted posts (1 if successful, 0 if not found)
-     */
-    static async deleteThreadPost(postId) {
-        return await this.model.destroy({
-            where: {
-                post_id: postId
-            }
-        });
-    }
 }
