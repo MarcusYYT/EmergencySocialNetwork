@@ -1,0 +1,317 @@
+doctype html
+head
+  meta(charset='UTF-8')
+  meta(name='viewport' content='width=device-width, initial-scale=1.0')
+  link(href='https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css' rel='stylesheet' integrity='sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3' crossorigin='anonymous')
+  link(rel='stylesheet', href='https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css')
+  link(rel='stylesheet' type='text/css' href='/stylesheets/index.css')
+  script(src='/javascripts/resources.js')
+  script(src='/javascripts/directory.js')
+  script(src='https://cdn.socket.io/4.7.4/socket.io.min.js')
+  script(src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js")
+  title Resources
+.links
+  a.btn.btn-primary(onclick='routeToDirectory()') Back
+//form#directory-search-form.input-group.mb-3(onsubmit="submitSearch()" onchange="searchFinished()")
+//    select#search-select.form-select-sm
+//        option(value='User') User
+//        option(value='Status') Status
+//    input#directory-search-input.form-control(type='text', name='search', placeholder='Search...')
+h2#message-header Resources
+#status-wrapper.dropdown
+    button#status-list.btn.btn-primary.dropdown-toggle(type='button' data-bs-toggle='dropdown' aria-expanded='false')
+        | Change Status
+    #dropdown-wrapper
+        ul.dropdown-menu#status-dropdown
+            li#ok-status.status-options
+                p.status-item.dropdown-item OK
+                i.bi.bi-check-circle-fill
+            li#help-status.status-options
+                p.status-item.dropdown-item Help
+                i.bi.bi-exclamation-circle-fill
+            li#emergency-status.status-options
+                p.status-item.dropdown-item Emergency
+                i.bi.bi-bandaid-fill
+br
+br
+h3(style='color: white; text-align: center;') What brings you to resources?
+button.btn.btn-primary.btn-lg.d-block.mx-auto.mt-5(onClick='routeToShared()' style='width: 330px; border-radius: 10px;')
+    .h4 I Have Something To Share
+    .small so I am a resource provider
+button.btn.btn-primary.btn-lg.d-block.mx-auto.mt-5(onClick='routeToSeek()' style='width: 330px; border-radius: 10px;')
+    .h4 I Need Something
+    .small so I am seeking for resources
+//#post-wrapper
+//  h2#message-header Resources
+//  form.search-form.input-group.mb-3(onsubmit="submitSearch()" onchange="searchFinished()")
+//    input.search-input.form-control(type='text', name='search', placeholder='Search...')
+//  #message-board.list-group
+//  form#post-form(method='POST')
+//    textarea#message(placeholder='Type your message here...' required='')
+//    button#post-btn.btn.btn-primary(type='button' onclick='postChatMessage()') Post
+script(src='https://cdn.socket.io/4.7.4/socket.io.min.js')
+script.
+
+  const socket = io();
+  socket.on('connect', async function() {
+        console.log('Connected to server');
+        console.log('Socket ID:', socket.id);
+        const userId = #{user_id};
+        await fetch(`/sockets`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({user_id: userId, socket_id: socket.id, operation:'register'})})
+                .then(response => response.json())
+            .then(data => {
+                console.log(data);
+            })
+            .catch(error => {
+                console.error('Error register socket:', error);
+            });
+  })
+  let username = "";
+  let status = "";
+
+  function routeToDirectory(){
+    const user_id = #{user_id}
+    window.location.href = `/directory/${user_id}`
+  }
+
+  async function postChatMessage(){
+    let textArea = document.getElementById("message")
+    let textContent = textArea.value
+    let path = window.location.pathname;
+    textArea.value = "";
+    // Get the user_id (assuming it's the last part of the URL)
+
+    let userId = #{user_id}
+
+    const postData = {
+      username: username,
+      user_id: userId,
+      status: status,
+      dateTime: new Date().toLocaleString(),
+      content: textContent
+    };
+
+      await fetch('/posts', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(postData)})
+            .then(response => response.json())
+            .then(data => {
+                console.log(data);
+            })
+            .catch(error => {
+                console.error('Error fetching data:', error);
+            });
+  }
+
+    function filterStopWords(userInput){
+        const stopWords = [
+          "a","able","about","across","after","all","almost","also","am","among","an","and","any","are","as","at","be",
+          "because","been","but","by","can","cannot","could","dear","did","do","does","either","else","ever","every",
+          "for","from","get","got","had","has","have","he","her","hers","him","his","how","however","i","if","in",
+          "into","is","it","its","just","least","let","like","likely","may","me","might","most","must","my","neither",
+          "no","nor","not","of","off","often","on","only","or","other","our","own","rather","said","say","says","she",
+          "should","since","so","some","than","that","the","their","them","then","there","these","they","this","tis",
+          "to","too","twas","us","wants","was","we","were","what","when","where","which","while","who","whom","why",
+          "will","with","would","yet","you","your"
+        ];
+
+        let userInputWordArray = userInput.split(/\s+/);
+
+        let filteredInput = userInput;
+
+        for (word of userInputWordArray) {
+          if (stopWords.includes(word)) {
+              filteredInput = filteredInput.replace(word, "")
+          } 
+        }
+
+        return filteredInput;
+    }
+
+  async function submitSearch() {
+      event.preventDefault()
+
+      let searchInput = document.getElementsByClassName('search-input')[0];
+      let searchValue = searchInput.value;
+
+      let filteredSearchValue = filterStopWords(searchValue)
+
+      if(filteredSearchValue !== ""){
+        await fetch(`/search?q=${filteredSearchValue}&domain=Posts`, {
+          method: 'GET',
+          headers: {
+              'Content-Type': 'application/json',
+          }
+        }).then(response => response.json()).then(async (data) => {
+            console.log("Data in response::")
+            console.log(data.data);
+            isStatus = false;
+            renderSearchedPosts(data.data, false, false)
+        }).catch(error => {
+            console.error(error);
+        })
+      }
+      else{
+        renderEmptyMessage();
+      }
+  }
+
+  async function searchFinished(){
+
+        let searchInput = document.getElementsByClassName('search-input')[0];
+        let searchValue = searchInput.value;
+
+        if (searchValue === ""){
+          await fetch('/posts')
+            .then(response => response.json())
+            .then(data => {
+                console.log(data);
+                renderChats(data.data, false)
+            })
+            .catch(error => {
+                console.error('Error fetching data:', error);
+            });
+        }
+      }
+
+  window.onload = async function() {
+    const userId = #{user_id}
+    const response = await fetch(`/users/${userId}`, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    }).then(response => response.json()).then((data) => {
+      username = data.data[0].username;
+      status = data.data[0].status
+        renderMyStatus(username, status)
+    })
+
+    await fetch('/posts')
+         .then(response => response.json())
+         .then(data => {
+             console.log(data);
+             renderChats(data.data, false)
+         })
+         .catch(error => {
+             console.error('Error fetching data:', error);
+         });
+  }
+
+  function addEventListenerstoStatus() {
+      let okStatus = document.getElementById("ok-status");
+      let helpStatus = document.getElementById("help-status");
+      let emergencyStatus = document.getElementById("emergency-status");
+
+      okStatus.addEventListener("click", () => {
+          changeMyStatus("OK")
+      })
+      helpStatus.addEventListener("click", () => {
+          changeMyStatus("help")
+      })
+      emergencyStatus.addEventListener("click", () => {
+          changeMyStatus("emergency")
+      })
+  }
+
+  async function changeMyStatus(selectedValue) {
+      const userId = #{user_id};
+      const requestBody = {
+          user_id: userId,
+          updateAt: "status",
+          updateValue: selectedValue
+      }
+      await fetch('/status', {
+          method: 'POST',
+          headers: {
+              'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({user_id: userId, status: selectedValue}),
+      }).then(response => response.json())
+          .then(data => {
+              console.log(data);
+          })
+          .catch(error => {
+              console.error('Error push status history', error);
+          });
+
+      const updateStatus = await fetch(`/users/${userId}`, {
+          method: 'PUT',
+          headers: {
+              'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(requestBody),
+      })
+
+      if (updateStatus.ok) {
+          const fetchUser = await getUsers()
+          if (fetchUser.ok) {
+              const data = await fetchUser.json();
+              console.log(data)
+
+              await fetch(`/privatePosts/unread/${userId}`, {
+                  method: 'GET',
+                  headers: {
+                      'Content-Type': 'application/json',
+                  },
+              }).then(response => response.json()).then((unRead) => {
+                  // implement to display the notification
+                  renderESNList(sortUsers(data.data), unRead.data)
+              })
+
+          }
+      }
+
+      renderMyStatus(username, selectedValue);
+  }
+
+  socket.on("status_update", async () => {
+      const userId = #{user_id}
+      await getUsers().then(response => response.json()).then(async (data) => {
+          await fetch(`/privatePosts/unread/${userId}`, {
+              method: 'GET',
+              headers: {
+                  'Content-Type': 'application/json',
+              },
+          }).then(response => response.json()).then((unRead) => {
+              console.log('unread message status: ')
+              console.log(unRead)
+              // implement to display the notification
+              renderESNList(sortUsers(data.data), unRead.data)
+          })
+
+      });
+  })
+
+  async function logout(){
+    const userId = #{user_id};
+    const requestBody = {
+      user_id: userId,
+      updateAt: "online_status",
+      updateValue: "offline"
+    }
+
+    await fetch(`/users/${userId}`, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(requestBody),
+      }).then(response=> response.json()).then((data)=>{
+        console.log(data.message)
+      })
+      window.location.href = `/`;
+  }
+
+  function routeToShared() {
+      const user_id = #{user_id};
+      window.location.href = `/resources/shared/${user_id}`;
+  }

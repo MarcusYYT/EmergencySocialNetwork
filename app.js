@@ -14,6 +14,7 @@ import pageRoutes from './routes/pageRoutes.js'
 import statusRoutes from './routes/statusRoutes.js'
 import searchRoutes from './routes/searchRoutes.js'
 import testRoute from './routes/testRoutes.js'
+import resourceRoutes from './routes/resourceRoutes.js'
 import DatabaseAdapter from './config/DatabaseAdapter.js'
 import { createServer } from 'node:http';
 import cookieParser from 'cookie-parser';
@@ -68,7 +69,7 @@ app.use((req, res, next) => {
 });
 
 // Router setting
-app.use('', pageRoutes);
+
 app.use('/auth', authRoutes);
 app.use('/users', userRoutes);
 app.use('/posts', postRoutes);
@@ -77,6 +78,8 @@ app.use('/privatePosts', privatePostRoutes)
 app.use('/announcements', announcementRoutes)
 app.use('/search', searchRoutes)
 app.use('/test', testRoute);
+app.use('/resources', resourceRoutes);
+app.use('', pageRoutes);
 
 // setup swagger
 const swaggerSpec = await swaggerJSDoc(swaggerOptions);

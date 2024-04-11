@@ -10,18 +10,17 @@ import { createNewUser } from "../../services/userService.js";
 
 let database
 beforeAll(async () => {
-    database = DatabaseAdapter.createDatabase('unit_db.sqlite'); // Create a new instance of the database
-    await database.connect(); // Connect to the database
-    await User.sync({ force: true });
-    await Post.sync({ force: true });
-    await PrivatePost.sync({ force: true });
-    await Status.sync({ force: true });
+    DatabaseAdapter.setTestDatabaseName("search_db.sqlite")
+    DatabaseAdapter.setCurrentDatabase('test')
+    database = DatabaseAdapter.getDatabase()
+    await database.authenticate();// Connect to the database
+    await DatabaseAdapter.reinitializeModels();
 });
 
 afterAll(async () => {
-    await database.disconnect();// Disconnect from the database
+    await database.close();// Disconnect from the database
     await new Promise(resolve => setTimeout(resolve, 1000));
-    rimrafSync('./unit_db.sqlite');
+    rimrafSync('./search_db.sqlite');
 });
 
 describe('Search Users', () => {

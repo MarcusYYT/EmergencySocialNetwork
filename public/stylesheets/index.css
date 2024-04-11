@@ -239,6 +239,7 @@ button#post-btn {
 }
 
 h2#message-header {
+    text-align: center;
     margin-top: 1.5vh;
     font-size: 8vw;
     color: white;
@@ -417,4 +418,20 @@ div#show-more {
     border: 1px solid rgba(0, 0, 0, .125);
     border-radius: 15px;
     margin-bottom: 1vh;
+}
+
+.resource-item {
+    background-color: white;
+    padding: 5px;
+    border-radius: 15px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+}
+
+.resource-link {
+    text-decoration: none;
+    color: #000;
+}
+
+.resource-link:hover {
+    text-decoration: underline;
 }

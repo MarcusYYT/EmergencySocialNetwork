@@ -47,6 +47,41 @@ router.get('/announcements/:user_id', passport.authenticate('jwt', { session: fa
     }
 });
 
+router.get('/resources/:user_id', passport.authenticate('jwt', { session: false }), (req, res) => {
+    const user_id = req.user.data[0].user_id;
+    if (user_id != req.params.user_id) {
+        res.status(401).json({message: "Unauthorized access."});
+    }
+    else {
+        res.render('Resources', {user_id: user_id});
+    }
+});
+
+router.get('/resources/shared/:user_id', passport.authenticate('jwt', { session: false }), (req, res) => {
+    const user_id = req.user.data[0].user_id;
+    if (user_id != req.params.user_id) {
+        res.status(401).json({message: "Unauthorized access."});
+    }
+    else {
+        res.render('SharedResources', {user_id: user_id});
+    }
+});
+
+router.get('/resources/shared/create/:user_id', passport.authenticate('jwt', { session: false }), (req, res) => {
+    const user_id = req.user.data[0].user_id;
+    if (user_id != req.params.user_id) {
+        res.status(401).json({message: "Unauthorized access."});
+    }
+    else {
+        res.render('CreateResources', {user_id: user_id, mode: 'create', resource_id: 0});
+    }
+});
+
+router.get('/resources/shared/edit/:resource_id', passport.authenticate('jwt', { session: false }), (req, res) => {
+    res.render('CreateResources', {user_id: req.user.data[0].user_id, mode: 'edit', resource_id: req.params.resource_id});
+
+});
+
 router.get('/test', (req, res) => {
     res.render('Test');
 })
@@ -76,5 +111,6 @@ router.post('/sockets', async (req, res) => {
         })
     }
 })
+
 
 export default router;
