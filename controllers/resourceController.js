@@ -5,7 +5,6 @@ import {response} from "express";
 export async function getResourceById(req, res){
     try{
         const resource_id = req.params.resourceId;
-
         await resourceService.getResourceById(resource_id).then((resolve)=>{
             if(resolve.exist==true){
                 res.status(200).json({success:true, data: resolve.data, message:"Fetch resource successful"});
@@ -39,7 +38,6 @@ export async function getResourceGrouped(req, res){
 }
 
 export async function postResource(req, res){
-    console.log(req.body);
     try{
         const userId = req.body.user_id;
         const resourceTypeId = req.body.resource_type_id;
@@ -60,7 +58,6 @@ export async function postResource(req, res){
 }
 
 export async function updateResource(req, res){
-    console.log(req.body)
     try {
         const resourceId = req.body.resource_id;
         const userId = req.body.user_id;
@@ -120,7 +117,6 @@ export async function addResourceType(req, res){
         }
         res.status(201).json({ success: true, added_type_id: result.data.id, message: 'Add resource type successful' });
     } catch(error) {
-        console.error(error.message);
         res.status(500).send(error.message);
     }
 }
@@ -154,9 +150,12 @@ export async function getResourceByType(req, res){
     try {
         const typeId = req.params.typeId;
         await resourceService.getResourceByType(typeId).then((resolve)=>{
-            res.status(200).json({success:true, data: resolve.data, message:resolve.message});
+            if (resolve.data.length == 0){
+                return res.status(404).json({success:false, message:resolve.message});
+            }
+                return res.status(200).json({success:true, data: resolve.data, message:resolve.message});
         })
     } catch (error){
-        res.status(500).send(error.message);
+        return res.status(500).send(error.message);
     }
 }

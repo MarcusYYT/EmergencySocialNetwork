@@ -2,7 +2,6 @@ import {col, DataTypes, fn, literal} from "sequelize";
 import {User} from "./User.model.js";
 import {ResourceType} from "./ResourceType.model.js";
 import {ResourceUnit} from "./ResourceUnit.model.js";
-import DatabaseAdapter from "../config/DatabaseAdapter.js";
 
 
 export class Resource {
@@ -135,25 +134,20 @@ export class Resource {
     }
 
     static async getResourceGrouped() {
-        try {
-            return await this.model.findAll({
-                attributes: [
-                    'resource_type_id',
-                    [fn('sum', col('resource_amount')), 'amount_sum'],
-                    // 使用 literal 来包含 distinct
-                    [fn('count', literal('DISTINCT user_id')), 'user_count']
-                ],
-                include: [{
-                    model: ResourceType.model,
-                    attributes: ['name']
-                }],
-                group: ['resource_type_id'], // Group by type ID and include type ID for grouping
-                raw: true
-            });
-        } catch (error) {
-            console.error('Error fetching grouped resources:', error);
-            throw error;
-        }
+        return await this.model.findAll({
+            attributes: [
+                'resource_type_id',
+                [fn('sum', col('resource_amount')), 'amount_sum'],
+                // 使用 literal 来包含 distinct
+                [fn('count', literal('DISTINCT user_id')), 'user_count']
+            ],
+            include: [{
+                model: ResourceType.model,
+                attributes: ['name']
+            }],
+            group: ['resource_type_id'], // Group by type ID and include type ID for grouping
+            raw: true
+        });
     }
 
     static async getResourceById(resourceId) {

@@ -1,4 +1,9 @@
-import {createNewResource, getResourceTypes, getResourceUnits} from "../../services/resourceService.js";
+import {
+    createNewResource, deleteResource,
+    getResourceByUserId,
+    getResourceTypes,
+    getResourceUnits
+} from "../../services/resourceService.js";
 import {getResourceById} from "../../services/resourceService.js";
 import {getResourcePosts} from "../../services/resourceService.js";
 import {getResourceGrouped} from "../../services/resourceService.js";
@@ -117,6 +122,8 @@ describe('Create new resource type and unit', () => {
         });
     });
 
+
+
     test('Get resource', async () => {
         expect(await getResourcePosts()).toMatchObject({
             data: [
@@ -152,8 +159,30 @@ describe('Create new resource type and unit', () => {
         });
     });
 
+    test('Get resource by user', async () => {
+        expect(await getResourceByUserId(1)).toMatchObject({
+            data: [
+                {
+                    createdAt: expect.anything(),
+                    resource_amount: expect.any(Number),
+                    resource_id: expect.any(Number),
+                    resource_name: expect.any(String),
+                    resource_type_id: expect.any(Number),
+                    resource_unit_id: expect.any(Number),
+                    updatedAt: expect.anything(),
+                    user_id: 1,
+                    resource_latitude: 1,
+                    resource_longitude: 1,
+                    resource_note: expect.any(String),
+                    resource_type: expect.anything(),
+                    resource_unit: expect.anything()
+                }
+            ]
+        });
+    });
+
     test('Update resource', async () => {
-        expect(await updateResource(1, 1, 1, 'Medication', 10, 1, 'note', 1, 1, 123-456-7890)).toMatchObject({
+        expect(await updateResource(1, 1, 1, 'Bandage', 10, 1, 'note', 1, 1, 123-456-7890)).toMatchObject({
             data: [
                 1
             ],
@@ -162,23 +191,9 @@ describe('Create new resource type and unit', () => {
     });
 
     test('Delete resource', async () => {
-        expect(await getResourceById(1)).toMatchObject({
-            data: [
-                {
-                    createdAt: expect.anything(),
-                    resource_amount: 10,
-                    resource_id: 1,
-                    resource_name: "Medication",
-                    resource_type_id: 1,
-                    resource_unit_id: 1,
-                    updatedAt: expect.anything(),
-                    user_id: 1,
-                    resource_latitude: 1,
-                    resource_longitude: 1,
-                    resource_note: "note"
-                }
-            ],
-            exist: true
+        expect(await deleteResource(1)).toMatchObject({
+            data: 1,
+            message: "Delete resource successful"
         });
     });
 });

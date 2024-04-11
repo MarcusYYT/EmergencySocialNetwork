@@ -85,6 +85,7 @@ export async function deleteResource(resourceId){
         returnJson.message = "Delete resource successful"
         returnJson.data = res;
     })
+    return returnJson
 }
 
 export async function getResourceTypes(){

@@ -11,335 +11,185 @@ import {
 
 
 const router = express.Router();
-
 /**
  * @swagger
- * /resources/{resourceId}:
- *  get:
- *    tags:
- *      - Resources
- *    summary: Fetch a resource offering by the resourceId
- *    parameters:
- *      - in: path
- *        name: resourceId
- *        schema:
- *          type: integer
- *        required: true
- *        description: Numeric ID of the resource to get.
- *    responses:
- *      200:
- *        description: Successfully retrieved the resource.
- *        content:
- *          application/json:
- *            schema:
- *              type: object
- *              properties:
- *                code:
- *                  type: integer
- *                data:
- *                  type: object
- *                  properties:
- *                    resourceId:
- *                      type: integer
- *                    offererId:
- *                      type: integer
- *                    resourceType:
- *                      type: string
- *                    amount:
- *                      type: number
- *                    unit:
- *                      type: string
- *                    location:
- *                      type: string
- *                    contactInfo:
- *                      type: string
- *                message:
- *                  type: string
- *      404:
- *        description: Resource not found
- *
- * /resources:
- *  get:
- *    tags:
- *      - Resources
- *    summary: Fetch a list of all resource offerings
- *    responses:
- *      200:
- *        description: Successfully returned the resource list.
- *        content:
- *          application/json:
- *            schema:
- *              type: object
- *              properties:
- *                code:
- *                  type: integer
- *                data:
- *                  type: array
- *                  items:
- *                    type: object
- *                    properties:
- *                      resourceId:
- *                        type: integer
- *                      offererId:
- *                        type: integer
- *                      resourceType:
- *                        type: string
- *                      amount:
- *                        type: number
- *                      unit:
- *                        type: string
- *                      location:
- *                        type: string
- *                      contactInfo:
- *                        type: string
- *                message:
- *                  type: string
- *  post:
- *    tags:
- *      - Resources
- *    summary: Post a new resource offering into the database
- *    requestBody:
- *      required: true
- *      content:
- *        application/json:
- *          schema:
- *            type: object
- *            properties:
- *              offererId:
- *                type: integer
- *              resourceType:
- *                type: string
- *              amount:
- *                type: number
- *              unit:
- *                type: string
- *              location:
- *                type: string
- *              contactInfo:
- *                type: string
- *    responses:
- *      201:
- *        description: Database insert successful
- *
- * /resources/search:
- *  get:
- *    tags:
- *      - Resources
- *    summary: Search for resources based on specified filters
- *    parameters:
- *      - in: query
- *        name: type
- *        schema:
- *          type: string
- *        description: Filter by resource type
- *      - in: query
- *        name: name
- *        schema:
- *          type: string
- *        description: Filter by resource name
- *      - in: query
- *        name: location
- *        schema:
- *          type: string
- *        description: Filter by location proximity
- *    responses:
- *      200:
- *        description: Successfully retrieved matching resources.
- *        content:
- *          application/json:
- *            schema:
- *              type: object
- *              properties:
- *                code:
- *                  type: integer
- *                data:
- *                  type: array
- *                  items:
- *                    type: object
- *                    properties:
- *                      resourceId:
- *                        type: integer
- *                      resourceType:
- *                        type: string
- *                      amount:
- *                        type: number
- *                      unit:
- *                        type: string
- *                      location:
- *                        type: string
- *                      distance:
- *                        type: string
- *                      contactInfo:
- *                        type: string
- *                message:
- *                  type: string
- *      404:
- *        description: No resources found matching the criteria
- *
- * /resources/details/{resourceId}:
- *  get:
- *    tags:
- *      - Resources
- *    summary: Get detailed information about a specific resource
- *    parameters:
- *      - in: path
- *        name: resourceId
- *        schema:
- *          type: integer
- *        required: true
- *        description: Numeric ID of the resource to get detailed information for.
- *    responses:
- *      200:
- *        description: Successfully retrieved detailed resource information.
- *        content:
- *          application/json:
- *            schema:
- *              type: object
- *              properties:
- *                code:
- *                  type: integer
- *                data:
- *                  type: object
- *                  properties:
- *                    resourceId:
- *                      type: integer
- *                    offererId:
- *                      type: integer
- *                    resourceType:
- *                      type: string
- *                    amount:
- *                      type: number
- *                    unit:
- *                      type: string
- *                    location:
- *                      type: string
- *                    contactInfo:
- *                      type: string
- *                    notes:
- *                      type: string
- *                message:
- *                  type: string
- *      404:
- *        description: Resource not found
- *
- * /resources/contact/{resourceId}:
- *  post:
- *    tags:
- *      - Resources
- *    summary: Initiate contact with the resource offerer
- *    parameters:
- *      - in: path
- *        name: resourceId
- *        schema:
- *          type: integer
- *        required: true
- *        description: Numeric ID of the resource for which to initiate contact.
- *    responses:
- *      200:
- *        description: Contact initiation successful.
- *      400:
- *        description: Error in contact initiation process.
- * /resources/edit/{resourceId}:
- *  get:
- *    tags:
- *      - Resources
- *    summary: Retrieve a resource for editing by the resourceId
- *    parameters:
- *      - in: path
- *        name: resourceId
- *        schema:
- *          type: integer
- *        required: true
- *        description: Numeric ID of the resource to retrieve for editing.
- *    responses:
- *      200:
- *        description: Successfully retrieved the resource for editing.
- *        content:
- *          application/json:
- *            schema:
- *              type: object
- *              properties:
- *                code:
- *                  type: integer
- *                data:
- *                  type: object
- *                  properties:
- *                    resourceId:
- *                      type: integer
- *                    resourceType:
- *                      type: string
- *                    amount:
- *                      type: number
- *                    unit:
- *                      type: string
- *                    location:
- *                      type: string
- *                    contactInfo:
- *                      type: string
- *                message:
- *                  type: string
- *      404:
- *        description: Resource not found
- *
- * /resources/update/{resourceId}:
- *  put:
- *    tags:
- *      - Resources
- *    summary: Update details of a resource
- *    parameters:
- *      - in: path
- *        name: resourceId
- *        schema:
- *          type: integer
- *        required: true
- *        description: Numeric ID of the resource to update.
- *    requestBody:
- *      required: true
- *      content:
- *        application/json:
- *          schema:
- *            type: object
- *            properties:
- *              resourceType:
- *                type: string
- *              amount:
- *                type: number
- *              unit:
- *                type: string
- *              location:
- *                type: string
- *              contactInfo:
- *                type: string
- *    responses:
- *      200:
- *        description: Successfully updated the resource.
- *      400:
- *        description: Validation error or update failure.
- *      404:
- *        description: Resource not found.
- *
- * /resources/delete/{resourceId}:
- *  delete:
- *    tags:
- *      - Resources
- *    summary: Delete a resource
- *    parameters:
- *      - in: path
- *        name: resourceId
- *        schema:
- *          type: integer
- *        required: true
- *        description: Numeric ID of the resource to delete.
- *    responses:
- *      200:
- *        description: Successfully deleted the resource.
- *      404:
- *        description: Resource not found.
+ * paths:
+ *   /resources/{resourceId}:
+ *     get:
+ *       tags:
+ *         - Resources
+ *       summary: "Fetch a resource by its ID"
+ *       parameters:
+ *         - in: path
+ *           name: resourceId
+ *           required: true
+ *           schema:
+ *             type: integer
+ *           description: "The ID of the resource to retrieve"
+ *       responses:
+ *         200:
+ *           description: "Successfully retrieved the resource."
+ *           content:
+ *             application/json:
+ *               schema:
+ *                 $ref: '#/components/schemas/Resource'
+ *         404:
+ *           description: "Resource not found"
+ *         500:
+ *           description: "Server error"
+ *       security:
+ *         - ApiKeyAuth: []
+ *   /resources/grouped:
+ *     get:
+ *       tags:
+ *         - Resources
+ *       summary: "Fetch resources grouped by type"
+ *       responses:
+ *         200:
+ *           description: "Successfully grouped resources."
+ *           content:
+ *             application/json:
+ *               schema:
+ *                 type: array
+ *                 items:
+ *                   $ref: '#/components/schemas/GroupedResource'
+ *         500:
+ *           description: "Server error"
+ *   /resources/list:
+ *     get:
+ *       tags:
+ *         - Resources
+ *       summary: "Fetch a list of all resources"
+ *       responses:
+ *         200:
+ *           description: "Successfully returned the resource list."
+ *           content:
+ *             application/json:
+ *               schema:
+ *                 type: array
+ *                 items:
+ *                   $ref: '#/components/schemas/Resource'
+ *         500:
+ *           description: "Server error"
+ *   /resources/post:
+ *     post:
+ *       tags:
+ *         - Resources
+ *       summary: "Create a new resource"
+ *       requestBody:
+ *         required: true
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/NewResource'
+ *       responses:
+ *         201:
+ *           description: "Resource created successfully"
+ *         500:
+ *           description: "Server error"
+ *   /resources/update/{resourceId}:
+ *     put:
+ *       tags:
+ *         - Resources
+ *       summary: "Update an existing resource"
+ *       parameters:
+ *         - in: path
+ *           name: resourceId
+ *           required: true
+ *           schema:
+ *             type: integer
+ *           description: "The ID of the resource to update"
+ *       requestBody:
+ *         required: true
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/NewResource'
+ *       responses:
+ *         200:
+ *           description: "Resource updated successfully"
+ *         404:
+ *           description: "Resource not found"
+ *         500:
+ *           description: "Server error"
+ *   /resources/delete/{resourceId}:
+ *     delete:
+ *       tags:
+ *         - Resources
+ *       summary: "Delete a resource"
+ *       parameters:
+ *         - in: path
+ *           name: resourceId
+ *           required: true
+ *           schema:
+ *             type: integer
+ *           description: "The ID of the resource to delete"
+ *       responses:
+ *         200:
+ *           description: "Resource deleted successfully"
+ *         404:
+ *           description: "Resource not found"
+ *         500:
+ *           description: "Server error"
+ * components:
+ *   schemas:
+ *     Resource:
+ *       type: object
+ *       properties:
+ *         resourceId:
+ *           type: integer
+ *         offererId:
+ *           type: integer
+ *         resourceType:
+ *           type: string
+ *         amount:
+ *           type: number
+ *         unit:
+ *           type: string
+ *         location:
+ *           type: string
+ *         contactInfo:
+ *           type: string
+ *     NewResource:
+ *       type: object
+ *       required:
+ *         - user_id
+ *         - resource_type_id
+ *         - resource_name
+ *         - resource_amount
+ *         - resource_unit_id
+ *         - resource_note
+ *         - latitude
+ *         - longitude
+ *         - tel
+ *       properties:
+ *         user_id:
+ *           type: integer
+ *         resource_type_id:
+ *           type: integer
+ *         resource_name:
+ *           type: string
+ *         resource_amount:
+ *           type: number
+ *         resource_unit_id:
+ *           type: integer
+ *         resource_note:
+ *           type: string
+ *         latitude:
+ *           type: number
+ *         longitude:
+ *           type: number
+ *         tel:
+ *           type: string
+ * securitySchemes:
+ *   ApiKeyAuth:
+ *     type: apiKey
+ *     in: header
+ *     name: X-API-KEY
  */
 
 
 
-router.get('', getResourceGrouped);
 router.get('/grouped', getResourceGrouped);
 router.get('/get/:resourceId', getResourceById);
 router.get('/list', getResourceList);
