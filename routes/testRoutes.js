@@ -1,6 +1,8 @@
 import DatabaseAdapter from "../config/DatabaseAdapter.js";
 import {getPerformanceTestMode, setPerformanceTestMode, cleanUpDatabase} from '../app.js'
 import express from 'express';
+import { io } from "../config/socketConfig.js"
+
 const router = express.Router();
 /**
  * @swagger
@@ -43,13 +45,14 @@ const router = express.Router();
 
 router.post('/performance/start', async (req, res) => {
     try{
-        // setPerformanceTestMode(true);
+        setPerformanceTestMode(true);
         DatabaseAdapter.setTestDatabaseName("tempdb.sqlite")
         DatabaseAdapter.switchDatabase('test');
         const database = DatabaseAdapter.getDatabase();
         await database.authenticate();
         await DatabaseAdapter.reinitializeModels();
         console.log("changed to test database");
+        io.emit("testMode", "test mode start, logout");
         res.status(202).json({ message: 'Performance test started' });
     } catch (err){
         console.error(error);
@@ -59,7 +62,7 @@ router.post('/performance/start', async (req, res) => {
 
 router.post('/performance/end', async (req, res) => {
     try{
-        // setPerformanceTestMode(false);
+        setPerformanceTestMode(false);
         let database = DatabaseAdapter.getDatabase();
         await database.close();
         DatabaseAdapter.switchDatabase('default');
@@ -68,9 +71,10 @@ router.post('/performance/end', async (req, res) => {
         await DatabaseAdapter.reinitializeModels();
         console.log("change back to mysql database");
         cleanUpDatabase()
+        io.emit("testFinish", "test mode finish");
         res.status(202).json({ message: 'Performance test ended' });
     } catch (err) {
-        console.error(error);
+        console.error(err);
         res.status(500).json({ message: 'Error ending performance test' });
     }
 });

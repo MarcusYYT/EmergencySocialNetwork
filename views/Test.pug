@@ -18,4 +18,9 @@ html
         label(for='interval') Interval (ms)
         input#interval.form-control(type='number', min='1', step='1', placeholder='Enter interval in milliseconds')
       button.btn.btn-primary(onclick="startPerformanceTest()", type='button') Start Performance Test
-      button.btn.btn-secondary(onclick="endPerformanceTest()", type='button') End Performance Test
+      button.btn.btn-secondary(onclick="endTheTest()", type='button') End Performance Test
+      button.btn.btn-primary(onclick="goBack()", type='button') Go Back
+  script.
+    function goBack() {
+      window.location.href = '/';
+    }

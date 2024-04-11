@@ -15,7 +15,7 @@ export class Announcement {
                 type: DataTypes.INTEGER,
                 allowNull:false,
                 references: {
-                    model: User,
+                    model: User.model,
                     key: 'user_id'
                 }
             },
