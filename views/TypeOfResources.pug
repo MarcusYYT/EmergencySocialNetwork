@@ -74,7 +74,7 @@ script.
     })
 
 
-    await fetch(`/resources/type/${typeId}`)
+    await fetch(`/resource/type/${typeId}`)
          .then(response => response.json())
          .then(data => {
              console.log(data);
@@ -166,7 +166,7 @@ script.
           const chatButton = document.createElement('a');
             chatButton.className = 'btn btn-info';
             chatButton.style.flex = '1';
-            chatButton.onclick = () => routeToPrivateChat(userId, resource.user.user_id);
+            chatButton.onclick = () => routeToPrivateChat(userId, resource.user_id);
             chatButton.insertAdjacentHTML('afterbegin', `<i class="bi bi-chat-left-text-fill"></i> Chat ${resource.user.username}`);
             contactBtnGroup.appendChild(chatButton);
           moreElement.appendChild(contactBtnGroup);
@@ -222,11 +222,11 @@ script.
   }
 
   function loadTypeDetails(typeId) {
-      fetch(`/resources/details?typeId=${typeId}`)
+      fetch(`/resource/details?typeId=${typeId}`)
           .then(response => response.json())
           .then(data => {
-              console.log(data); // 可以在这里调用 displayResources 来显示具体类型的资源
-              displayResources(data.data); // 假设后端按类型返回具体资源列表
+              console.log(data);
+              displayResources(data.data);
           })
           .catch(error => console.error('Error loading resource details:', error));
   }

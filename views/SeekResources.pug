@@ -57,7 +57,7 @@ script.
       username = data.data[0].username;
     })
 
-    await fetch(`/resources/grouped`)
+    await fetch(`/resource/grouped`)
          .then(response => response.json())
          .then(data => {
              console.log(data);

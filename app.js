@@ -69,7 +69,7 @@ app.use((req, res, next) => {
 });
 
 // Router setting
-
+app.use('', pageRoutes);
 app.use('/auth', authRoutes);
 app.use('/users', userRoutes);
 app.use('/posts', postRoutes);
@@ -78,8 +78,8 @@ app.use('/privatePosts', privatePostRoutes)
 app.use('/announcements', announcementRoutes)
 app.use('/search', searchRoutes)
 app.use('/test', testRoute);
-app.use('/resources', resourceRoutes);
-app.use('', pageRoutes);
+app.use('/resource', resourceRoutes);
+// app.use('', pageRoutes);
 
 // setup swagger
 const swaggerSpec = await swaggerJSDoc(swaggerOptions);

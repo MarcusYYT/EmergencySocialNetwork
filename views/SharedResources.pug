@@ -56,7 +56,7 @@ script.
       username = data.data[0].username;
     })
 
-    await fetch(`/resources/list/${userId}`)
+    await fetch(`/resource/list/${userId}`)
          .then(response => response.json())
          .then(data => {
              console.log(data);
