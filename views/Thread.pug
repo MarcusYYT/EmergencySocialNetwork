@@ -1,0 +1,545 @@
+doctype html
+head
+  meta(charset='UTF-8')
+  meta(name='viewport' content='width=device-width, initial-scale=1.0')
+  link(href='https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css' rel='stylesheet' integrity='sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3' crossorigin='anonymous')
+  link(rel='stylesheet', href='https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css')
+  link(rel='stylesheet' type='text/css' href='/stylesheets/index.css')
+  script(src='https://cdn.socket.io/4.7.4/socket.io.min.js')
+  script(src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js")
+  script(src='/javascripts/threads.js')
+  title Threads
+.links
+  a.btn.btn-primary(onclick='routeToDirectory()') Back
+#post-wrapper
+  h2#message-header Threads
+  form.search-form(onsubmit="submitSearch()")   
+    input.search-input.form-control(type='text', name='search', placeholder='Search...' onchange="searchFinished()")
+    #search-terms
+      input#filter-disaster.filter-tag.btn-check(type='checkbox', value='Incident Report')
+      label.filter-tag.btn.btn-outline-primary(for='filter-disaster') Incident Report
+      input#filter-status-report.filter-tag.btn-check(type='checkbox', value='Status Report')
+      label.filter-tag.btn.btn-outline-primary(for='filter-status-report') Status Report
+      input#filter-info.filter-tag.btn-check(type='checkbox', value='Info')
+      label.filter-tag.btn.btn-outline-primary(for='filter-info') Info
+      input#filter-volunteer.filter-tag.btn-check(type='checkbox', value='Volunteering')
+      label.filter-tag.btn.btn-outline-primary(for='filter-volunteer') Volunteering
+  #thread-board
+    select#search-select-filter.form-select-sm(onchange="submitSearch()")
+      option.filter-options(value='Filter') Filter:
+      option.filter-options(value='High Priority') High Priority
+      option.filter-options(value='Normal Priority') Normal Priority
+      option.filter-options(value='Low Priority') Low Priority
+    #threadWrapper.container
+    button#thread-btn.btn.btn-primary(type='button' onclick='showCreateThreadOverlay()') Create Thread
+   
+#overlayForTest(style='display: none;')
+  p Currently Speed Testing... 
+  p Don't Close the Browser Tab...
+script(src='https://cdn.socket.io/4.7.4/socket.io.min.js')
+script.
+
+  const socket = io();
+  socket.on('connect', async function() {
+        console.log('Connected to server');
+        console.log('Socket ID:', socket.id);
+        const userId = #{user_id};
+        await fetch(`/sockets`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({user_id: userId, socket_id: socket.id, operation:'register'})})
+                .then(response => response.json())
+            .then(data => {
+                console.log(data);
+            })
+            .catch(error => {
+                console.error('Error register socket:', error);
+            });
+  })
+  let username = "";
+  let status = "";
+
+  function routeToDirectory(){
+    const user_id = #{user_id}
+    window.location.href = `/directory/${user_id}`
+  }
+
+  function routeToThreadChat(thread_id){
+    console.log(thread_id)
+    const user_id = #{user_id};
+    window.location.href = `/threadWall/${thread_id}/${user_id}`;
+  }
+
+  function showCreateThreadOverlay(){
+    let threadOverlay = document.createElement("div")
+    threadOverlay.setAttribute("id", "overlay")
+    let body = document.getElementsByTagName("body")[0]
+    let postWrapper = document.getElementById("post-wrapper")
+    let createModal = document.createElement("div")
+    createModal.setAttribute("id", "createModal")
+    let createHeader = document.createElement("h2")
+    createHeader.setAttribute("id", "createHeader")
+    createHeader.appendChild(document.createTextNode("Create Thread"))
+
+    let threadNameWrapper = createGroupNameWrapper();
+    let urgencyWrapper = createUrgencyWrapper();
+    let buttonWrapper = createButttonWrapper();
+    let tagWrapper = createTagWrapper()
+
+    createModal.appendChild(createHeader)
+    createModal.appendChild(threadNameWrapper)
+    createModal.appendChild(urgencyWrapper)
+    createModal.appendChild(tagWrapper)
+    createModal.appendChild(buttonWrapper)
+    body.insertBefore(threadOverlay, postWrapper)
+    body.insertBefore(createModal, postWrapper)
+  }
+
+  async function createThread(){
+    let threadInput = document.getElementById("threadNameInput")
+    let threadName = threadInput.value
+
+    if (threadName === ""){
+      alert("The topic can not be blank")
+      return
+    }
+
+    let urgencySelect = document.getElementById("urgencySelect")
+    let urgency = urgencySelect.value
+
+    let tags = document.getElementsByClassName("tag")
+    let selectedTags = []
+
+    for(element of tags){
+      if(element.checked){
+        selectedTags.push(element.value)
+      }
+    }
+
+    let userId = #{user_id}
+    removeCreateOverlay()
+    const threadData = {
+      creator: username,
+      creator_id: userId,
+      thread_name: threadName,
+      tags: selectedTags,
+      urgency: urgency
+    };
+
+    await fetch('/threads', {
+          method: 'POST',
+          headers: {
+              'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(threadData)})
+          .then(response => response.json())
+          .then(data => {
+              if(!data.success){
+                alert(data.message)
+              }
+          })
+          .catch(error => {
+            console.error('Error fetching data:', error);
+          });
+  }
+
+  async function deleteThread(thread_id){
+    
+    removeEditOverlay()
+
+    await fetch(`/threads/${thread_id}`, {
+          method: 'DELETE',
+          headers: {
+              'Content-Type': 'application/json',
+          }})
+          .then(response => response.json())
+          .then(data => {
+              console.log(data);
+          })
+          .catch(error => {
+              console.error('Error fetching data:', error);
+          });
+  }
+
+  async function editThread(thread_id, prev_thread_name){
+    let threadInput = document.getElementById("threadNameInput")
+    let threadName = threadInput.value
+    console.log("prev_thread_name: " + prev_thread_name)
+    if (threadName === ""){
+      alert("The topic can not be blank")
+      return
+    }
+
+    let tags = document.getElementsByClassName("tag")
+    let selectedTags = []
+
+    for(element of tags){
+      if(element.checked){
+        selectedTags.push(element.value)
+      }
+    }
+
+    let urgencySelect = document.getElementById("urgencySelect")
+    let urgency = urgencySelect.value
+
+    removeEditOverlay()
+
+    console.log(selectedTags)
+
+    const threadData = {
+      thread_name: threadName,
+      prev_thread_name: prev_thread_name,
+      thread_id: thread_id,
+      tags: selectedTags,
+      urgency: urgency
+    };
+
+    await fetch(`/threads/${thread_id}`, {
+          method: 'PUT',
+          headers: {
+              'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(threadData)})
+          .then(response => response.json())
+          .then(data => {
+
+            if(!data.success){
+                alert(data.message)
+            }
+              console.log(data);
+          })
+          .catch(error => {
+              console.error('Error fetching data:', error);
+          });
+  }
+
+  function filterStopWords(userInput){
+      const stopWords = [
+        "a","able","about","across","after","all","almost","also","am","among","an","and","any","are","as","at","be",
+        "because","been","but","by","can","cannot","could","dear","did","do","does","either","else","ever","every",
+        "for","from","get","got","had","has","have","he","her","hers","him","his","how","however","i","if","in",
+        "into","is","it","its","just","least","let","like","likely","may","me","might","most","must","my","neither",
+        "no","nor","not","of","off","often","on","only","or","other","our","own","rather","said","say","says","she",
+        "should","since","so","some","than","that","the","their","them","then","there","these","they","this","tis",
+        "to","too","twas","us","wants","was","we","were","what","when","where","which","while","who","whom","why",
+        "will","with","would","yet","you","your"
+      ];
+
+      let userInputWordArray = userInput.split(/\s+/);
+
+      let filteredInput = userInput;
+
+      for (word of userInputWordArray) {
+        if (stopWords.includes(word)) {
+            filteredInput = filteredInput.replace(word, "")
+        } 
+      }
+
+      return filteredInput;
+  }
+
+  function encodeArrayToUrl(array){
+    let encodedArray = array.map(element => encodeURIComponent(`"${element}"`));
+    let joinedParams = encodedArray.join('%2C');
+    return joinedParams;
+  };
+
+  async function submitSearch() {
+
+    event.preventDefault()
+
+    let searchInput = document.getElementsByClassName('search-input')[0];
+    let searchValue = searchInput.value;
+
+    let filteredSearchValue = filterStopWords(searchValue)
+
+    
+    let tags = document.getElementsByClassName("filter-tag")
+    let selectedTags = []
+
+    for(element of tags){
+      if(element.checked){
+        selectedTags.push(element.value)
+      }
+    }
+
+    let urgency = document.getElementsByClassName("filter-options")
+    for(element of urgency){
+      if(element.selected){
+        urgency = element.value 
+        break
+      }
+    }
+
+    console.log(urgency)
+
+    let encodedParameters = encodeArrayToUrl(selectedTags)
+
+    if (urgency !== "Filter") {
+      let searchUrl = `/search?q=${filteredSearchValue}&domain=Threads&urgency=${urgency}`;
+
+      if (filteredSearchValue !== "") {
+        if (selectedTags.length > 0) {
+          searchUrl = `/search?q=${filteredSearchValue}&domain=ThreadsWithTags&tags=${encodedParameters}&urgency=${urgency}`;
+        }
+      }
+      await fetchData(searchUrl);
+    } 
+    
+    else {
+      if (filteredSearchValue == "") {
+        return
+      }
+      let searchUrl = `/search?q=${filteredSearchValue}&domain=Threads&urgency=${urgency}`;
+      if (filteredSearchValue !== "" && selectedTags.length > 0) {
+        searchUrl = `/search?q=${filteredSearchValue}&domain=ThreadsWithTags&tags=${encodedParameters}&urgency=${urgency}`;
+      }
+      await fetchData(searchUrl);
+    }
+
+    
+
+  }
+
+  async function fetchData(url) {
+      try {
+        const response = await fetch(url, {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json',
+          }
+        });
+        const data = await response.json();
+        console.log("Data in response:");
+        console.log(data.data);
+        isStatus = false;
+        renderSearchedThreads(data.data);
+      } catch (error) {
+        console.error(error);
+      }
+  }
+
+  //-   if (urgency !== "Filter"){
+  //-     if(filteredSearchValue !== ""){
+  //-     //if there are tags then search with tags
+  //-       if(selectedTags.length > 0){
+  //-         await fetch(`/search?q=${filteredSearchValue}&domain=ThreadsWithTags&tags=${encodedParameters}&urgency=${urgency}`, {
+  //-           method: 'GET',
+  //-           headers: {
+  //-               'Content-Type': 'application/json',
+  //-           }
+  //-         }).then(response => response.json()).then(async (data) => {
+  //-             console.log("Data in response::")
+  //-             console.log(data.data);
+  //-             isStatus = false;
+  //-             renderSearchedThreads(data.data)
+  //-         }).catch(error => {
+  //-             console.error(error);
+  //-         })
+  //-       }
+  //-       else{
+  //-         await fetch(`/search?q=${filteredSearchValue}&domain=Threads&urgency=${urgency}`, {
+  //-           method: 'GET',
+  //-           headers: {
+  //-               'Content-Type': 'application/json',
+  //-           }
+  //-         }).then(response => response.json()).then(async (data) => {
+  //-             console.log("Data in response::")
+  //-             console.log(data.data);
+  //-             isStatus = false;
+  //-             renderSearchedThreads(data.data)
+  //-         }).catch(error => {
+  //-             console.error(error);
+  //-         })
+  //-       }
+  //-     }
+  //-     else{
+  //-       await fetch(`/search?q=${filteredSearchValue}&domain=Threads&urgency=${urgency}`, {
+  //-           method: 'GET',
+  //-           headers: {
+  //-               'Content-Type': 'application/json',
+  //-           }
+  //-         }).then(response => response.json()).then(async (data) => {
+  //-             console.log("Data in response::")
+  //-             console.log(data.data);
+  //-             isStatus = false;
+  //-             renderSearchedThreads(data.data)
+  //-         }).catch(error => {
+  //-             console.error(error);
+  //-         })
+  //-     }
+  //-   }
+
+  //-   else{
+  //-     if(selectedTags.length > 0){
+  //-         await fetch(`/search?q=${filteredSearchValue}&domain=ThreadsWithTags&tags=${encodedParameters}&urgency=${urgency}`, {
+  //-           method: 'GET',
+  //-           headers: {
+  //-               'Content-Type': 'application/json',
+  //-           }
+  //-         }).then(response => response.json()).then(async (data) => {
+  //-             console.log("Data in response::")
+  //-             console.log(data.data);
+  //-             isStatus = false;
+  //-             renderSearchedThreads(data.data)
+  //-         }).catch(error => {
+  //-             console.error(error);
+  //-         })
+  //-     }
+  //-     else{
+  //-       await fetch(`/search?q=${filteredSearchValue}&domain=Threads&urgency=${urgency}`, {
+  //-         method: 'GET',
+  //-         headers: {
+  //-             'Content-Type': 'application/json',
+  //-         }
+  //-       }).then(response => response.json()).then(async (data) => {
+  //-           console.log("Data in response::")
+  //-           console.log(data.data);
+  //-           isStatus = false;
+  //-           renderSearchedThreads(data.data)
+  //-       }).catch(error => {
+  //-           console.error(error);
+  //-       }) 
+  //-     }  
+  //-   }
+    
+  //- }
+
+  async function searchFinished(){
+    let searchInput = document.getElementsByClassName('search-input')[0];
+    let searchValue = searchInput.value;
+    
+
+    let userId = #{user_id}
+
+    if (searchValue === ""){
+      let tags = document.getElementsByClassName("filter-tag")
+      //unchecks every filter when finished search
+      for(element of tags){
+        if(element.checked){
+          element.checked = false;
+        }
+      }
+      await fetch('/threads')
+        .then(response => response.json())
+        .then(data => {
+            console.log(data);
+            renderThreads(data.data, userId)
+        })
+        .catch(error => {
+            console.error('Error fetching data:', error);
+        });
+    }
+  }
+
+  window.onload = async function() {
+    const userId = #{user_id}
+    const response = await fetch(`/users/${userId}`, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    }).then(response => response.json()).then((data) => {
+      username = data.data[0].username;
+      status = data.data[0].status
+    })
+
+    await fetch('/threads')
+      .then(response => response.json())
+      .then(data => {
+          console.log(data);
+          renderThreads(data.data, userId)
+      })
+      .catch(error => {
+          console.error('Error fetching data:', error);
+      });
+  }
+
+  async function logout(){
+    const userId = #{user_id};
+    const requestBody = {
+      user_id: userId,
+      updateAt: "online_status",
+      updateValue: "offline"
+    }
+
+    await fetch(`/users/${userId}`, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(requestBody),
+      }).then(response=> response.json()).then((data)=>{
+        console.log(data.message)
+      })
+      window.location.href = `/`;
+  }
+
+  socket.on("threadData", (threadData) => {
+    const user_id = #{user_id}
+    let threadWrapper = document.getElementById("threadWrapper")
+    console.log(threadData)
+    console.log("uo")
+    let msgData = {
+      creator: threadData.Creator.username,
+      creator_id: threadData.creator_id,
+      thread_name: threadData.thread_name,
+      thread_id: threadData.thread_id,
+      urgency: threadData.urgency,  
+    }    
+    let threadElement = constructThread(msgData, user_id);
+    threadWrapper.appendChild(threadElement);
+
+    if (threadData.creator_id === user_id){
+      document.getElementById("threadWrapper").scrollTop = threadWrapper.scrollHeight;
+    }
+    
+  });
+
+  //refreshes data upon edit
+  socket.on("edit_thread", async () => {
+    const userId = #{user_id}
+    await fetch('/threads')
+        .then(response => response.json())
+        .then(data => {
+            console.log(data);
+            renderEditedThreads(data.data, userId)
+        })
+        .catch(error => {
+            console.error('Error fetching data:', error);
+        });
+  });
+
+  //refreshes data upon edit
+  socket.on("delete_thread", async () => {
+    const userId = #{user_id}
+    await fetch('/threads')
+        .then(response => response.json())
+        .then(data => {
+            console.log(data);
+            renderEditedThreads(data.data, userId)
+        })
+        .catch(error => {
+            console.error('Error fetching data:', error);
+        });
+  });
+
+  function showOverlay() {
+    document.getElementById('overlayForTest').style.display = 'flex';
+  }
+
+  function hideOverlay() {
+    document.getElementById('overlayForTest').style.display = 'none';
+  }
+
+  socket.on("testMode", () => {
+        showOverlay();
+  });
+
+  socket.on("testFinish", () => {
+        hideOverlay();
+  });
+  
+  

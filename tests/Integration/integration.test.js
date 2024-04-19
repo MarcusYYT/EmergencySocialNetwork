@@ -154,6 +154,166 @@ describe('Post Announcement Test', () => {
   });
 });
 
+
+
+describe('Post Thread Test', () => {
+
+  test('get Thread list before any thread is made', async () => {
+    const getresponse = await supertest(app)
+      .get(`/threads`);
+    expect(getresponse.status).toBe(200);
+    expect(getresponse.body.success).toBe(true);
+    expect(getresponse.body.message).toBeDefined();
+    expect(Array.isArray(getresponse.body.data)).toBe(true);
+    expect(getresponse.body.data.length).toBe(0);
+  });
+
+  test('post a thread', async () => {
+    const postResponse = await supertest(app)
+      .post(`/threads`)
+      .send({
+        creator_id: 1,
+        thread_name: "test",
+        urgency: "High Priority",
+        tags: ["Info"]
+      });
+      expect(postResponse.statusCode).toBe(201);
+      expect(postResponse.body).toEqual({
+        success: true,
+        message: 'Posting a new thread is successful'
+      });
+    });
+
+  test('get thread list for after a post', async () => {
+    const getresponse = await supertest(app)
+      .get(`/threads`);
+    expect(getresponse.status).toBe(200);
+    expect(getresponse.body.success).toBe(true);
+    expect(getresponse.body.message).toBeDefined();
+    expect(Array.isArray(getresponse.body.data)).toBe(true);
+    expect(getresponse.body.data[0].thread_name).toBe('test');
+  });
+
+  test('edit a thread', async () => {
+    const postResponse = await supertest(app)
+      .put(`/threads/1`)
+      .send({
+        thread_id: 1,
+        thread_name: "test1",
+        urgency: "Low Priority",
+        tags: ["Info", "Volunteering"]
+      });
+      expect(postResponse.statusCode).toBe(200);
+      expect(postResponse.body).toEqual({
+        success: true,
+        message: 'Edit thread list successful'
+      });
+  });
+  
+  test('you should be able to see the change', async () => {
+    const getresponse = await supertest(app)
+      .get(`/threads`);
+    expect(getresponse.status).toBe(200);
+    expect(getresponse.body.success).toBe(true);
+    expect(getresponse.body.message).toBeDefined();
+    expect(Array.isArray(getresponse.body.data)).toBe(true);
+    expect(getresponse.body.data[0].thread_name).toBe('test1');
+    expect(getresponse.body.data[0].urgency).toBe('Low Priority');
+    expect(getresponse.body.data[0].tags).toStrictEqual(["Info", "Volunteering"]);
+  });
+  
+  test('delete a thread', async () => {
+    const postResponse = await supertest(app)
+      .delete(`/threads/1`)
+      .send({
+        thread_id: 1
+      });
+      expect(postResponse.statusCode).toBe(200);
+      expect(postResponse.body).toEqual({
+        message: 'Delete thread list successful'
+      });
+  });
+
+  test('no threads should exist after deleting', async () => {
+    const getresponse = await supertest(app)
+      .get(`/threads`);
+    expect(getresponse.status).toBe(200);
+    expect(getresponse.body.success).toBe(true);
+    expect(getresponse.body.message).toBeDefined();
+    expect(Array.isArray(getresponse.body.data)).toBe(true);
+    expect(getresponse.body.data.length).toBe(0);
+  });
+});
+
+describe('Post a Thread Post Test', () => {
+
+  test('post a thread', async () => {
+    const postResponse = await supertest(app)
+      .post(`/threads`)
+      .send({
+        creator_id: 1,
+        thread_name: "test",
+        urgency: "High Priority",
+        tags: ["Info"]
+      });
+      expect(postResponse.statusCode).toBe(201);
+      expect(postResponse.body).toEqual({
+        success: true,
+        message: 'Posting a new thread is successful'
+      });
+    });
+
+  test('get Thread Post list before any threadPost is made', async () => {
+    const getresponse = await supertest(app)
+    .get(`/threadPosts/2`);
+    expect(getresponse.status).toBe(200);
+    expect(getresponse.body.success).toBe(true);
+    expect(getresponse.body.message).toBeDefined();
+    expect(Array.isArray(getresponse.body.data)).toBe(true);
+    expect(getresponse.body.data.length).toBe(0);
+  });
+  
+  test('get thread list for after a post', async () => {
+    const getresponse = await supertest(app)
+      .get(`/threads`);
+    expect(getresponse.status).toBe(200);
+    expect(getresponse.body.success).toBe(true);
+    expect(getresponse.body.message).toBeDefined();
+    expect(Array.isArray(getresponse.body.data)).toBe(true);
+    expect(getresponse.body.data[0].thread_name).toBe('test');
+    expect(getresponse.body.data[0].thread_id).toBe(2);
+  });
+
+  test('post a thread post', async () => {
+    const postResponse = await supertest(app)
+      .post(`/threadPosts/2`)
+      .send({
+        user_id: 1,
+        content: "test", 
+        status: "emergency",
+        thread_id: 2
+      });
+      expect(postResponse.statusCode).toBe(201);
+      expect(postResponse.body).toEqual({
+        success: true,
+        message: 'ThreadPost a new post successful'
+      });
+    });
+
+    test('get thread post list for after a post', async () => {
+    const getresponse = await supertest(app)
+      .get(`/threadPosts/2`);
+    expect(getresponse.status).toBe(200);
+    expect(getresponse.body.success).toBe(true);
+    expect(getresponse.body.message).toBeDefined();
+    expect(Array.isArray(getresponse.body.data)).toBe(true);
+    expect(getresponse.body.data.length).toBe(1);
+    expect(getresponse.body.data[0].content).toBe("test");
+    expect(getresponse.body.data[0].status).toBe("emergency");
+  });
+
+});
+
 describe('search Test', () => {
 
   test('search a user', async () => {
@@ -190,8 +350,30 @@ describe('search Test', () => {
       expect(Array.isArray(getresponse.body.data)).toBe(true);
       expect(getresponse.body.data.length).toBe(1);
   });
-});
 
+  test('search a thread', async () => {
+    const searchValue = "test"
+    const getresponse = await supertest(app)
+      .get(`/search?q=${searchValue}&domain=Threads&urgency=Filter`);
+    expect(getresponse.status).toBe(200);
+    expect(getresponse.body.success).toBe(true);
+    expect(getresponse.body.message).toBeDefined();
+    expect(Array.isArray(getresponse.body.data)).toBe(true);
+    expect(getresponse.body.data.length).toBe(1);
+  });
+
+  test('search for threadPosts', async () => {
+    const searchValue = "test"
+    const thread_id = 2
+    const getresponse = await supertest(app)
+      .get(`/search?q=${searchValue}&domain=ThreadPosts&threadId=${thread_id}&urgency="Filter"`);
+    expect(getresponse.status).toBe(200);
+    expect(getresponse.body.success).toBe(true);
+    expect(getresponse.body.message).toBeDefined();
+    expect(Array.isArray(getresponse.body.data)).toBe(true);
+    expect(getresponse.body.data.length).toBe(1);
+  });
+});
 describe('emergency contact tests', () => {
 
   test('Create new emergency contact successfully with given user for the first time', async () =>{
