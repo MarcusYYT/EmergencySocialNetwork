@@ -14,6 +14,7 @@ import pageRoutes from './routes/pageRoutes.js'
 import statusRoutes from './routes/statusRoutes.js'
 import searchRoutes from './routes/searchRoutes.js'
 import testRoute from './routes/testRoutes.js'
+import emergencyContactRoutes from './routes/emergencyContactRoutes.js'
 import DatabaseAdapter from './config/DatabaseAdapter.js'
 import { createServer } from 'node:http';
 import cookieParser from 'cookie-parser';
@@ -75,6 +76,7 @@ app.use('/posts', postRoutes);
 app.use('/status', statusRoutes)
 app.use('/privatePosts', privatePostRoutes)
 app.use('/announcements', announcementRoutes)
+app.use('/emergencyContacts', emergencyContactRoutes);
 app.use('/search', searchRoutes)
 app.use('/test', testRoute);
 

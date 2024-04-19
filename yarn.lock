@@ -1347,10 +1347,10 @@
   resolved "https://registry.npmjs.org/@socket.io/component-emitter/-/component-emitter-3.1.0.tgz"
   integrity sha512-+9jVqKhRSpsc591z5vX+X5Yyw+he/HCB4iQ/RYxw35CEPaY1gnsNE43nf9n9AaYjAQrTiI/mOwKUKdUs9vf7Xg==
 
-"@swc/core-win32-x64-msvc@1.4.11":
+"@swc/core-darwin-arm64@1.4.11":
   version "1.4.11"
-  resolved "https://registry.npmjs.org/@swc/core-win32-x64-msvc/-/core-win32-x64-msvc-1.4.11.tgz"
-  integrity sha512-0xRFW6K9UZQH2NVC/0pVB0GJXS45lY24f+6XaPBF1YnMHd8A8GoHl7ugyM5yNUTe2AKhSgk5fJV00EJt/XBtdQ==
+  resolved "https://registry.npmjs.org/@swc/core-darwin-arm64/-/core-darwin-arm64-1.4.11.tgz"
+  integrity sha512-C1j1Qp/IHSelVWdEnT7f0iONWxQz6FAqzjCF2iaL+0vFg4V5f2nlgrueY8vj5pNNzSGhrAlxsMxEIp4dj1MXkg==
 
 "@swc/core@*":
   version "1.4.11"
@@ -3002,6 +3002,11 @@ fs.realpath@^1.0.0:
   version "1.0.0"
   resolved "https://registry.npmjs.org/fs.realpath/-/fs.realpath-1.0.0.tgz"
   integrity sha512-OO0pH2lK6a0hZnAdau5ItzHPI6pUlvI7jMVnxUQRtw4owF2wk8lOSabtGDCTP4Ggrg2MbGnWO9X8K1t4+fGMDw==
+
+fsevents@^2.3.2, fsevents@~2.3.2:
+  version "2.3.3"
+  resolved "https://registry.npmjs.org/fsevents/-/fsevents-2.3.3.tgz"
+  integrity sha512-5xoDfX+fL7faATnagmWPpbFtwh/R77WmMMqqHGS65C3vvB0YHrgF+B1YmZ3441tMj5n63k0212XNoJwzlhffQw==
 
 function-bind@^1.1.2:
   version "1.1.2"

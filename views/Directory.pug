@@ -17,6 +17,7 @@ html(lang='en')
     #hamburgerMenu.links
       a.navLinks(onclick='routeToAnnouncement()') Annoucements
       a.navLinks(onclick='routeToMessageWall()') New Post
+      a.navLinks(onclick='routeToEmergencyContact()') Contacts
       a.navLinks(onclick='routeToTest()') Speed Test
     form#directory-search-form.input-group.mb-3(onsubmit="submitSearch()" onchange="searchFinished()")
         select#search-select.form-select-sm
@@ -124,6 +125,7 @@ html(lang='en')
       window.onload = async function() {
         const userId = #{user_id}
         addEventListenerstoStatus();
+        createEmergencyContact();
         const response = await fetch(`/users/${userId}`, {
           method: 'GET',
           headers: {
@@ -305,7 +307,68 @@ html(lang='en')
               }
           }
          
-        renderMyStatus(username, selectedValue);       
+        renderMyStatus(username, selectedValue);  
+
+        if (selectedValue === 'emergency') {
+          let primary_id = '';
+          let alternative_id = '';
+          let emergency_message = '';
+          let location_allow = '';
+          let location_link = '';
+
+          await fetch(`/emergencyContacts/${userId}`, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+          }).then(response => response.json()).then((data) => {
+              primary_id = data.data[0][0].primary_contact_id;
+              alternative_id = data.data[0][0].alternative_contact_id;
+              emergency_message = data.data[0][0].emergency_message;
+              location_allow = data.data[0][0].location_allow;
+              location_link = data.data[0][0].location_link;
+          })
+          await fetch(`/emergencyContacts/${primary_id}/${alternative_id}`, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+        }).then(response => response.json()).then((data) => {
+            primary_socketId = data.data.primarySocketId
+            alternative_socketId = data.data.alternativeSocketId
+
+        })
+
+        let link = ''
+        if (location_allow === 'no') {
+            link = 'does not allow location sharing'
+        } else {
+            link = location_link;
+        }
+                    
+          const postData = {
+              username: username,
+              message: emergency_message,
+              link: link,
+              primary: primary_socketId,
+              alternative: alternative_socketId
+          };
+
+          await fetch('/emergencyContacts/emergency_alert', {
+              method: 'POST',
+              headers: {
+                  'Content-Type': 'application/json',
+              },
+              body: JSON.stringify(postData)})
+              .then(response => response.json())
+              .then(data => {
+                  console.log(data);
+                  alert("Emergency message is sent to your emergency contacts!")
+              })
+              .catch(error => {
+                  console.error('Error fetching data:', error);
+              });
+        }   
       }
 
       socket.on("status_update", async ()=> { 
@@ -326,10 +389,18 @@ html(lang='en')
         });
       });
 
-      //- socket.on("newMessage", async (res) => {
-      //-   alert(`${res.senderName} sent you a new message`)
-      //- })
-
+      socket.on('alert', function(body) {
+        const confirmation = window.confirm("USER \"" + body.username + "\" has send you an EMERGENCY message: \n\"" + body.message + "\"\nClick \"OK\" will redirect you to Google Map of " + body.username + "'s location\nPlease allow redirect permission if nothing happen :)");        
+        if (confirmation) {
+            if (body.link === 'does not allow location sharing') {
+                alert("\"" + body.username + "\" " + body.link);
+            } else {
+                window.open(body.link);
+            }
+        } else {
+            console.log('User clicked Cancel');
+        }
+      });
 
       function routeToAnnouncement() {
         const user_id = #{user_id};
@@ -340,6 +411,12 @@ html(lang='en')
         const user_id = #{user_id};
         window.location.href = `/messageWall/${user_id}`;
       }
+
+      function routeToEmergencyContact() {
+        const user_id = #{user_id};
+        window.location.href = `/emergencyContact/${user_id}`;
+      }
+
       function routeToTest() {
         const user_id = #{user_id};
         window.location.href = `/test`;
@@ -382,4 +459,49 @@ html(lang='en')
             hideOverlay();
       });
 
+      async function createEmergencyContact() {
+        const userId = #{user_id};
+        console.log(userId);
+
+        try {
+          const response = await fetch(`/emergencyContacts/${userId}`, {
+            method: 'GET',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+          });
+
+          if (response.status === 200) {
+            const responseData = await response.json();
+            if (responseData.data[0].length !== 0) {
+              console.log('Emergency contact data already exists.');
+              return; // Exit the function if the GET request is successful and the user ID exists
+            } else {
+              const postData = {
+                user_id: userId,
+                primary_id: 1,
+                alternative_id: 2,
+                emergency_message: 'I need HELP!!!',
+              };
+
+              await fetch('/emergencyContacts', {
+                method: 'POST',
+                headers: {
+                  'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(postData),
+              })
+                .then((response) => response.json())
+                .then((data) => {
+                  console.log(data);
+                })
+                .catch((error) => {
+                  console.error('Error fetching data:', error);
+                });
+                }
+              }
+        } catch (error) {
+          console.error('Error fetching data:', error);
+        }
+      }
     

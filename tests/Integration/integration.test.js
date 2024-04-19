@@ -192,3 +192,112 @@ describe('search Test', () => {
   });
 });
 
+describe('emergency contact tests', () => {
+
+  test('Create new emergency contact successfully with given user for the first time', async () =>{
+      const emergencyContactResponse = await supertest(app)
+      .post(`/emergencyContacts`)
+      .send({
+        user_id: 1,
+        primary_id: 1,
+        alternative_id: 2,
+        emergency_message: 'I need HELP!!!'
+      });
+      expect(emergencyContactResponse.statusCode).toBe(201);
+      expect(emergencyContactResponse.body.success).toBe(true);
+  });
+
+  test('Fail to create new emergency contact with given user for the second time', async () =>{
+      const emergencyContactResponse = await supertest(app)
+      .post(`/emergencyContacts`)
+      .send({
+        user_id: 1,
+        primary_id: 3,
+        alternative_id: 4,
+        emergency_message: 'I need HELP!!!'
+      });
+      expect(emergencyContactResponse.statusCode).toBe(409);
+      expect(emergencyContactResponse.body.success).toBe(false);
+  });
+
+  test('Successfully get emergency contact with exist user id', async () =>{
+    const emergencyContactResponse = await supertest(app)
+    .get(`/emergencyContacts/1`);
+    expect(emergencyContactResponse.statusCode).toBe(200);
+    expect(emergencyContactResponse.body.success).toBe(true);
+  });
+
+  test('Fail to get emergency contacts socket id', async () =>{
+    const emergencyContactResponse = await supertest(app)
+    .get(`/emergencyContacts/1/2`);
+    const numOfId = Object.keys(emergencyContactResponse.body.data).length
+    expect(emergencyContactResponse.statusCode).toBe(200);
+    // two socket ids are returned
+    expect(numOfId).toBe(2);
+    expect(emergencyContactResponse.body.success).toBe(true);
+  });
+
+  test('Update primary contact with given user id', async () =>{
+    const emergencyContactResponse = await supertest(app)
+    .put(`/emergencyContacts/1`)
+    .send({
+        user_id: 1,
+        updateAt: "primary_contact_id",
+        updateValue: 'testuser',
+        updateId: 2
+    });
+    expect(emergencyContactResponse.statusCode).toBe(200);
+    expect(emergencyContactResponse.body.success).toBe(true);
+  });
+
+  test('Update alternative contact of given user id with unregistered user', async () =>{
+    const emergencyContactResponse = await supertest(app)
+    .put(`/emergencyContacts/1`)
+    .send({
+        user_id: 1,
+        updateAt: "alternative_contact_id",
+        updateValue: 'Unregistered user',
+        updateId: 3
+    });
+    expect(emergencyContactResponse.statusCode).toBe(404);
+    expect(emergencyContactResponse.body.success).toBe(false);
+  });
+
+  test('Update emergency message with given user id', async () =>{
+    const emergencyContactResponse = await supertest(app)
+    .put(`/emergencyContacts/1`)
+    .send({
+        user_id: 1,
+        updateAt: "emergency_message",
+        updateValue: 'I am so tired'
+    });
+    expect(emergencyContactResponse.statusCode).toBe(200);
+    expect(emergencyContactResponse.body.success).toBe(true);
+  });
+
+  test('Update location permission with given user id', async () =>{
+    const emergencyContactResponse = await supertest(app)
+    .put(`/emergencyContacts/1`)
+    .send({
+        user_id: 1,
+        updateAt: "location_allow",
+        updateValue: 'no'
+    });
+    expect(emergencyContactResponse.statusCode).toBe(200);
+    expect(emergencyContactResponse.body.success).toBe(true);
+  });
+
+  test('Update location link with given user id', async () =>{
+    const emergencyContactResponse = await supertest(app)
+    .put(`/emergencyContacts/1`)
+    .send({
+        user_id: 1,
+        updateAt: "location_link",
+        updateValue: ''
+    });
+    expect(emergencyContactResponse.statusCode).toBe(200);
+    expect(emergencyContactResponse.body.success).toBe(true);
+  });
+
+
+});
