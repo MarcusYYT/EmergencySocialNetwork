@@ -16,6 +16,7 @@ import pageRoutes from './routes/pageRoutes.js'
 import statusRoutes from './routes/statusRoutes.js'
 import searchRoutes from './routes/searchRoutes.js'
 import testRoute from './routes/testRoutes.js'
+import resourceRoutes from './routes/resourceRoutes.js'
 import emergencyContactRoutes from './routes/emergencyContactRoutes.js'
 import DatabaseAdapter from './config/DatabaseAdapter.js'
 import { createServer } from 'node:http';
@@ -83,6 +84,8 @@ app.use('/threadPosts', threadPostRoutes)
 app.use('/emergencyContacts', emergencyContactRoutes);
 app.use('/search', searchRoutes)
 app.use('/test', testRoute);
+app.use('/resource', resourceRoutes);
+// app.use('', pageRoutes);
 
 // setup swagger
 const swaggerSpec = await swaggerJSDoc(swaggerOptions);
