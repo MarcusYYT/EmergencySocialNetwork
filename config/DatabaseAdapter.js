@@ -7,6 +7,7 @@ import {PrivatePost} from "../models/PrivatePost.model.js"
 import {Status} from "../models/Status.model.js"
 import {Thread} from "../models/Thread.model.js"
 import {ThreadPost} from "../models/ThreadPost.model.js"
+import { EmergencyContact } from '../models/EmergencyContact.model.js';
 
 
 export default class DatabaseAdapter {
@@ -37,6 +38,7 @@ export default class DatabaseAdapter {
         Status.initModel(this.getDatabase());
         Thread.initModel(this.getDatabase());
         ThreadPost.initModel(this.getDatabase());
+        EmergencyContact.initModel(this.getDatabase())
 
         await User.model.sync();
         await Announcement.model.sync();
@@ -45,6 +47,7 @@ export default class DatabaseAdapter {
         await Status.model.sync();
         await Thread.model.sync();
         await ThreadPost.model.sync();
+        await EmergencyContact.model.sync();
     }
 
     static switchDatabase(databaseKey) {

@@ -32,6 +32,7 @@ export async function register(req, res) {
                             const newUserId = user.user_id;
                             console.log(newUserId)
                             const token = jwt.sign({ user_id: newUserId }, process.env.JWT_SECRET_KEY || 'sb1sb1', { expiresIn: '1h' });
+                            
                             res.status(201).json({ success: true, user_id: newUserId, token, message: 'Registration successful' });
 
                         });
