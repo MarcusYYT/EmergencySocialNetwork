@@ -5,7 +5,7 @@ import bcrypt from "bcryptjs";
 let saltRounds = 10;
 
 /**
- * This function will inster a row to the user table with username and password
+ * This function will insert a row to the user table with username and password
  * @async
  * @param {string} username The username passed from the frontend
  * @param {string} password The password passed from the frontend
@@ -44,6 +44,28 @@ export async function getUserById(user_id){
     data:[]
   }
   await User.getUserById(user_id).then((res) => {
+    if(res != null){
+      returnJson.exist = true;
+      returnJson.data.push(res) 
+    } else {
+      returnJson.exist = false;
+    }
+  })
+
+  return returnJson;
+}
+
+/**
+ * get user by the username
+ * @param {*} username
+ * @returns 
+ */
+export async function getUserByUsername(username){
+  let returnJson = {
+    exist: null,
+    data:[]
+  }
+  await User.getOneUser(username).then((res) => {
     if(res != null){
       returnJson.exist = true;
       returnJson.data.push(res) 

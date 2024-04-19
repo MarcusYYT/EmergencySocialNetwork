@@ -6,11 +6,11 @@ head
   link(rel='stylesheet', href='https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css')
   link(rel='stylesheet' type='text/css' href='/stylesheets/index.css')
   script(src='/javascripts/posts.js')
-  title Message Wall
+  title Thread Chat
 .links
-  a.btn.btn-primary(onclick='routeToDirectory()') Back
+  a.btn.btn-primary(onclick='routeToThreads()') Back
 #post-wrapper
-  h2#message-header Group Chats
+  h2#message-header
   form.search-form.input-group.mb-3(onsubmit="submitSearch()" onchange="searchFinished()")
     input.search-input.form-control(type='text', name='search', placeholder='Search...')
   #message-board.list-group
@@ -22,7 +22,7 @@ head
   p Don't Close the Browser Tab...
 script(src='https://cdn.socket.io/4.7.4/socket.io.min.js')
 script.
-
+  
   const socket = io();
   socket.on('connect', async function() {
         console.log('Connected to server');
@@ -42,12 +42,14 @@ script.
                 console.error('Error register socket:', error);
             });
   })
+
   let username = "";
   let status = "";
+  let chatName = ""
 
-  function routeToDirectory(){
+  function routeToThreads(){
     const user_id = #{user_id}
-    window.location.href = `/directory/${user_id}`
+    window.location.href = `/threadWall/${user_id}`
   }
 
   async function postChatMessage(){
@@ -58,16 +60,18 @@ script.
     // Get the user_id (assuming it's the last part of the URL)
 
     let userId = #{user_id}
+    let threadId = #{thread_id}
 
     const postData = {
       username: username,
       user_id: userId,
       status: status,
+      thread_id: threadId,
       dateTime: new Date().toLocaleString(),
       content: textContent
     };
 
-      await fetch('/posts', {
+      await fetch(`/threadPosts/${threadId}`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -114,9 +118,10 @@ script.
       let searchValue = searchInput.value;
 
       let filteredSearchValue = filterStopWords(searchValue)
+      const thread_id = #{thread_id}
 
       if(filteredSearchValue !== ""){
-        await fetch(`/search?q=${filteredSearchValue}&domain=Posts`, {
+        await fetch(`/search?q=${filteredSearchValue}&domain=ThreadPosts&threadId=${thread_id}`, {
           method: 'GET',
           headers: {
               'Content-Type': 'application/json',
@@ -124,7 +129,6 @@ script.
         }).then(response => response.json()).then(async (data) => {
             console.log("Data in response::")
             console.log(data.data);
-            isStatus = false;
             renderSearchedPosts(data.data, false, false)
         }).catch(error => {
             console.error(error);
@@ -136,25 +140,27 @@ script.
   }
 
   async function searchFinished(){
+    const threadId = #{thread_id}
+    
+    let searchInput = document.getElementsByClassName('search-input')[0];
+    let searchValue = searchInput.value;
 
-        let searchInput = document.getElementsByClassName('search-input')[0];
-        let searchValue = searchInput.value;
-
-        if (searchValue === ""){
-          await fetch('/posts')
-            .then(response => response.json())
-            .then(data => {
-                console.log(data);
-                renderChats(data.data, false)
-            })
-            .catch(error => {
-                console.error('Error fetching data:', error);
-            });
-        }
-      }
+    if (searchValue === ""){
+      await fetch(`/threadPosts/${threadId}`)
+        .then(response => response.json())
+        .then(data => {
+            console.log(data);
+            renderChats(data.data, false)
+        })
+        .catch(error => {
+            console.error('Error fetching data:', error);
+        });
+    }
+  }
 
   window.onload = async function() {
     const userId = #{user_id}
+    const threadId = #{thread_id}
     const response = await fetch(`/users/${userId}`, {
       method: 'GET',
       headers: {
@@ -165,7 +171,19 @@ script.
       status = data.data[0].status
     })
 
-    await fetch('/posts')
+    //fetching in order to get the thread name
+    await fetch(`/threads/${threadId}/`)
+         .then(response => response.json())
+         .then(data => {
+            console.log(data);
+            chatName = data.data[0].thread_name
+            renderChatName();
+         })
+         .catch(error => {
+             console.error('Error fetching data:', error);
+         });
+
+    await fetch(`/threadPosts/${threadId}/`)
          .then(response => response.json())
          .then(data => {
              console.log(data);
@@ -174,6 +192,13 @@ script.
          .catch(error => {
              console.error('Error fetching data:', error);
          });
+  }
+
+  function renderChatName(){
+    let header = document.getElementById("message-header")
+    removePostElements(header)
+    let headerText = document.createTextNode(chatName)
+    header.appendChild(headerText)
   }
 
   async function logout(){
@@ -196,7 +221,7 @@ script.
       window.location.href = `/`;
   }
 
-  socket.on("postData", (postData) => {
+  socket.on("threadPostData", (postData) => {
     let messageBoard = document.getElementById("message-board")
     let msgData = {
         sender: postData.username,
@@ -209,17 +234,22 @@ script.
     document.getElementById("message-board").scrollTop = messageBoard.scrollHeight;
   });
 
-  socket.on('alert', function(body) {
-      const confirmation = window.confirm("USER \"" + body.username + "\" has send you an EMERGENCY message: \n\"" + body.message + "\"\nClick \"OK\" will redirect you to Google Map of " + body.username + "'s location\nPlease allow redirect permission if nothing happen :)");        
-      if (confirmation) {
-            if (body.link === 'does not allow location sharing') {
-                alert("\"" + body.username + "\" " + body.link);
-            } else {
-                window.open(body.link);
-            }
-      } else {
-          console.log('User clicked Cancel');
-      }
+  //updating the new thread name
+  socket.on("edit_thread", (thread_name) => {
+    chatName = thread_name;
+    console.log("kik: " + thread_name)
+    renderChatName();
+  });
+
+  //kicking everyone out
+  socket.on("delete_thread", (threadId) => {
+    const current_thread = #{thread_id}
+    console.log(current_thread)
+    console.log(threadId)
+    if(threadId == current_thread){
+      routeToThreads()
+    }
+    //
   });
 
   function showOverlay() {
