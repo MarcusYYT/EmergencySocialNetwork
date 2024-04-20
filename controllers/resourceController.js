@@ -40,15 +40,18 @@ export async function getResourceGrouped(req, res){
 export async function postResource(req, res){
     try{
         const userId = req.body.user_id;
-        const resourceTypeId = req.body.resource_type_id;
-        const resourceName = req.body.resource_name;
-        const resourceAmount = req.body.resource_amount;
-        const resourceUnitId = req.body.resource_unit_id;
-        const note = req.body.resource_note;
-        const latitude = req.body.latitude;
-        const longitude = req.body.longitude;
-        const tel = req.body.tel;
-        await resourceService.createNewResource(userId, resourceTypeId, resourceName, resourceAmount, resourceUnitId, note, latitude, longitude, tel).then(() =>{
+        const resourceData = {
+            type_id: req.body.resource_type_id,
+            name: req.body.resource_name,
+            amount: req.body.resource_amount,
+            unit_id: req.body.resource_unit_id,
+            note: req.body.resource_note,
+            latitude: req.body.latitude,
+            longitude: req.body.longitude,
+            tel: req.body.tel
+        }
+
+        await resourceService.createNewResource(userId, resourceData).then(() =>{
             io.emit("resourceData", req.body);
             res.status(201).json({ success: true, message: 'Post a new resource successful' });
         })
