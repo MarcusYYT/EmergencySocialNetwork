@@ -81,10 +81,11 @@ function constructThread(msgData, user_id) {
     }
   }
 
-  function createButtonLabel(text){
+  function createButtonLabel(text, value){
     let label = document.createElement("label")
     label.setAttribute("class", "tag btn btn-outline-primary")
     label = addTextToElement(label, text)
+    label.setAttribute("for", value)
     return label
   }
 
@@ -103,27 +104,20 @@ function constructThread(msgData, user_id) {
   function createTagWrapper(selected){
     let tagWrapper = document.createElement("div")
     tagWrapper.setAttribute("id", "tagWrapper")
-
     if(selected == undefined){
       selected = []
     }
-
     let disasterTag = createTag("disaster", "Incident Report", selected)
-    let disasterLabel = createButtonLabel("Incident Report")
-    disasterLabel.setAttribute("for", "disaster")
+    let disasterLabel = createButtonLabel("Incident Report", "disaster")
     let statusReportTag =  createTag("status-report", "Status Report", selected)
-    let statusReportLabel = createButtonLabel("Status Report")
-    statusReportLabel.setAttribute("for", "status-report")
+    let statusReportLabel = createButtonLabel("Status Report", "status-report")
     let infoTag =  createTag("info", "Info", selected)
-    let infoLabel = createButtonLabel("Info")
-    infoLabel.setAttribute("for", "info")
+    let infoLabel = createButtonLabel("Info", "info")
     let volunteerTag =  createTag("volunteer", "Volunteering", selected)
-    let volunteerLabel = createButtonLabel("Volunteering")
-    volunteerLabel.setAttribute("for", "volunteer")
+    let volunteerLabel = createButtonLabel("Volunteering", "volunteer")
     let textWrapper = document.createElement("label")
     textWrapper = addTextToElement(textWrapper, "Choose a tag: ")
     tagWrapper.appendChild(textWrapper)
-
     tagWrapper.appendChild(disasterTag)
     tagWrapper.appendChild(disasterLabel)
     tagWrapper.appendChild(statusReportTag)
