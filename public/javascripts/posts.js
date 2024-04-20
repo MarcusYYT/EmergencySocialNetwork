@@ -136,3 +136,4 @@ function removePostElements(messageBoard) {
     messageBoard.removeChild(messageBoard.lastChild);
   }
 }
+

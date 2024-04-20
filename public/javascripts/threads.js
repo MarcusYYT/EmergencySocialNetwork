@@ -35,7 +35,6 @@ function constructThread(msgData, user_id) {
       editImage.addEventListener("click", () => {renderEditOverlay(msgData)});
       threadDiv.appendChild(editImage);
     }
-    //threadDiv.appendChild(urgencyFieldImage);
     return threadDiv;
   }
 
@@ -96,57 +95,38 @@ function constructThread(msgData, user_id) {
     return label
   }
 
-  function createTag(){
+  function createTag(id, value, selected){
     let input = document.createElement("input")
     input.setAttribute("class", "tag btn-check")
     input.setAttribute("type", "checkbox")
+    input.setAttribute("id", id)
+    input.setAttribute("value", value)
+    if(selected.includes(value)){
+      input.setAttribute("checked", true)
+    }
     return input
   }
 
   function createTagWrapper(selected){
     let tagWrapper = document.createElement("div")
     tagWrapper.setAttribute("id", "tagWrapper")
-    console.log(selected)
+
     if(selected == undefined){
       selected = []
     }
 
-    let disasterTag = createTag()
-    disasterTag.setAttribute("id", "disaster")
-    disasterTag.setAttribute("value", "Incident Report")
-    if(selected.includes("Incident Report")){
-      disasterTag.setAttribute("checked", true)
-    }
+    let disasterTag = createTag("disaster", "Incident Report", selected)
     let disasterLabel = createButtonLabel("Incident Report")
     disasterLabel.setAttribute("for", "disaster")
-
-    let statusReportTag =  createTag()
-    statusReportTag.setAttribute("id", "status-report")
-    statusReportTag.setAttribute("value", "Status Report")
-    if(selected.includes("Status Report")){
-      statusReportTag.setAttribute("checked", true)
-    }
+    let statusReportTag =  createTag("status-report", "Status Report", selected)
     let statusReportLabel = createButtonLabel("Status Report")
     statusReportLabel.setAttribute("for", "status-report")
-
-    let infoTag =  createTag()
-    infoTag.setAttribute("id", "info")
-    infoTag.setAttribute("value", "Info")
-    if(selected.includes("Info")){
-      infoTag.setAttribute("checked", true)
-    }
+    let infoTag =  createTag("info", "Info", selected)
     let infoLabel = createButtonLabel("Info")
     infoLabel.setAttribute("for", "info")
-
-    let volunteerTag =  createTag()
-    volunteerTag.setAttribute("id", "volunteer")
-    volunteerTag.setAttribute("value", "Volunteering")
-    if(selected.includes("Volunteering")){
-      volunteerTag.setAttribute("checked", true)
-    }
+    let volunteerTag =  createTag("volunteer", "Volunteering", selected)
     let volunteerLabel = createButtonLabel("Volunteering")
     volunteerLabel.setAttribute("for", "volunteer")
-
     let textWrapper = document.createElement("label")
     textWrapper = addTextToElement(textWrapper, "Choose a tag: ")
     tagWrapper.appendChild(textWrapper)
@@ -161,16 +141,6 @@ function constructThread(msgData, user_id) {
     tagWrapper.appendChild(volunteerLabel)
     return tagWrapper
   }
-
-  function slice(array, size){   
-    let slicedArray = [];
-    for (let i = 0; i < Math.ceil(array.length / size); i++) {
-        slicedArray.push(array.slice(i * size, i * size + size));
-    }
-    return slicedArray 
-  }
-  
-  let counter = 0;
   
   function renderSlicedArray(slicedArray){
     let threadWrapper = document.getElementById("threadWrapper")
@@ -262,6 +232,18 @@ function constructThread(msgData, user_id) {
     return threadNameWrapper
   }
 
+  function createUrgencyOption(priority, selected){
+    let option = document.createElement("option")
+    option.setAttribute("value", priority)
+    option = addTextToElement(option, priority)
+
+    if(selected == priority){
+      option.setAttribute("selected", true)
+    }
+
+    return option
+  }
+
   function createUrgencyWrapper(selected){
     let urgencyWrapper = document.createElement("div")
     urgencyWrapper.setAttribute("id", "urgencyWrapper")
@@ -272,29 +254,9 @@ function constructThread(msgData, user_id) {
     urgencyLabel.setAttribute("id", "urgencyLabel")
     urgencyLabel = addTextToElement(urgencyLabel, "Urgency Level:")
     urgencyWrapper.appendChild(urgencyLabel)
-    let urgencyHigh = document.createElement("option")
-    urgencyHigh.setAttribute("value", "High Priority")
-    urgencyHigh = addTextToElement(urgencyHigh, "High Priority")
-    let urgencyNormal = document.createElement("option")
-    urgencyNormal.setAttribute("value", "Normal Priority")
-    urgencyNormal = addTextToElement(urgencyNormal, "Normal Priority")
-    let urgencyLow = document.createElement("option")
-    urgencyLow.setAttribute("value", "Low Priority")
-    urgencyLow = addTextToElement(urgencyLow, "Low Priority")
-
-    //pre-selects the urgency level chosen
-    if(selected == "High Priority"){
-      urgencyHigh.setAttribute("selected", true)
-    }
-
-    else if(selected == "Normal Priority"){
-      urgencyNormal.setAttribute("selected", true)
-    }
-
-    else if(selected == "Low Priority"){
-      urgencyLow.setAttribute("selected", true)
-    }
-
+    let urgencyHigh = createUrgencyOption("High Priority", selected)
+    let urgencyNormal = createUrgencyOption("Normal Priority", selected)
+    let urgencyLow = createUrgencyOption("Low Priority", selected)
     urgencySelect.appendChild(urgencyHigh)
     urgencySelect.appendChild(urgencyNormal)
     urgencySelect.appendChild(urgencyLow)
