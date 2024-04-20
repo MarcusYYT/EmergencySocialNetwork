@@ -39,8 +39,16 @@ export async function getResourceGrouped(req, res){
 
 export async function postResource(req, res){
     try{
-        const requestData = await extractRequestBody(req);
-        await resourceService.createNewResource(requestData).then(() =>{
+        const userId = req.body.user_id;
+        const resourceTypeId = req.body.resource_type_id;
+        const resourceName = req.body.resource_name;
+        const resourceAmount = req.body.resource_amount;
+        const resourceUnitId = req.body.resource_unit_id;
+        const note = req.body.resource_note;
+        const latitude = req.body.latitude;
+        const longitude = req.body.longitude;
+        const tel = req.body.tel;
+        await resourceService.createNewResource(userId, resourceTypeId, resourceName, resourceAmount, resourceUnitId, note, latitude, longitude, tel).then(() =>{
             io.emit("resourceData", req.body);
             res.status(201).json({ success: true, message: 'Post a new resource successful' });
         })
@@ -51,8 +59,17 @@ export async function postResource(req, res){
 
 export async function updateResource(req, res){
     try {
-        const requestData = await extractRequestBody(req);
-        await resourceService.createNewResource(requestData).then(() =>{
+        const resourceId = req.body.resource_id;
+        const userId = req.body.user_id;
+        const resourceTypeId = req.body.resource_type_id;
+        const resourceName = req.body.resource_name;
+        const resourceAmount = req.body.resource_amount;
+        const resourceUnitId = req.body.resource_unit_id;
+        const note = req.body.resource_note;
+        const latitude = req.body.latitude;
+        const longitude = req.body.longitude;
+        const tel = req.body.tel;
+        await resourceService.updateResource(resourceId, userId, resourceTypeId, resourceName, resourceAmount, resourceUnitId, note, latitude, longitude, tel).then(() =>{
             res.status(200).json({ success: true, message: 'Update resource successful' });
         })
     } catch(error) {
@@ -141,18 +158,4 @@ export async function getResourceByType(req, res){
     } catch (error){
         return res.status(500).send(error.message);
     }
-}
-
-async function extractRequestBody(req) {
-    return {
-        userId: req.body.user_id,
-        resourceTypeId: req.body.resource_type_id,
-        resourceName: req.body.resource_name,
-        resourceAmount: req.body.resource_amount,
-        resourceUnitId: req.body.resource_unit_id,
-        note: req.body.resource_note,
-        latitude: req.body.latitude,
-        longitude: req.body.longitude,
-        tel: req.body.tel
-    };
 }

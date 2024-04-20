@@ -82,18 +82,18 @@ export class Resource {
         });
     }
 
-    static async createResource(resourceData) {
+    static async createResource(userId, resourceTypeId, resourceName, resourceAmount, resourceUnitId, note, latitude, longitude, tel) {
         try {
             return await this.model.create({
-                user_id: resourceData.userId,
-                resource_type_id: resourceData.resourceTypeId,
-                resource_name: resourceData.resourceName,
-                resource_amount: resourceData.resourceAmount,
-                resource_unit_id: resourceData.resourceUnitId,
-                resource_note: resourceData.note,
-                resource_latitude: resourceData.latitude,
-                resource_longitude: resourceData.longitude,
-                tel: resourceData.tel
+                user_id: userId,
+                resource_type_id: resourceTypeId,
+                resource_name: resourceName,
+                resource_amount: resourceAmount,
+                resource_unit_id: resourceUnitId,
+                resource_note: note,
+                resource_latitude: latitude,
+                resource_longitude: longitude,
+                tel: tel
             });
         } catch (error) {
             throw error;  // Re-throw the error to be handled or logged by the caller
