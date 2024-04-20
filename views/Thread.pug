@@ -60,6 +60,7 @@ script.
   })
   let username = "";
   let status = "";
+  let isEdited = false;
 
   function routeToDirectory(){
     const user_id = #{user_id}
@@ -321,95 +322,10 @@ script.
       }
   }
 
-  //-   if (urgency !== "Filter"){
-  //-     if(filteredSearchValue !== ""){
-  //-     //if there are tags then search with tags
-  //-       if(selectedTags.length > 0){
-  //-         await fetch(`/search?q=${filteredSearchValue}&domain=ThreadsWithTags&tags=${encodedParameters}&urgency=${urgency}`, {
-  //-           method: 'GET',
-  //-           headers: {
-  //-               'Content-Type': 'application/json',
-  //-           }
-  //-         }).then(response => response.json()).then(async (data) => {
-  //-             console.log("Data in response::")
-  //-             console.log(data.data);
-  //-             isStatus = false;
-  //-             renderSearchedThreads(data.data)
-  //-         }).catch(error => {
-  //-             console.error(error);
-  //-         })
-  //-       }
-  //-       else{
-  //-         await fetch(`/search?q=${filteredSearchValue}&domain=Threads&urgency=${urgency}`, {
-  //-           method: 'GET',
-  //-           headers: {
-  //-               'Content-Type': 'application/json',
-  //-           }
-  //-         }).then(response => response.json()).then(async (data) => {
-  //-             console.log("Data in response::")
-  //-             console.log(data.data);
-  //-             isStatus = false;
-  //-             renderSearchedThreads(data.data)
-  //-         }).catch(error => {
-  //-             console.error(error);
-  //-         })
-  //-       }
-  //-     }
-  //-     else{
-  //-       await fetch(`/search?q=${filteredSearchValue}&domain=Threads&urgency=${urgency}`, {
-  //-           method: 'GET',
-  //-           headers: {
-  //-               'Content-Type': 'application/json',
-  //-           }
-  //-         }).then(response => response.json()).then(async (data) => {
-  //-             console.log("Data in response::")
-  //-             console.log(data.data);
-  //-             isStatus = false;
-  //-             renderSearchedThreads(data.data)
-  //-         }).catch(error => {
-  //-             console.error(error);
-  //-         })
-  //-     }
-  //-   }
-
-  //-   else{
-  //-     if(selectedTags.length > 0){
-  //-         await fetch(`/search?q=${filteredSearchValue}&domain=ThreadsWithTags&tags=${encodedParameters}&urgency=${urgency}`, {
-  //-           method: 'GET',
-  //-           headers: {
-  //-               'Content-Type': 'application/json',
-  //-           }
-  //-         }).then(response => response.json()).then(async (data) => {
-  //-             console.log("Data in response::")
-  //-             console.log(data.data);
-  //-             isStatus = false;
-  //-             renderSearchedThreads(data.data)
-  //-         }).catch(error => {
-  //-             console.error(error);
-  //-         })
-  //-     }
-  //-     else{
-  //-       await fetch(`/search?q=${filteredSearchValue}&domain=Threads&urgency=${urgency}`, {
-  //-         method: 'GET',
-  //-         headers: {
-  //-             'Content-Type': 'application/json',
-  //-         }
-  //-       }).then(response => response.json()).then(async (data) => {
-  //-           console.log("Data in response::")
-  //-           console.log(data.data);
-  //-           isStatus = false;
-  //-           renderSearchedThreads(data.data)
-  //-       }).catch(error => {
-  //-           console.error(error);
-  //-       }) 
-  //-     }  
-  //-   }
-    
-  //- }
-
   async function searchFinished(){
     let searchInput = document.getElementsByClassName('search-input')[0];
     let searchValue = searchInput.value;
+    isEdited = false;
     
 
     let userId = #{user_id}
@@ -426,7 +342,7 @@ script.
         .then(response => response.json())
         .then(data => {
             console.log(data);
-            renderThreads(data.data, userId)
+            renderThreads(data.data, userId, isEdited)
         })
         .catch(error => {
             console.error('Error fetching data:', error);
@@ -446,11 +362,13 @@ script.
       status = data.data[0].status
     })
 
+    isEdited = false;
+
     await fetch('/threads')
       .then(response => response.json())
       .then(data => {
           console.log(data);
-          renderThreads(data.data, userId)
+          renderThreads(data.data, userId, isEdited)
       })
       .catch(error => {
           console.error('Error fetching data:', error);
@@ -500,12 +418,13 @@ script.
 
   //refreshes data upon edit
   socket.on("edit_thread", async () => {
+    isEdited = true;
     const userId = #{user_id}
     await fetch('/threads')
         .then(response => response.json())
         .then(data => {
             console.log(data);
-            renderEditedThreads(data.data, userId)
+            renderEditedThreads(data.data, userId, isEdited)
         })
         .catch(error => {
             console.error('Error fetching data:', error);
@@ -514,12 +433,13 @@ script.
 
   //refreshes data upon edit
   socket.on("delete_thread", async () => {
+    isEdited = true;
     const userId = #{user_id}
     await fetch('/threads')
         .then(response => response.json())
         .then(data => {
             console.log(data);
-            renderEditedThreads(data.data, userId)
+            renderEditedThreads(data.data, userId, isEdited)
         })
         .catch(error => {
             console.error('Error fetching data:', error);

@@ -70,22 +70,11 @@ function constructThread(msgData, user_id) {
     body.insertBefore(editModal, postWrapper)
   }
   
-  async function renderThreads(threadlist, user_id) {
-    let threadWrapper = document.getElementById("threadWrapper")
-    removeChildElements(threadWrapper)
-    for (const msgData of threadlist) {
-
-      let creator = msgData.Creator.username;
-      
-      let messageDetails = createThreadObject(msgData, creator);
-      let messageElement = constructThread(messageDetails, user_id);
-      
-      threadWrapper.appendChild(messageElement);
-      threadWrapper.scrollTop = threadWrapper.scrollHeight;
-    }
+  async function renderThreads(threadlist, user_id, isEdited) {
+    renderEditedThreads(threadlist, user_id, isEdited);
   }
 
-  async function renderEditedThreads(threadlist, user_id) {
+  async function renderEditedThreads(threadlist, user_id, isEdited) {
     let threadWrapper = document.getElementById("threadWrapper")
     removeChildElements(threadWrapper)
     for (const msgData of threadlist) {
@@ -94,6 +83,9 @@ function constructThread(msgData, user_id) {
       let messageElement = constructThread(messageDetails, user_id);
       
       threadWrapper.appendChild(messageElement);
+      if (!isEdited) {
+        threadWrapper.scrollTop = threadWrapper.scrollHeight;
+      }
     }
   }
 

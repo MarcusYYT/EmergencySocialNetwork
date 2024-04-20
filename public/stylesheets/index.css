@@ -544,7 +544,8 @@ div#show-more {
 .table tbody tr:hover {
     background-color: #f1f1f1;
 }
-div#createModal {
+div#createModal,
+div#editModal {
     background-color: #78caff;
     z-index: 10;
     position: fixed;
@@ -638,19 +639,6 @@ div#buttonWrapper {
 .bi-pencil-fill {
     color: #0d6efd;
     font-size: 17px;
-}
-
-div#editModal {
-    background-color: #78caff;
-    z-index: 10;
-    position: fixed;
-    width: 85vw;
-    max-height: 73vh;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    border-radius: 15px;
-    padding: 8.5vw;
 }
 
 .bi-x {
