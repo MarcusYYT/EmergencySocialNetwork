@@ -62,22 +62,22 @@ export async function getResourceGrouped(){
     return returnJson
 }
 
-export async function updateResource(resourceId, userId, resourceTypeId, resourceName, resourceAmount, resourceUnitId, note, latitude, longitude, tel){
+export async function updateResource(resourceId, updateData){
     let returnJson = {
         data:[],
         message:"initial message"
     }
-    let updateData = {
-        user_id: userId,
-        resource_type_id: resourceTypeId,
-        resource_name: resourceName,
-        resource_amount: resourceAmount,
-        resource_unit: resourceUnitId,
-        resource_note: note,
-        resource_latitude: latitude,
-        resource_longitude: longitude,
-        tel: tel
-    }
+    // let updateData = {
+    //     user_id: userId,
+    //     resource_type_id: resourceTypeId,
+    //     resource_name: resourceName,
+    //     resource_amount: resourceAmount,
+    //     resource_unit: resourceUnitId,
+    //     resource_note: note,
+    //     resource_latitude: latitude,
+    //     resource_longitude: longitude,
+    //     tel: tel
+    // }
     await Resource.updateResourceById(resourceId, updateData).then((res)=>{
         returnJson.message = "Update resource successful"
         returnJson.data = res;

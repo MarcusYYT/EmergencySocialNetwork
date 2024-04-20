@@ -192,7 +192,18 @@ describe('Create new resource type and unit', () => {
     });
 
     test('Update resource', async () => {
-        expect(await updateResource(1, 1, 1, 'Bandage', 10, 1, 'note', 1, 1, 123-456-7890)).toMatchObject({
+        const updateData = {
+            user_id: 1,
+            resource_type_id: 1,
+            resource_unit: 1,
+            resource_name: "Bandage",
+            resource_amount: 10,
+            resource_latitude: 1,
+            resource_longitude: 1,
+            resource_note: "note",
+            tel: 123-456-7890
+        }
+        expect(await updateResource(1, updateData)).toMatchObject({
             data: [
                 1
             ],

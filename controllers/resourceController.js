@@ -61,18 +61,23 @@ export async function postResource(req, res){
 }
 
 export async function updateResource(req, res){
+
     try {
         const resourceId = req.body.resource_id;
-        const userId = req.body.user_id;
-        const resourceTypeId = req.body.resource_type_id;
-        const resourceName = req.body.resource_name;
-        const resourceAmount = req.body.resource_amount;
-        const resourceUnitId = req.body.resource_unit_id;
-        const note = req.body.resource_note;
-        const latitude = req.body.latitude;
-        const longitude = req.body.longitude;
-        const tel = req.body.tel;
-        await resourceService.updateResource(resourceId, userId, resourceTypeId, resourceName, resourceAmount, resourceUnitId, note, latitude, longitude, tel).then(() =>{
+        const updateData = {
+            user_id: req.body.user_id,
+            resource_type_id: req.body.resource_type_id,
+            resource_name: req.body.resource_name,
+            resource_amount: req.body.resource_amount,
+            resource_unit: req.body.resource_unit_id,
+            resource_note: req.body.resource_note,
+            resource_latitude: req.body.latitude,
+            resource_longitude: req.body.longitude,
+            tel: req.body.tel
+        }
+
+        console.log(updateData);
+        await resourceService.updateResource(resourceId, updateData).then(() =>{
             res.status(200).json({ success: true, message: 'Update resource successful' });
         })
     } catch(error) {
