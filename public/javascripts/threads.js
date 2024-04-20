@@ -1,33 +1,31 @@
+function createUrgencyImage(urgency){
+  let urgencyFieldImage = document.createElement("i");
+  if (urgency === "Low Priority") {
+    urgencyFieldImage.setAttribute("class", "lowPriority col-1 bi bi-record-fill");
+  } else if (urgency === "High Priority") {
+    urgencyFieldImage.setAttribute("class", "highPriority col-1 bi bi-record-fill");
+  } else if (urgency === "Normal Priority") {
+    urgencyFieldImage.setAttribute("class", "normPriority col-1 bi bi-record-fill");
+  }
+  return urgencyFieldImage;
+}
 function constructThread(msgData, user_id) {
     const threadDiv = document.createElement('div');
-    threadDiv.className = 'thread row g-0 justify-content-between';
-    
+    threadDiv.className = 'thread row g-0 justify-content-between'; 
     const threadHeader = document.createElement('div');
     threadHeader.className = 'thread-name';
-
-    const urgencyFieldImage = document.createElement("i");
-    if (msgData.urgency === "Low Priority") {
-      urgencyFieldImage.setAttribute("class", "lowPriority col-1 bi bi-record-fill");
-    } else if (msgData.urgency === "High Priority") {
-      urgencyFieldImage.setAttribute("class", "highPriority col-1 bi bi-record-fill");
-    } else if (msgData.urgency === "Normal Priority") {
-      urgencyFieldImage.setAttribute("class", "normPriority col-1 bi bi-record-fill");
-    }
-
+    const urgencyFieldImage = createUrgencyImage(msgData.urgency)
     threadHeader.appendChild(urgencyFieldImage);
     threadHeader.appendChild(document.createTextNode(msgData.thread_name))
     const threadCreatorHeader = document.createElement('div');
     threadCreatorHeader.className = 'creator col-12';
     const creatorSpan = document.createElement('span');
     creatorSpan.className = 'thread-creator';
-    creatorSpan.appendChild(document.createTextNode("By: " + msgData.creator));
-    
+    creatorSpan.appendChild(document.createTextNode("By: " + msgData.creator));  
     threadCreatorHeader.appendChild(threadHeader);
     threadCreatorHeader.appendChild(creatorSpan);
     threadCreatorHeader.addEventListener("click", () => {routeToThreadChat(msgData.thread_id)})
-
     threadDiv.appendChild(threadCreatorHeader);
-
     if(msgData.creator_id === user_id){
       threadCreatorHeader.className = 'creator col-11';
       const editImage = document.createElement("i");
@@ -45,20 +43,16 @@ function constructThread(msgData, user_id) {
     let postWrapper = document.getElementById("post-wrapper")
     let editModal = document.createElement("div")
     editModal.setAttribute("id", "editModal")
-
     let cancelButton = document.createElement("i")
     cancelButton.setAttribute("class", "bi bi-x")
     cancelButton.addEventListener("click", () => {removeEditOverlay()})
-
     let editHeader = document.createElement("h2")
     editHeader.setAttribute("id", "editHeader")
     editHeader.appendChild(document.createTextNode("Edit Thread"))
-
     let threadNameWrapper = createGroupNameWrapper(msgData.thread_name);
     let urgencyWrapper = createUrgencyWrapper(msgData.urgency);
     let tagWrapper = createTagWrapper(msgData.tags);
     let buttonWrapper = createEditButttonWrapper(msgData.thread_id, msgData.thread_name);
-
     editModal.appendChild(cancelButton)
     editModal.appendChild(editHeader)
     editModal.appendChild(threadNameWrapper)
@@ -79,8 +73,7 @@ function constructThread(msgData, user_id) {
     for (const msgData of threadlist) {
       let creator = msgData.Creator.username;     
       let messageDetails = createThreadObject(msgData, creator);
-      let messageElement = constructThread(messageDetails, user_id);
-      
+      let messageElement = constructThread(messageDetails, user_id);   
       threadWrapper.appendChild(messageElement);
       if (!isEdited) {
         threadWrapper.scrollTop = threadWrapper.scrollHeight;

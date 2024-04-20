@@ -1,38 +1,36 @@
+function createInfoElement(id, content){
+    let element = document.createElement("p");
+    element.setAttribute("id", id);
+    let elementText = document.createTextNode(content);
+    element.appendChild(elementText);
+    return element
+}
+
+function removeChildIfItExists(parentId, childId){
+    let parentElement = document.getElementById(parentId);
+    if (document.getElementById(childId) != undefined) {
+        parentElement.removeChild(document.getElementById(childId))
+    }
+    return parentElement
+}
+
 function renderEmergencyContact(primary, alternative, message) {
-    let primayContactForm = document.getElementById("primary-contact-form");
-    if (document.getElementById("primary-contact") != undefined) {
-        primayContactForm.removeChild(document.getElementById("primary-contact"))
-    }
-    let primaryInfo = document.createElement("p");
-    primaryInfo.setAttribute("id", "primary-contact");
-    let primaryInfoText = document.createTextNode(primary);
-    primaryInfo.appendChild(primaryInfoText);
+    let primayContactForm = removeChildIfItExists("primary-contact-form", "primary-contact")
+    let primaryInfo = createInfoElement("primary-contact", primary)
 
-    let alternativeContactForm = document.getElementById("alternative-contact-form");
-    if (document.getElementById("alternative-contact") != undefined) {
-        alternativeContactForm.removeChild(document.getElementById("alternative-contact"))
-    }
-    let alternativeInfo = document.createElement("p");
-    alternativeInfo.setAttribute("id", "alternative-contact");
-    let alternativeInfoText = document.createTextNode(alternative);
-    alternativeInfo.appendChild(alternativeInfoText);
+    let alternativeContactForm = removeChildIfItExists("alternative-contact-form", "alternative-contact")
+    let alternativeInfo = createInfoElement("alternative-contact", alternative)
 
-    let emergencyMessageForm = document.getElementById("emergency-message-form");
-    if (document.getElementById("user-message") != undefined) {
-        emergencyMessageForm.removeChild(document.getElementById("user-message"))
-    }
-    let emergencyMessage = document.createElement("p");
-    emergencyMessage.setAttribute("id", "user-message");
-    let emergencyMessageText = document.createTextNode(message);
-    emergencyMessage.appendChild(emergencyMessageText);
-    
+    let emergencyMessageForm = removeChildIfItExists("emergency-message-form", "user-message")
+    let emergencyMessage = createInfoElement("user-message", message)    
+
     let primayContactInput = document.getElementById("primary-input");
     primayContactForm.insertBefore(primaryInfo, primayContactInput);
     let alternativeContactInput = document.getElementById("alternative-input");
     alternativeContactForm.insertBefore(alternativeInfo, alternativeContactInput);
     let emergencyMessageInput = document.getElementById("emergency-message");
     emergencyMessageForm.insertBefore(emergencyMessage, emergencyMessageInput);
-    
+   
 }
 
 let watchId; // Define watchId variable globally
