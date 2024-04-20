@@ -3,8 +3,10 @@ import express from 'express'
 import path from 'path'
 import swaggerJSDoc from 'swagger-jsdoc'
 import swaggerUI from 'swagger-ui-express'
+
 import socketConfig from './config/socketConfig.js'
 import passport from './config/passportConfig.js'
+
 import authRoutes from './routes/authRoutes.js'
 import userRoutes from './routes/userRoutes.js'
 import postRoutes from './routes/postRoutes.js'
@@ -16,11 +18,16 @@ import pageRoutes from './routes/pageRoutes.js'
 import statusRoutes from './routes/statusRoutes.js'
 import searchRoutes from './routes/searchRoutes.js'
 import testRoute from './routes/testRoutes.js'
+import preferenceRoute from './routes/preferenceRoutes.js'
+import subscriberRoutes from './routes/subscriberRoutes.js'
 import resourceRoutes from './routes/resourceRoutes.js'
 import emergencyContactRoutes from './routes/emergencyContactRoutes.js'
 import DatabaseAdapter from './config/DatabaseAdapter.js'
+
 import { createServer } from 'node:http';
 import cookieParser from 'cookie-parser';
+
+
 
 
 const swaggerOptions = {
@@ -84,8 +91,9 @@ app.use('/threadPosts', threadPostRoutes)
 app.use('/emergencyContacts', emergencyContactRoutes);
 app.use('/search', searchRoutes)
 app.use('/test', testRoute);
+app.use('/preference', preferenceRoute);
+app.use('/subscribers', subscriberRoutes);
 app.use('/resource', resourceRoutes);
-// app.use('', pageRoutes);
 
 // setup swagger
 const swaggerSpec = await swaggerJSDoc(swaggerOptions);
@@ -112,6 +120,7 @@ export function cleanUpDatabase() {
 server.listen(port, async () => {
   console.log(`Server running at http://localhost:${port}`);
   cleanUpDatabase()
+  // sendTestEmail();
   if(process.env.NODE_ENV === 'test'){
     DatabaseAdapter.setTestDatabaseName("tempdb.sqlite")
     DatabaseAdapter.setCurrentDatabase('test')

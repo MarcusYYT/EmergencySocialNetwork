@@ -1,5 +1,7 @@
 import * as announcementService from '../services/announcementService.js'
 import { io } from "../config/socketConfig.js"
+import {emailStrategies} from '../stratrgies/email.strategies.js'
+import {Preference} from '../models/Preference.model.js'
 
 export async function getAnnouncementById(req, res){
     try{
@@ -30,8 +32,16 @@ export async function postAnnouncement(req, res){
     try{
         const userId = req.body.user_id;
         const content = req.body.content;
-        await announcementService.createNewAnnouncement(userId, content).then(() =>{
+        const username = req.body.username;
+        await announcementService.createNewAnnouncement(userId, content).then(async () =>{
             io.emit("announcementData", req.body);
+            await Preference.getUsersWithPreferenceEnabled('announcement_updates').then((data) => {
+                const strategy = emailStrategies['Announcement'];
+                data.forEach(element => {
+                    strategy(element.email, username, content);
+                    console.log(`sent an email to ${element.username}`);
+                });
+            });
             res.status(201).json({ success: true, message: 'Post a new announcement successful' });
         })
     } catch(error) {

@@ -5,6 +5,8 @@ import {User} from "../models/User.model.js"
 import {Post} from "../models/Post.model.js"
 import {PrivatePost} from "../models/PrivatePost.model.js"
 import {Status} from "../models/Status.model.js"
+import {Preference} from '../models/Preference.model.js';
+import { Subscriber } from '../models/Subscriber.model.js';
 import {ResourceType} from "../models/ResourceType.model.js";
 import {ResourceUnit} from "../models/ResourceUnit.model.js";
 import {Resource} from "../models/Resource.model.js";
@@ -39,6 +41,8 @@ export default class DatabaseAdapter {
         Post.initModel(this.getDatabase());
         PrivatePost.initModel(this.getDatabase());
         Status.initModel(this.getDatabase());
+        Preference.initModel(this.getDatabase());
+        Subscriber.initModel(this.getDatabase());
         Announcement.initModel(this.getDatabase());
         ResourceUnit.initModel(this.getDatabase());
         ResourceType.initModel(this.getDatabase());
@@ -58,6 +62,8 @@ export default class DatabaseAdapter {
         await Resource.model.sync();
         await Thread.model.sync();
         await ThreadPost.model.sync();
+        await Preference.model.sync();
+        await Subscriber.model.sync();
         await EmergencyContact.model.sync();
     }
 

@@ -351,6 +351,69 @@ describe('search Test', () => {
       expect(getresponse.body.data.length).toBe(1);
   });
 
+  // I4
+  describe('Subscribers Test', () => {
+    test('Get subscribers list for a user', async () => {
+      const response = await supertest(app)
+        .get('/subscribers/1');
+      expect(response.status).toBe(200);
+      expect(response.body.success).toBe(true);
+      expect(Array.isArray(response.body.data)).toBe(true);
+    });
+  
+    test('Add a new subscriber', async () => {
+      const response = await supertest(app)
+        .post('/subscribers')
+        .send({
+          subscriber_id: 1,
+          username: 'testuser2'
+        });
+      expect(response.status).toBe(201);
+      expect(response.body.success).toBe(true);
+    });
+  
+    test('Remove a subscriber', async () => {
+      const response = await supertest(app)
+        .delete('/subscribers/2/1');
+      expect(response.status).toBe(200);
+      expect(response.body.success).toBe(true);
+    });
+  });
+  test('Set user preferences', async () => {
+    const response = await supertest(app)
+      .post('/preference')
+      .send({
+        user_id: 1,
+        email: 'testuser@example.com',
+        email_preference: 'Ok',
+        announcement_updates: true,
+        private_post_updates: true,
+        public_post_updates: true,
+        status_changes: true
+      });
+    expect(response.status).toBe(201);
+    expect(response.body.success).toBe(true);
+  });
+  describe('Preferences Test', () => {
+    test('Get user preferences', async () => {
+      const response = await supertest(app)
+        .get('/preference/1');
+      expect(response.status).toBe(200);
+      expect(response.body.success).toBe(true);
+      expect(typeof response.body.data).toBe('object');
+    });
+  
+
+    test('Add a subscriber for a non-existent user', async () => {
+      const response = await supertest(app)
+        .post('/subscribers')
+        .send({
+          subscriber_id: 9999,
+          username: 'testuser3'
+        });
+      expect(response.body.success).toBe(false);
+    });
+  });
   test('search a thread', async () => {
     const searchValue = "test"
     const getresponse = await supertest(app)

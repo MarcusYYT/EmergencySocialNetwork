@@ -21,6 +21,7 @@ html(lang='en')
       a.navLinks(onclick='routeToThreadWall()') Threads
       a.navLinks(onclick='routeToEmergencyContact()') Contacts
       a.navLinks(onclick='routeToTest()') Speed Test
+      a.navLinks(onclick='routeToSetting()') Setting
     form#directory-search-form.input-group.mb-3(onsubmit="submitSearch()" onchange="searchFinished()")
         select#search-select.form-select-sm
           option(value='User') User
@@ -266,7 +267,8 @@ html(lang='en')
         const requestBody = {
           user_id: userId,
           updateAt: "status",
-          updateValue: selectedValue
+          updateValue: selectedValue, 
+          username: username
         }
         await fetch('/status', {
           method: 'POST', 
@@ -428,6 +430,10 @@ html(lang='en')
         const user_id = #{user_id};
         window.location.href = `/test`;
       }
+      function routeToSetting() {
+        const user_id = #{user_id};
+        window.location.href = `/setting/${user_id}`;
+      }
 
       function routeToResource() {
         const user_id = #{user_id};
@@ -439,7 +445,7 @@ html(lang='en')
         const requestBody = {
           user_id: userId,
           updateAt: "online_status",
-          updateValue: "offline"
+          updateValue: "offline",
         }
         await fetch(`/users/${userId}`, {
           method: 'PUT',

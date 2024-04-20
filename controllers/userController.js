@@ -1,5 +1,8 @@
 import * as userService from '../services/userService.js'
 import { io } from "../config/socketConfig.js"
+import { getAllSubscriberOfOneUser } from '../services/subscriberService.js';
+import {emailStrategies} from '../stratrgies/email.strategies.js'
+import {shouldSendEmailNotification} from '../models/Preference.model.js'
 
 export async function getUserById(req, res){
     try{
@@ -53,8 +56,18 @@ export async function updateUser(req, res){
         })}
         if(updateAtrribute === "status"){
             const updateStatus = req.body.updateValue;
-            await userService.changeStatus(userId, updateStatus).then((resolve)=>{
+            const username = req.body.username;
+            await userService.changeStatus(userId, updateStatus).then(async (resolve)=>{
                 io.emit('status_update')
+                await getAllSubscriberOfOneUser(userId).then((data) =>{
+                    const strategy = emailStrategies['StatusChanges'];
+                    data.forEach(element =>{
+                        if (element.status_changes && shouldSendEmailNotification(element.status, element.email_notification_preference)){
+                            strategy(element.email, username, updateStatus);
+                        }
+                    })
+
+                })
                 res.status(200).json({success: resolve.success, message: resolve.message});
         })}
 
