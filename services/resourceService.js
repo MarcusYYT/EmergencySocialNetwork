@@ -2,11 +2,9 @@ import {Resource} from "../models/Resource.model.js";
 import {ResourceType} from "../models/ResourceType.model.js";
 import {ResourceUnit} from "../models/ResourceUnit.model.js";
 
-export async function createNewResource(userId, resourceTypeId, resourceName, resourceAmount, resourceUnitId, note, latitude, longitude, tel) {
-    return await Resource.createResource(userId, resourceTypeId, resourceName, resourceAmount, resourceUnitId, note, latitude, longitude, tel)
+export async function createNewResource(resourceData) {
+    return await Resource.createResource(resourceData);
 }
-
-
 
 export async function getResourceById(resourceId){
     let returnJson = {
