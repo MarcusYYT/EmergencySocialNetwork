@@ -21,7 +21,7 @@ describe('Directory Pug Template', () => {
     const html = compiledTemplate({ user_id: 1 });
     const dom = new JSDOM(html);
     const links = dom.window.document.querySelectorAll('.navLinks');
-    expect(links.length).toBe(6);
+    expect(links.length).toBe(7);
   })
 
   it('should render a search input', () => {
