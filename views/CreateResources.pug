@@ -1,0 +1,430 @@
+doctype html
+head
+  meta(charset='UTF-8')
+  meta(name='viewport' content='width=device-width, initial-scale=1.0')
+  link(href='https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css' rel='stylesheet' integrity='sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3' crossorigin='anonymous')
+  link(rel='stylesheet', href='https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css')
+  link(rel='stylesheet' type='text/css' href='/stylesheets/index.css')
+  script(src='/javascripts/resources.js')
+  script(src='/javascripts/directory.js')
+  script(src='https://cdn.socket.io/4.7.4/socket.io.min.js')
+  script(src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js")
+  title Create A New Resource Post
+.links
+  a.btn.btn-primary(onclick='routeToShared()') Back
+h2#message-header Create A New Resource Post
+#status-wrapper.dropdown
+    form(action="/resources/post" method="POST" onsubmit="return handleSubmit(event)")
+        input(type="hidden" name="user_id" id="user_id")
+        .mb-3
+            label(for="resourceName" class="form-label") Resource Name
+            input(type="text" class="form-control" id="resourceName" name="resource_name" required)
+
+        .mb-3
+            label(for="resourceAmount" class="form-label") Resource Amount
+            input(type="number" class="form-control" id="resourceAmount" name="resource_amount" required)
+
+        .mb-3
+            label(for="resourceType" class="form-label") Resource Type
+            select(class="form-select" id="resourceType" name="resource_type_id" required onchange="checkForNewType(this.value)")
+                option(value="") Select Type
+                // Populate these options dynamically with your server-side logic
+                option(value="new_type") Add new type...
+                // etc.
+            .input-group.mb-3(class="type-input-group" style="display: none;")
+                input(type="text" class="form-control" id="newTypeName"  placeholder="New Type Name" onchange="enableTypeInput()")
+                button(type="button", class="btn btn-danger", onclick="disableTypeInput()" )
+                    bi.bi-trash-fill
+                button(type="button", class="btn btn-success", onclick="submitNewType()")
+                    bi.bi-check
+
+        .mb-3
+            label(for="resourceUnit" class="form-label") Resource Unit
+            select(class="form-select" id="resourceUnit" name="resource_unit_id" required onchange="checkForNewUnit(this.value)")
+                option(value="") Select Unit
+                // Populate these options dynamically with your server-side logic
+                option(value="new_unit") Add new unit...
+                // etc.
+            .input-group.mb-3(class="unit-input-group" style="display: none;")
+                input(type="text" class="form-control" id="newUnitName" placeholder="New Unit Name" onchange="enableTypeInput()")
+                button(type="button", class="btn btn-danger", onclick="disableUnitInput()")
+                    bi.bi-trash-fill
+                button(type="button", class="btn btn-success", onclick="submitNewUnit()")
+                    bi.bi-check
+
+        .mb-3
+            label(for="resourceNote" class="form-label") Note
+            textarea(class="form-control" id="resourceNote" name="resource_note" rows="3")
+
+        .mb-3
+            label(for="contact" class="form-label") contact
+            input(type="text" class="form-control" id="contact" name="tel" pattern="[0-9]{3}-[0-9]{3}-[0-9]{4}"
+                title="Phone number must be in the format: 123-456-7890" required)
+
+        .mb-3
+            label(for="shareLocation" class="form-check-label")
+                input(type="checkbox" class="form-check-input" id="shareLocation" name="share_location" onchange="toggleLocationSharing(this)")
+                span#checkboxLabel Share my current location in this post
+            input(type="hidden" id="latitude" name="latitude" value="0")
+            input(type="hidden" id="longitude" name="longitude" value="0")
+
+        button(type="submit" class="btn btn-primary") Submit
+
+script(src='https://cdn.socket.io/4.7.4/socket.io.min.js')
+script.
+
+  const socket = io();
+  socket.on('connect', async function() {
+        console.log('Connected to server');
+        console.log('Socket ID:', socket.id);
+        const userId = #{user_id};
+        await fetch(`/sockets`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({user_id: userId, socket_id: socket.id, operation:'register'})})
+                .then(response => response.json())
+            .then(data => {
+                console.log(data);
+            })
+            .catch(error => {
+                console.error('Error register socket:', error);
+            });
+  })
+
+  let userId = ""
+  let resourceId = ""
+  window.onload = async function() {
+    userId = #{user_id}
+    resourceId = #{resource_id};
+    await getTypes();
+    await getUnits();
+    document.getElementById('user_id').value = userId;
+    if (`#{mode}` == `edit`) {
+        editMode(resourceId);
+    }
+  }
+
+  async function logout(){
+    const userId = #{user_id};
+    const requestBody = {
+      user_id: userId,
+      updateAt: "online_status",
+      updateValue: "offline"
+    }
+
+    await fetch(`/users/${userId}`, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(requestBody),
+      }).then(response=> response.json()).then((data)=>{
+        console.log(data.message)
+      })
+      window.location.href = `/`;
+  }
+
+  async function getTypes() {
+      const response = await fetch(`/resource/types`, {
+          method: 'GET',
+          headers: {
+              'Content-Type': 'application/json',
+          },
+      }).then(response => response.json()).then((data) => {
+          console.log(data);
+          const selectElement = document.getElementById('resourceType');
+          Array.from(selectElement.options).forEach(option => {
+              if (option.value !== "" && option.value !== "new_type") {
+                  selectElement.removeChild(option);
+              }
+          });
+          data.data.forEach(item => {
+              const option = document.createElement('option');
+              option.value = item.id;
+              option.textContent = item.name;
+              selectElement.insertBefore(option, selectElement.lastElementChild);
+          });
+      })
+  }
+
+  async function getUnits() {
+      const response = await fetch(`/resource/units`, {
+          method: 'GET',
+          headers: {
+              'Content-Type': 'application/json',
+          },
+      }).then(response => response.json()).then((data) => {
+          console.log(data);
+          const selectElement = document.getElementById('resourceUnit');
+          Array.from(selectElement.options).forEach(option => {
+              if (option.value !== "" && option.value !== "new_unit") {
+                  selectElement.removeChild(option);
+              }
+          });
+          data.data.forEach(item => {
+              const option = document.createElement('option');
+              option.value = item.id;
+              option.textContent = item.name;
+              selectElement.insertBefore(option, selectElement.lastElementChild);
+          });
+      })
+  }
+
+  function checkForNewType(value) {
+      if (value === 'new_type') {
+          // var modal = new bootstrap.Modal(document.getElementById('addNewModal'), {});
+          // document.getElementById('modalBodyText').innerText = 'Please add a new resource type:';
+          // modal.show();
+            document.querySelector('.type-input-group').style.display = 'flex';
+            document.getElementById('newTypeName').focus();
+      }
+  }
+  function checkForNewUnit(value) {
+      if (value === 'new_unit') {
+          document.querySelector('.unit-input-group').style.display = 'flex';
+          document.getElementById('newUnitName').focus();
+      }
+  }
+
+  function disableTypeInput() {
+    document.querySelector('.type-input-group').style.display = 'none';
+    document.getElementById('resourceType').value = "";
+    document.getElementById('newTypeName').required = false;
+
+  }
+
+  function disableUnitInput() {
+    document.querySelector('.unit-input-group').style.display = 'none';
+    document.getElementById('resourceUnit').value = "";
+    document.getElementById('newUnitName').required = false;
+  }
+
+    async function submitNewType() {
+        const newTypeName = document.getElementById('newTypeName').value.trim();
+        newTypeName.required = true;
+        if (newTypeName === "") {
+            alert('Please enter a new type name');
+            return;
+        }
+
+        const selectElement = document.getElementById('resourceType');
+        const existingOptions = Array.from(selectElement.options).map(option => option.value);
+        if (existingOptions.includes(newTypeName)) {
+            alert('The type name already exists. Please enter a different name.');
+            return;
+        }
+        newTypeId = 0;
+        await fetch('/resource/addType', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({type_name: newTypeName})
+        }).then(response => response.json())
+            .then(data => {
+                console.log(data.added_type_id);
+                newTypeId = data.added_type_id;
+            })
+            .catch(error => {
+                console.error('Error adding new type:', error);
+            });
+        await getTypes();
+        setTimeout(() => {
+            selectElement.value = String(newTypeId);
+        }, 10);
+        disableTypeInput();
+    }
+
+
+  async function submitNewUnit() {
+      const newUnitName = document.getElementById('newUnitName').value;
+        newUnitName.required = true;
+      if (newUnitName === "") {
+          alert('Please enter a new unit name');
+          return;
+      }
+
+      const selectElement = document.getElementById('resourceUnit');
+      const existingOptions = Array.from(selectElement.options).map(option => option.value);
+      if (existingOptions.includes(newUnitName)) {
+          alert('The unit name already exists. Please enter a different name.');
+          return;
+      }
+      newUnitId = 0;
+      await fetch('/resource/addUnit', {
+          method: 'POST',
+          headers: {
+              'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({unit_name: newUnitName})
+      }).then(response => response.json())
+          .then(data => {
+              console.log(data.added_unit_id);
+              newUnitId = data.added_unit_id;
+          })
+          .catch(error => {
+              console.error('Error adding new unit:', error);
+          });
+      await getUnits();
+      setTimeout(() => {
+          selectElement.value = String(newUnitId);
+      }, 10);
+      disableUnitInput();
+  }
+
+  function routeToShared() {
+      const user_id = #{user_id};
+      window.location.href = `/resources/shared/${user_id}`;
+  }
+
+  function enableTypeInput() {
+      document.getElementById('newTypeName').style.display = 'block';
+      document.querySelector('button.btn-danger').style.display = 'block';
+      document.querySelector('button.btn-success').style.display = 'block';
+  }
+
+  async function toggleLocationSharing(checkbox) {
+      const latitudeInput = document.getElementById('latitude');
+      const longitudeInput = document.getElementById('longitude');
+      const oldLatitude = latitudeInput.value;
+      const oldLongitude = longitudeInput.value;
+      if (checkbox.checked) {
+          try {
+              const position = await getLocation();
+              latitudeInput.value = position.coords.latitude;
+              longitudeInput.value = position.coords.longitude;
+          } catch (error) {
+              console.error('Error getting location: ', error);
+              alert('Error getting location: ' + error.message);
+              checkbox.checked = false;  // Uncheck the box if location cannot be fetched
+              latitudeInput.value = '0';
+              longitudeInput.value = '0';
+          }
+      } else {
+          latitudeInput.value = oldLatitude;
+          longitudeInput.value = oldLongitude;
+      }
+  }
+  async function handleSubmit(event) {
+      event.preventDefault(); // Prevent form from submitting immediately
+      const form = event.target;
+      const shareLocationCheckbox = document.getElementById('shareLocation');
+
+      if (shareLocationCheckbox.checked) {
+          await toggleLocationSharing(shareLocationCheckbox); // Ensure coords are set
+      }
+
+      if (shareLocationCheckbox.checked && (!document.getElementById('latitude').value || !document.getElementById('longitude').value)) {
+          alert('Location data is required but not available. Please ensure location services are enabled and try again.');
+          return false; // Prevent form submission if location data is missing
+      }
+      const formData = new URLSearchParams(new FormData(form));
+      fetch(form.action, {
+          method: 'POST',
+          headers: {
+              'Content-Type': 'application/x-www-form-urlencoded'
+          },
+          body: formData
+      })
+          .then(response => {
+              if (response.ok) {
+                  const user_id = #{user_id};
+                  window.location.href = `/resources/shared/${user_id}`;
+              } else {
+                  throw new Error('Failed to submit form');
+              }
+          })
+          .catch(error => {
+              console.error('Error:', error);
+              alert('Error submitting form: ' + error.message);
+          });
+  }
+
+  async function handleUpdate(event) {
+      event.preventDefault(); // Prevent form from submitting immediately
+      const form = event.target;
+      const shareLocationCheckbox = document.getElementById('shareLocation');
+
+      if (shareLocationCheckbox.checked) {
+          await toggleLocationSharing(shareLocationCheckbox);
+      }
+
+      if (shareLocationCheckbox.checked && (!document.getElementById('latitude').value || !document.getElementById('longitude').value)) {
+          alert('Location data is required but not available. Please ensure location services are enabled and try again.');
+          return false; // Prevent form submission if location data is missing
+      }
+      const formData = new URLSearchParams(new FormData(document.querySelector('form[action="/resources/post"]')));
+      formData.append('resource_id', resourceId);
+      fetch('/resource/update', {
+          method: 'PUT',
+          headers: {
+              'Content-Type': 'application/x-www-form-urlencoded'
+          },
+          body: formData
+      })
+          .then(response => {
+              if (response.ok) {
+                  const user_id = #{user_id};
+                  window.location.href = `/resources/shared/${user_id}`;
+              } else {
+                  throw new Error('Failed to submit form');
+              }
+          })
+          .catch(error => {
+              console.error('Error:', error);
+              alert('Error submitting form: ' + error.message);
+          });
+  }
+
+  async function editMode(resourceId) {
+      console.log("Edit mode")
+
+      document.querySelector('button[type="submit"]').textContent = 'Save Changes';
+        document.querySelector('button[type="submit"]').onclick = handleUpdate;
+      document.getElementById('message-header').textContent = 'Edit Resource Post';
+      const deleteButton = document.createElement('button');
+      deleteButton.type = 'button';
+      deleteButton.className = 'btn btn-danger';
+      deleteButton.textContent = 'Delete';
+      deleteButton.onclick = deleteResource;
+      document.querySelector('form').appendChild(deleteButton);
+      document.getElementById('checkboxLabel').textContent = 'Update my location';
+      document.getElementById('shareLocation').checked = false;
+      await fetch(`/resource/get/${resourceId}`, {
+          method: 'GET',
+          headers: {
+              'Content-Type': 'application/json',
+          },
+      }).then(response => response.json()).then((data) => {
+          console.log(data);
+          data = data.data[0]
+          document.getElementById('resourceName').value = data.resource_name;
+          document.getElementById('resourceAmount').value = data.resource_amount;
+          document.getElementById('resourceType').value = data.resource_type_id;
+          document.getElementById('resourceUnit').value = data.resource_unit_id;
+          document.getElementById('resourceNote').value = data.resource_note;
+          document.getElementById('contact').value = data.tel;
+          document.getElementById('latitude').value = data.resource_latitude;
+          document.getElementById('longitude').value = data.resource_longitude;
+      })
+  }
+
+  async function deleteResource() {
+        const confirmDelete = confirm('Are you sure you want to delete this resource?');
+        if (confirmDelete) {
+            await fetch(`/resource/delete/${resourceId}`, {
+                method: 'DELETE',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+            }).then(response => response.json()).then((data) => {
+                console.log(data);
+                if (data.message === "Delete resource successful") {
+                    const user_id = #{user_id};
+                    window.location.href = `/resources/shared/${user_id}`;
+                }
+            })
+        }
+  }

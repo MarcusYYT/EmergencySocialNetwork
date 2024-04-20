@@ -1,6 +1,6 @@
 import express from 'express';
 const router = express.Router();
-import {getUserById, getUserList, updateUser} from '../controllers/userController.js'
+import {getUserById, getUserByUsername, getUserList, updateUser} from '../controllers/userController.js'
 
 /**
  * @swagger
@@ -99,6 +99,7 @@ import {getUserById, getUserList, updateUser} from '../controllers/userControlle
 
 router.get('', getUserList);
 router.get('/:user_id', getUserById);
+router.get('/username/:username', getUserByUsername);
 router.put('/:user_id', updateUser);
 
 export default router;

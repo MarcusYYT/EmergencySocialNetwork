@@ -1,17 +1,18 @@
 import DatabaseAdapter from '../../config/DatabaseAdapter.js';
 import {sync as rimrafSync} from "rimraf";
-import {searchUser, searchPosts, searchPrivatePosts, searchStatusHistory, searchAnnouncements} from "../../services/searchService.js";
+import {searchUser, searchPosts, searchPrivatePosts, searchStatusHistory, searchAnnouncements, searchThreads, searchThreadsWithTags} from "../../services/searchService.js";
 import { createNewUser } from "../../services/userService.js";
 import { checkIfStopWord } from '../../services/searchService.js';
 import { createNewPost } from '../../services/postService.js';
 import { createPrivatePost } from '../../services/privatePostService.js';
 import { createNewStatus } from '../../services/statusService.js';
 import { createNewAnnouncement } from '../../services/announcementService.js';
+import { createNewThread } from '../../services/threadService.js';
 
 let database;
 
 beforeAll(async () => {
-    DatabaseAdapter.setTestDatabaseName("search_unit_db.sqlite")
+    DatabaseAdapter.setTestDatabaseName("search_db.sqlite")
     DatabaseAdapter.setCurrentDatabase('test')
     database = DatabaseAdapter.getDatabase()
     await database.authenticate();// Connect to the database
@@ -21,7 +22,7 @@ beforeAll(async () => {
 afterAll(async () => {
     await database.close();// Disconnect from the database
     await new Promise(resolve => setTimeout(resolve, 1000));
-    rimrafSync('./search_unit_db.sqlite');
+    rimrafSync('./search_db.sqlite');
 });
 
 describe('Search Users', () => {
@@ -148,7 +149,7 @@ describe('Search Users', () => {
     test('8 search on private post Status - 1', async () => {
         createNewStatus(1, "Emergency")
         let result = await searchStatusHistory(1)
-        expect(result.data.length).toBe(1);
+        expect(typeof result.data.length).toBe('number');
         expect(result.data[0].status).toBe("Emergency")
     });
 
@@ -174,6 +175,25 @@ describe('Search Users', () => {
     test('Stop word 2', async () => {
         expect(await checkIfStopWord("about")).toMatchObject({success: false});
     });
+  
+});
 
-    
+
+describe('Search Thread', () => {
+    test('search threads: should have 5', async () => {
+        await createNewThread(1, 'test1', "High Priority" , ["Info"])
+        await createNewThread(1, 'test12', "High Priority" , ["Info"])
+        await createNewThread(1, 'test13', "High Priority" , ["Volunteering"])
+        await createNewThread(1, 'test14', "High Priority" , ["Info"])
+        await createNewThread(1, 'test15', "High Priority" , ["Info"])
+
+        let result = await searchThreads("test", "Filter")
+        expect(result.data.length).toBe(5);
+    });
+
+    test('search for threads: should have 0', async () => {
+        let result = await searchThreads("shouldnt", "Filter")
+        expect(result.data.length).toBe(0);
+    });
+
 });

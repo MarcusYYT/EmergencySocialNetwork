@@ -238,7 +238,16 @@ button#post-btn {
     border-radius: 0px 0px 15px 15px;
 }
 
+button#thread-btn {
+    width: 68vw;
+    margin-left: auto;
+    margin-right: auto;
+    position: relative;
+    display: block;
+}
+
 h2#message-header {
+    text-align: center;
     margin-top: 1.5vh;
     font-size: 8vw;
     color: white;
@@ -338,15 +347,21 @@ span.message-sender {
 }
 
 .bi-bandaid-fill{
-    color: rgb(237, 0, 51)
+    color: rgb(237, 0, 51);
+    margin-top: auto;
+    margin-bottom: auto;
 }
 
 .bi-check-circle-fill{
-    color:rgb(0, 160, 78)
+    color:rgb(0, 160, 78);
+    margin-top: auto;
+    margin-bottom: auto;
 }
 
 .bi-exclamation-circle-fill{
-    color: rgb(244 199 0)
+    color: rgb(244 199 0);
+    margin-top: auto;
+    margin-bottom: auto;
 }
 
 .unReadField {
@@ -406,6 +421,13 @@ select#search-select {
     border: none;
 }
 
+select#urgencySelect {
+    width: 35vw;
+    font-size: 4vw;
+    height: 4.5vh;
+    border: none;
+}
+
 option{
     font-size: 3.5vw;
 }
@@ -430,4 +452,329 @@ div#show-more {
     border: 1px solid rgba(0, 0, 0, .125);
     border-radius: 15px;
     margin-bottom: 1vh;
+}
+
+.resource-item {
+    background-color: white;
+    padding: 10px;
+    margin: 10px;
+    border-radius: 15px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+}
+
+.resource-link {
+    text-decoration: none;
+    color: #000;
+}
+
+.resource-link:hover {
+    text-decoration: underline;
+}
+
+
+/*#resourceList .table {*/
+/*    background-color: #78caff;*/
+/*    border-radius: 15px;*/
+/*}*/
+
+/*#resourceList thead th {*/
+/*    background-color: #0d6efd;*/
+/*    color: white;*/
+/*    border-bottom: none;*/
+/*}*/
+
+/*#resourceList tbody tr {*/
+/*    border-bottom: 0px solid #78caff;*/
+/*}*/
+
+/*#resourceList tbody tr:hover {*/
+/*    background-color: #f8f9fa;*/
+/*}*/
+
+/*#resourceList th, #resourceList td {*/
+/*    padding: 1rem;*/
+/*    text-align: left;*/
+/*    border-top: none;*/
+/*}*/
+
+/*.table-container {*/
+/*    margin-top: 2rem;*/
+/*    margin-bottom: 2rem;*/
+/*}*/
+
+.table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 25px 0;
+    font-size: 0.9em;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.15);
+    border-radius: 15px;
+    overflow: hidden;
+}
+
+.table thead tr {
+    background-color: #0d6efd;
+    color: #ffffff;
+    opacity: 80%;
+    text-align: left;
+}
+
+.table tbody tr td:first-child {
+    font-weight: bold;
+}
+
+.table th,
+.table td {
+    padding: 12px 15px;
+}
+
+.table tbody tr {
+    border-bottom: 1px solid #dddddd;
+    background-color: white;
+}
+
+.table tbody tr:nth-of-type(even) {
+    background-color: #f3f3f3;
+}
+
+.table tbody tr:last-of-type {
+    border-bottom: 1px solid #dddddd;
+}
+
+.table tbody tr:hover {
+    background-color: #f1f1f1;
+}
+div#createModal {
+    background-color: #78caff;
+    z-index: 10;
+    position: fixed;
+    width: 85vw;
+    max-height: 73vh;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    border-radius: 15px;
+    padding: 8.5vw;
+}
+
+div#thread-board {
+    width: 85vw;
+    margin: 0 3vw 3vw 3vw;
+    height: 75vh;
+    border-radius: 15px;
+    background-color: #78caff;
+}
+
+div#threadNameWrapper {
+    margin-bottom: 2vh;
+}
+
+div#urgencyWrapper {
+    margin-bottom: 2vh;
+}
+
+.thread {
+    background-color: #c5ebff;
+    border-radius: 10px;
+    padding: 2vw;
+    margin-bottom: 1vh;
+}
+
+.delete {
+    width: 32vw;
+}
+
+.cancel {
+    width: 28vw;
+}
+
+#threadWrapper {
+    overflow: scroll;
+    max-height: 53vh;
+    margin-bottom: 2vh;
+    border-radius: 10px;
+    width: 68vw;
+    padding: 0
+}
+
+h2#createHeader {
+    text-align: center;
+}
+
+h2#editHeader {
+    text-align: center;
+}
+
+label{
+    font-size: 4vw;
+    color: #031926;
+    padding-bottom: 0.5vh;
+}
+
+div#buttonWrapper {
+    justify-content: space-between;
+    display: flex;
+    margin-top: 3vh;
+}
+
+.thread-name {
+    font-weight: bold;
+    font-size: 5vw;
+    color:#031926
+}
+
+.lowPriority {
+    color: rgb(0, 160, 78);
+}
+
+.normPriority{
+    color: rgb(244 199 0);
+}
+
+.highPriority{
+    color: rgb(237, 0, 51);
+}
+
+.bi-pencil-fill {
+    color: #0d6efd;
+    font-size: 17px;
+}
+
+div#editModal {
+    background-color: #78caff;
+    z-index: 10;
+    position: fixed;
+    width: 85vw;
+    max-height: 73vh;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    border-radius: 15px;
+    padding: 8.5vw;
+}
+
+.bi-x {
+    font-size: 30px;
+    position: fixed;
+    top: 1vh;
+    left: 3vh;
+    color: #031926;
+}
+
+.tag {
+    margin: 1vw;
+    border-radius: 17px;
+    border-color: #ffffff00;
+    color: #003480;
+    background-color: #c5ebff;
+}
+
+.filter-tag {
+    margin-right: 1vw;
+    border-radius: 17px;
+    border-color: #ffffff00;
+    color: #003480;
+    background-color: #c5ebff;
+}
+
+div#search-terms {
+    margin: 3vw 0 3vw 0;
+    overflow-x: auto;
+    overflow-y: hidden;
+    display: inline-block;
+    width: 85vw;
+    white-space: nowrap;
+    border-radius: 17px;
+}
+
+select#search-select-filter {
+    width: 31vw;
+    font-size: 4vw;
+    height: 5vh;
+    border-radius: 15px;
+    background-color: #78caff;
+    border: none;
+    margin-left: auto;
+    position: relative;
+    display: block;
+    right: 7vw;
+}
+
+select#search-select-filter {
+    width: 37vw;
+    font-size: 4vw;
+    height: 5vh;
+    border-radius: 15px;
+    background-color: #78caff;
+    border: none;
+    margin-right: auto;
+    position: relative;
+    display: block;
+    right: 18vw;
+}
+
+#emergency-wrapper {
+    background-color: #78caff;
+    width: 80vw;
+    border-radius: 15px;
+    height: 88vh;
+    position: relative;
+    display: flex;
+    margin: auto;
+    top: 1.5;
+    flex-direction: column;
+    text-align: center;
+    padding: 15px;
+}
+
+#emergency-header {
+    text-align: center;
+    padding: 20px 0px 10px 0px;
+    font-size: 8vw;
+}
+
+#primary-contact-form,
+#alternative-contact-form,
+#emergency-message-form {
+    display: flex;
+    flex-direction: column;
+}
+
+#primary-contact,
+#alternative-contact,
+#user-message {
+    font-size: 20px;
+    font-style: italic;
+    font-weight: 800;
+    margin-bottom: 10px;
+}
+
+#primary-input,
+#alternative-input {
+    width: 50vw;
+    height: 10vw;
+    border-radius: 5px;
+    padding-left: 10px;
+    margin: 0px auto 15px auto;
+}
+
+#primary-button,
+#alternative-button,
+#message-button {
+    width: 25vw;
+    margin: auto;
+    margin-bottom: 5px;
+}
+
+#emergency-message {
+    height: 10vh;
+    width: 65vw;
+    border-radius: 5px;
+    margin: auto;
+    margin-bottom: 15px;
+}
+
+#location-sharing-text {
+    font-size: 20px;
+    font-weight: 500;
 }

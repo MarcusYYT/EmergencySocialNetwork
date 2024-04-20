@@ -40,6 +40,6 @@ export async function registerNewSocket(user_id, socket_id){
 }
 
 export async function getSocketIdByUserId(userId) {
-    const entry = Array.from(socketToUser.entries()).find(([socketId, storedUserId]) => storedUserId === userId);
+    const entry = Array.from(socketToUser.entries()).find(([socketId, storedUserId]) => storedUserId == userId);
     return entry ? entry[0] : null; // Return the socket ID if found, otherwise return null
 }
