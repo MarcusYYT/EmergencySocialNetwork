@@ -1,6 +1,7 @@
 import {Resource} from "../models/Resource.model.js";
 import {ResourceType} from "../models/ResourceType.model.js";
 import {ResourceUnit} from "../models/ResourceUnit.model.js";
+import { returnData } from "../config/returnJsonUtility.js";
 
 export async function createNewResource(userId, resourceData) {
     return await Resource.createResource(
@@ -18,17 +19,9 @@ export async function createNewResource(userId, resourceData) {
 
 
 export async function getResourceById(resourceId){
-    let returnJson = {
-        exist: null,
-        data: []
-    }
+    let returnJson = null
     await Resource.getResourceById(resourceId).then((res)=>{
-        if(res != null){
-            returnJson.exist = true;
-            returnJson.data.push(res)
-        } else {
-            returnJson.exist = false;
-        }
+        returnJson = returnData(res)
     })
     return returnJson;
 }

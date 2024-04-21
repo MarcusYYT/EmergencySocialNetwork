@@ -1,4 +1,5 @@
 import { ThreadPost } from "../models/ThreadPost.model.js";
+import { returnData } from "../config/returnJsonUtility.js";
 
 /**
  * TODO
@@ -31,17 +32,9 @@ export async function createNewThreadPost(userId, content, status, threadId) {
  * @returns 
  */
 export async function getThreadPostById(postId){
-    let returnJson = {
-        exist: null, 
-        data: []
-    }
+    let returnJson = null
     await ThreadPost.getThreadPostById(postId).then((res)=>{
-        if(res != null){
-            returnJson.exist = true;
-            returnJson.data.push(res) 
-          } else {
-            returnJson.exist = false;
-          }
+      returnJson = returnData(res)
     })
     return returnJson;
 }

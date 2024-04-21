@@ -1,4 +1,5 @@
 import {Post} from "../models/Post.model.js";
+import { returnData } from "../config/returnJsonUtility.js";
 
 /**
  * TODO
@@ -18,17 +19,9 @@ export async function createNewPost(userId, content, status) {
  * @returns 
  */
 export async function getPostById(postId){
-    let returnJson = {
-        exist: null, 
-        data: []
-    }
+    let returnJson = null
     await Post.getPostById(postId).then((res)=>{
-        if(res != null){
-            returnJson.exist = true;
-            returnJson.data.push(res) 
-          } else {
-            returnJson.exist = false;
-          }
+      returnJson = returnData(res)
     })
     return returnJson;
 }

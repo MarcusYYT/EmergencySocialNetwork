@@ -1,4 +1,5 @@
 import { Thread } from '../models/Thread.model.js'
+import { returnData } from '../config/returnJsonUtility.js'
 
 /**
  * TODO
@@ -32,8 +33,6 @@ export async function ifThreadNameExists(threadName) {
   return await Thread.ifThreadNameExists(threadName)
 }
   
-  
-
 
 /**
  * TODO
@@ -41,17 +40,9 @@ export async function ifThreadNameExists(threadName) {
  * @returns 
  */
 export async function getThreadById(threadId){
-    let returnJson = {
-        exist: null, 
-        data: []
-    }
+    let returnJson = null
     await Thread.getThreadById(threadId).then((res)=>{
-        if(res != null){
-            returnJson.exist = true;
-            returnJson.data.push(res) 
-          } else {
-            returnJson.exist = false;
-          }
+      returnJson = returnData(res)
     })
     return returnJson;
 }
@@ -76,8 +67,6 @@ export async function getThreadByName(threadName){
   })
   return returnJson;
 }
-
-
 
 /**
  * TODO: write the function documentation
