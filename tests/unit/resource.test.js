@@ -108,13 +108,13 @@ describe('Create new resource type and unit', () => {
 
     test('Create new resource', async () => {
         const resourceData = {
-            type_id: 1,
-            unit_id: 1,
-            name: "Medication",
-            amount: 5,
+            resource_type_id: 1,
+            resource_unit_id: 1,
+            resource_name: "Medication",
+            resource_amount: 5,
             latitude: 1,
             longitude: 1,
-            note: "note",
+            resource_note: "note",
             tel: 123-456-7890
         }
         expect(await createNewResource(1, resourceData)).toMatchObject({

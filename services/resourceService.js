@@ -6,11 +6,11 @@ import { returnData } from "../config/returnJsonUtility.js";
 export async function createNewResource(userId, resourceData) {
     return await Resource.createResource(
         userId,
-        resourceData.type_id,
-        resourceData.name,
-        resourceData.amount,
-        resourceData.unit_id,
-        resourceData.note,
+        resourceData.resource_type_id,
+        resourceData.resource_name,
+        resourceData.resource_amount,
+        resourceData.resource_unit_id,
+        resourceData.resource_note,
         resourceData.latitude,
         resourceData.longitude,
         resourceData.tel
@@ -60,17 +60,6 @@ export async function updateResource(resourceId, updateData){
         data:[],
         message:"initial message"
     }
-    // let updateData = {
-    //     user_id: userId,
-    //     resource_type_id: resourceTypeId,
-    //     resource_name: resourceName,
-    //     resource_amount: resourceAmount,
-    //     resource_unit: resourceUnitId,
-    //     resource_note: note,
-    //     resource_latitude: latitude,
-    //     resource_longitude: longitude,
-    //     tel: tel
-    // }
     await Resource.updateResourceById(resourceId, updateData).then((res)=>{
         returnJson.message = "Update resource successful"
         returnJson.data = res;

@@ -40,19 +40,8 @@ export async function getResourceGrouped(req, res){
 export async function postResource(req, res){
     try{
         const userId = req.body.user_id;
-        const resourceData = {
-            type_id: req.body.resource_type_id,
-            name: req.body.resource_name,
-            amount: req.body.resource_amount,
-            unit_id: req.body.resource_unit_id,
-            note: req.body.resource_note,
-            latitude: req.body.latitude,
-            longitude: req.body.longitude,
-            tel: req.body.tel
-        }
-
+        const resourceData = req.body;
         await resourceService.createNewResource(userId, resourceData).then(() =>{
-            io.emit("resourceData", req.body);
             res.status(201).json({ success: true, message: 'Post a new resource successful' });
         })
     } catch(error) {
@@ -64,20 +53,7 @@ export async function updateResource(req, res){
 
     try {
         const resourceId = req.body.resource_id;
-        const updateData = {
-            user_id: req.body.user_id,
-            resource_type_id: req.body.resource_type_id,
-            resource_name: req.body.resource_name,
-            resource_amount: req.body.resource_amount,
-            resource_unit: req.body.resource_unit_id,
-            resource_note: req.body.resource_note,
-            resource_latitude: req.body.latitude,
-            resource_longitude: req.body.longitude,
-            tel: req.body.tel
-        }
-
-        console.log(updateData);
-        await resourceService.updateResource(resourceId, updateData).then(() =>{
+        await resourceService.updateResource(resourceId, req.body).then(() =>{
             res.status(200).json({ success: true, message: 'Update resource successful' });
         })
     } catch(error) {
