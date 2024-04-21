@@ -70,6 +70,12 @@ export async function updateUser(req, res){
                 })
                 res.status(200).json({success: resolve.success, message: resolve.message});
         })}
+        //hey haoming
+        //basically we had an idea to make it so that we have this updateAt == "admin"
+        //then we can update all the fields at once (no matter if the admin updated one
+        // or more) since we will pass in all attributes as a json
+        // We need a new changeUserProfile() function in userService
+        // take a look at threadController (specifically the editThread method for an example of what was done to update multiple fields at once)
 
     } catch(error){
         res.status(500).json({ message: 'Error updating user', error: error.message });

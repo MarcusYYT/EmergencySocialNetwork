@@ -23,11 +23,11 @@ a.btn.btn-primary {
     top: 0;
 }
 
-i.bi.bi-plus-circle-fill {
+/* i.bi.bi-list {
     font-size: 9vw;
     padding: 2vw;
     color: #222529;
-}
+} */
 
 .navbar {
     position: relative;
@@ -53,7 +53,7 @@ a.navLinks {
     position: relative;
 }
 
-i.bi.bi-plus-circle-fill {
+i.bi.bi-list {
     font-size: 9vw;
     padding: 2vw;
     color: #004bb8;
@@ -641,6 +641,14 @@ div#buttonWrapper {
     font-size: 17px;
 }
 
+.bi-pencil-fill.edit-user {
+    color: #0d6efd;
+    font-size: 17px;
+    position: absolute;
+    right: 62.5vw;
+    width: fit-content;
+}
+
 .bi-x {
     font-size: 30px;
     position: fixed;
@@ -765,4 +773,24 @@ select#search-select-filter {
 #location-sharing-text {
     font-size: 20px;
     font-weight: 500;
+}
+
+button.btn.btn-primary.validate {
+    margin-right: auto;
+    margin-left: auto;
+    margin-top: 3vh;
+    display: flex;
+}
+
+.inputWrapper , .dropdownWrapper{
+    margin-bottom: 7px;
+}
+
+.form-select-sm {
+    padding-top: .25rem;
+    padding-bottom: .25rem;
+    padding-left: .5rem;
+    font-size: .875rem;
+    border-radius: .2rem;
+    border: none;
 }

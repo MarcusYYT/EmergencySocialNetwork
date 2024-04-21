@@ -7,12 +7,13 @@ html(lang='en')
     link(rel='stylesheet', href='https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css')
     link(rel='stylesheet', type='text/css', href='/stylesheets/index.css')
     script(src='/javascripts/directory.js')
+    script(src='/javascripts/threads.js')
     script(src='https://cdn.socket.io/4.7.4/socket.io.min.js')
     script(src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js")
     title Directory 
   body
     .navbar.container
-      i.bi.bi-plus-circle-fill.col.col-2(onclick='toggleHamburgerMenu()')
+      i.bi.bi-list.col.col-2(onclick='toggleHamburgerMenu()')
       a#logout.btn.btn-primary.col.col-1(onclick='logout()') Log Out
     #hamburgerMenu.links
       a.navLinks(onclick='routeToAnnouncement()') Annoucements
@@ -20,8 +21,9 @@ html(lang='en')
       a.navLinks(onclick='routeToResource()') Resources
       a.navLinks(onclick='routeToThreadWall()') Threads
       a.navLinks(onclick='routeToEmergencyContact()') Contacts
-      a.navLinks(onclick='routeToTest()') Speed Test
+      a.navLinks(onclick='routeToTest()') Speed Test  
       a.navLinks(onclick='routeToSetting()') Setting
+      //a.navLinks(onclick='routeToAdministrate()') Administrate
     form#directory-search-form.input-group.mb-3(onsubmit="submitSearch()" onchange="searchFinished()")
         select#search-select.form-select-sm
           option(value='User') User
@@ -191,12 +193,13 @@ html(lang='en')
         for (let i = 0; i < list.length; i++) {
           let userDiv = document.createElement("div");
           userDiv.setAttribute("class", "directory-user row gx-1 justify-content-between");
-          userDiv.addEventListener("click", () => {routeToPrivateChat(userId, list[i].user_id)})
+          
 
           let usernameField = document.createElement("p");
           usernameField.setAttribute("class", "usernameField col-10");
           let usernameFieldText = document.createTextNode(list[i].username);
           usernameField.appendChild(usernameFieldText);
+          usernameField.addEventListener("click", () => {routeToPrivateChat(userId, list[i].user_id)})
 
           let onlineStatusField = document.createElement("div");
           onlineStatusField.setAttribute("class", "onlineStatusField col-1");
@@ -230,6 +233,14 @@ html(lang='en')
 
 
           statusField.appendChild(statusFieldImage);
+
+          let editUserImage = document.createElement("i");
+          editUserImage.setAttribute("class", "bi bi-pencil-fill edit-user");  
+          editUserImage.addEventListener("click", () => {renderEditUserOverlay(list[i])})
+
+
+          userDiv.appendChild(editUserImage);
+
           userDiv.appendChild(onlineStatusField);
           userDiv.appendChild(usernameField);
 
@@ -251,15 +262,149 @@ html(lang='en')
         }
       }
 
-      
-      function addEventListenerstoStatus(){
-          let okStatus = document.getElementById("ok-status");
-          let helpStatus = document.getElementById("help-status");
-          let emergencyStatus = document.getElementById("emergency-status");
 
-          okStatus.addEventListener("click", () => {changeMyStatus("OK")})
-          helpStatus.addEventListener("click", () => {changeMyStatus("help")})
-          emergencyStatus.addEventListener("click", () => {changeMyStatus("emergency")})
+      function createRadioButtonWrapper(selected){
+        let dropdownWrapper = document.createElement("div")
+        dropdownWrapper.setAttribute("class", "dropdownWrapper")
+        let dropdownLabel = document.createElement("label")
+        dropdownLabel.setAttribute("class", "dropdownLabel")
+        dropdownLabel = addTextToElement(dropdownLabel, "Account Status:")
+        let dropdownSelect = document.createElement("select")
+        dropdownSelect.setAttribute("class", "form-select-sm dropdownSelect")
+        let activeOption = createOption("Active", selected)
+        let inactiveOption = createOption("Inactive", selected)
+        dropdownSelect.appendChild(activeOption)
+        dropdownSelect.appendChild(inactiveOption)
+        dropdownWrapper.appendChild(dropdownLabel)
+        dropdownWrapper.appendChild(dropdownSelect)
+        return dropdownWrapper
+      }
+
+      function createInput(selectedName, label, id){
+        let inputWrapper = document.createElement("div")
+        inputWrapper.setAttribute("class", "inputWrapper")
+        let inputNameLabel = document.createElement("label")
+        inputNameLabel.setAttribute("class", "inputNameLabel")
+        inputNameLabel = addTextToElement(inputNameLabel, label)
+        let inputNameInput = document.createElement("input")
+        inputNameInput.setAttribute("class", "form-control inputNameInput")
+        inputNameInput.setAttribute("id", id)
+        inputNameInput.setAttribute("type", "text")
+        if(selectedName != undefined){
+          inputNameInput.value = selectedName
+        }
+        inputWrapper.appendChild(inputNameLabel)
+        inputWrapper.appendChild(inputNameInput)
+        return inputWrapper
+      }
+
+      function createDropdown(selected){
+        let dropdownWrapper = document.createElement("div")
+        dropdownWrapper.setAttribute("class", "dropdownWrapper")
+        let dropdownLabel = document.createElement("label")
+        dropdownLabel.setAttribute("class", "dropdownLabel")
+        dropdownLabel = addTextToElement(dropdownLabel, "Privilege Level:")
+        let dropdownSelect = document.createElement("select")
+        dropdownSelect.setAttribute("class", "form-select-sm dropdownSelect")
+        let coordinatorOption = createOption("Coordinator", selected)
+        let adminOption = createOption("Administrator", selected)
+        let citizenOption = createOption("Citizen", selected)
+        dropdownSelect.appendChild(coordinatorOption)
+        dropdownSelect.appendChild(adminOption)
+        dropdownSelect.appendChild(citizenOption)
+        dropdownWrapper.appendChild(dropdownLabel)
+        dropdownWrapper.appendChild(dropdownSelect)
+        return dropdownWrapper
+      }
+
+      // See userController for needing a new service method
+      function renderEditUserOverlay(userData){
+        let editOverlay = document.createElement("div")
+        editOverlay.setAttribute("id", "overlay")
+        let body = document.getElementsByTagName("body")[0]
+        let directoryWrapper = document.getElementById("directory-wrapper")
+        let editModal = document.createElement("div")
+        editModal.setAttribute("id", "editModal")
+        let cancelButton = document.createElement("i")
+        cancelButton.setAttribute("class", "bi bi-x")
+        cancelButton.addEventListener("click", () => {removeEditOverlay()})
+        let editHeader = document.createElement("h2")
+        editHeader.setAttribute("id", "editHeader")
+        editHeader.appendChild(document.createTextNode("Edit User"))
+
+        
+
+        // We hard-code "Citizen" to test, but we will need 
+        // userData.privilege and userData.accountStatus from the user table
+        let statusWrapper = createRadioButtonWrapper("Active");
+        let privilegeWrapper = createDropdown("Citizen");
+        let usernameWrapper = createInput(userData.username, "Username: ", "usernameWrapper");
+        let passwordWrapper = createInput("", "Password: ", "passwordWrapper");
+
+        let saveButton = document.createElement("button")
+        saveButton.className = "btn btn-primary validate"
+        saveButton = addTextToElement(saveButton, "Save Changes")
+        //validate changes for that specific username typed in
+        saveButton.addEventListener("click", async () => {validateChanges(document.getElementById("usernameWrapper").value, 
+                                                                          userData.username, 
+                                                                          document.getElementById("passwordWrapper").value)})
+
+        editModal.appendChild(cancelButton)
+        editModal.appendChild(editHeader)
+        editModal.appendChild(statusWrapper)
+        editModal.appendChild(privilegeWrapper)
+        editModal.appendChild(usernameWrapper)
+        editModal.appendChild(passwordWrapper)
+        editModal.appendChild(saveButton)
+        body.insertBefore(editOverlay, directoryWrapper)
+        body.insertBefore(editModal, directoryWrapper)
+      }
+
+      async function validateChanges(username, prev_username, password){
+        await fetch('/auth/validate', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ username: username, prev_username: prev_username })
+          }).then(response => response.json()).then((data) => {     
+            validationResult(data.success, data.message, validatePassword(password))
+        })
+      }
+
+      function validatePassword(password) {     
+        if (password.length < 4 && password.length > 0) {  
+          return false;
+        }
+        return true;
+      }
+
+      function validationResult(usernameValidation, message, passwordValidation) {
+        if (usernameValidation && passwordValidation) {
+            const confirmation = window.confirm("Validation Success! Do you want to save the changes?");  
+            if (confirmation) {
+              console.log("Data saved");
+
+              
+              removeEditOverlay();
+            }  
+        }     
+        else if (!passwordValidation){
+          alert("The password has to be at least 4 characters long");
+        }
+        else{
+          alert(message);
+        }
+      }
+
+      function addEventListenerstoStatus(){
+        let okStatus = document.getElementById("ok-status");
+        let helpStatus = document.getElementById("help-status");
+        let emergencyStatus = document.getElementById("emergency-status");
+
+        okStatus.addEventListener("click", () => {changeMyStatus("OK")})
+        helpStatus.addEventListener("click", () => {changeMyStatus("help")})
+        emergencyStatus.addEventListener("click", () => {changeMyStatus("emergency")})
       }
 
       async function changeMyStatus(selectedValue) {
@@ -438,6 +583,11 @@ html(lang='en')
       function routeToResource() {
         const user_id = #{user_id};
         window.location.href = `/resources/${user_id}`;
+      }
+
+      function routeToAdministrate() {
+        const user_id = #{user_id};
+        window.location.href = `/administration/${user_id}`;
       }
       
       async function logout(){

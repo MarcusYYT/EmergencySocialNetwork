@@ -18,21 +18,15 @@ export async function register(req, res) {
         const password = req.body.password;
         await userService.isUsernameValid(username).then(async (resolve)=>{
             if(resolve === false){
-                console.log("username is not valid");
                 res.status(409).json({ success: false, message: 'Username invalid' });
             } else {
                 await User.ifUserExist(username).then(async (result)=>{
                     if(result === true){
-                        console.log("The User is exist")
-                        res.status(409).json({ success: false, message: 'Username Exist' });
+                        res.status(409).json({ success: false, message: 'Username already exists' });
                     } else{
-                        console.log("The User is not exist")
-
                         await userService.createNewUser(username, password).then((user)=>{
                             const newUserId = user.user_id;
-                            console.log(newUserId)
-                            const token = jwt.sign({ user_id: newUserId }, process.env.JWT_SECRET_KEY || 'sb1sb1', { expiresIn: '1h' });
-                            
+                            const token = jwt.sign({ user_id: newUserId }, process.env.JWT_SECRET_KEY || 'sb1sb1', { expiresIn: '1h' });               
                             res.status(201).json({ success: true, user_id: newUserId, token, message: 'Registration successful' });
 
                         });
@@ -62,6 +56,37 @@ export async function login(req, res) {
             res.status(200).json({ success: true, user_id: user.user_id, token, message: 'Login successful' });
         }
     })(req, res);
+}
+
+export async function validateUser(req, res) {
+    try{
+        const username = req.body.username;
+        const prev_username = req.body.prev_username;
+        await userService.isUsernameValid(username).then(async (resolve)=>{
+            if(resolve === false){
+                console.log("username is not valid");
+                res.status(409).json({ success: false, message: 'Username invalid' });
+            } else {
+                await User.ifUserExist(username).then(async (result)=>{
+                    if(result === true){
+                        if(prev_username == username){
+                            res.status(201).json({ success: true, message: 'No change was made' });     
+                        }
+                        else{
+                            console.log("The User exists")
+                            res.status(409).json({ success: false, message: 'Username already exists' });
+                        }
+                       
+                    } else{
+                        console.log("The User does not exist")
+                        res.status(201).json({ success: true, message: 'Registration successful' });                   
+                    }
+                });
+            }
+        });
+    } catch (error) {
+        res.status(500).send(error.message);
+    }
 }
 
 export async function tokenResolve(req, res) {
