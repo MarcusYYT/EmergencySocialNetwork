@@ -7,41 +7,12 @@ import swaggerUI from 'swagger-ui-express'
 import socketConfig from './config/socketConfig.js'
 import passport from './config/passportConfig.js'
 
-import authRoutes from './routes/authRoutes.js'
-import userRoutes from './routes/userRoutes.js'
-import postRoutes from './routes/postRoutes.js'
-import privatePostRoutes from './routes/privatePostRoutes.js'
-import announcementRoutes from './routes/announcementRoutes.js'
-import threadRoutes from './routes/threadRoutes.js'
-import threadPostRoutes from './routes/threadPostRoutes.js'
-import pageRoutes from './routes/pageRoutes.js'
-import statusRoutes from './routes/statusRoutes.js'
-import searchRoutes from './routes/searchRoutes.js'
-import testRoute from './routes/testRoutes.js'
-import preferenceRoute from './routes/preferenceRoutes.js'
-import subscriberRoutes from './routes/subscriberRoutes.js'
-import resourceRoutes from './routes/resourceRoutes.js'
-import emergencyContactRoutes from './routes/emergencyContactRoutes.js'
+import router from './routes/index.js'
 import DatabaseAdapter from './config/DatabaseAdapter.js'
-
 import { createServer } from 'node:http';
 import cookieParser from 'cookie-parser';
 import socketRoutes from "./routes/socketRoutes.js";
-
-
-
-
-const swaggerOptions = {
-  failOnErrors: true, // Whether or not to throw when parsing errors. Defaults to false.
-  definition: {
-    openapi: '3.0.0',
-    info: {
-      title: 'ESN Restful API',
-      version: '1.0.0',
-    },
-  },
-  apis: ['./routes/*.js'],
-};
+import {swaggerOptions} from "./config/swaggerConfig.js";
 
 // get the root folder for the project
 const root = process.cwd();
@@ -78,24 +49,7 @@ app.use((req, res, next) => {
     }
     next();
 });
-
-// Router setting
-app.use('', pageRoutes);
-app.use('/auth', authRoutes);
-app.use('/users', userRoutes);
-app.use('/posts', postRoutes);
-app.use('/status', statusRoutes)
-app.use('/privatePosts', privatePostRoutes)
-app.use('/announcements', announcementRoutes)
-app.use('/threads', threadRoutes)
-app.use('/threadPosts', threadPostRoutes)
-app.use('/emergencyContacts', emergencyContactRoutes);
-app.use('/search', searchRoutes)
-app.use('/test', testRoute);
-app.use('/preference', preferenceRoute);
-app.use('/subscribers', subscriberRoutes);
-app.use('/resource', resourceRoutes);
-app.use('/sockets', socketRoutes)
+app.use(router)
 
 // setup swagger
 const swaggerSpec = await swaggerJSDoc(swaggerOptions);
@@ -129,18 +83,15 @@ server.listen(port, async () => {
     const database = DatabaseAdapter.getDatabase();
     await database.authenticate();
     console.log("Connected to in-memeory test database");
-    console.log("initializing models...")
-    await DatabaseAdapter.reinitializeModels();
-    console.log("done")
   } else {
     DatabaseAdapter.setCurrentDatabase('default');
     const database = DatabaseAdapter.getDatabase();
     await database.authenticate();
     console.log("Connected to MySQL database");
-    console.log("initializing models...")
-    await DatabaseAdapter.reinitializeModels();
-    console.log("done")
   }
+  console.log("initializing models...")
+  await DatabaseAdapter.reinitializeModels();
+  console.log("done")
 });
 
 export default app;
