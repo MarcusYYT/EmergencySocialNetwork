@@ -355,7 +355,7 @@ script.
           alert('Location data is required but not available. Please ensure location services are enabled and try again.');
           return false; // Prevent form submission if location data is missing
       }
-      const formData = new URLSearchParams(new FormData(document.querySelector('form[action="/resources/post"]')));
+      const formData = new URLSearchParams(new FormData(document.querySelector('form[action="/resource/post"]')));
       formData.append('resource_id', resourceId);
       fetch('/resource/update', {
           method: 'PUT',
