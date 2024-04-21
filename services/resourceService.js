@@ -1,25 +1,27 @@
 import {Resource} from "../models/Resource.model.js";
 import {ResourceType} from "../models/ResourceType.model.js";
 import {ResourceUnit} from "../models/ResourceUnit.model.js";
+import { returnData } from "../config/returnJsonUtility.js";
 
-export async function createNewResource(userId, resourceTypeId, resourceName, resourceAmount, resourceUnitId, note, latitude, longitude, tel) {
-    return await Resource.createResource(userId, resourceTypeId, resourceName, resourceAmount, resourceUnitId, note, latitude, longitude, tel)
+export async function createNewResource(userId, resourceData) {
+    return await Resource.createResource(
+        userId,
+        resourceData.resource_type_id,
+        resourceData.resource_name,
+        resourceData.resource_amount,
+        resourceData.resource_unit_id,
+        resourceData.resource_note,
+        resourceData.latitude,
+        resourceData.longitude,
+        resourceData.tel
+    );
 }
 
 
-
 export async function getResourceById(resourceId){
-    let returnJson = {
-        exist: null,
-        data: []
-    }
+    let returnJson = null
     await Resource.getResourceById(resourceId).then((res)=>{
-        if(res != null){
-            returnJson.exist = true;
-            returnJson.data.push(res)
-        } else {
-            returnJson.exist = false;
-        }
+        returnJson = returnData(res)
     })
     return returnJson;
 }
@@ -53,21 +55,10 @@ export async function getResourceGrouped(){
     return returnJson
 }
 
-export async function updateResource(resourceId, userId, resourceTypeId, resourceName, resourceAmount, resourceUnitId, note, latitude, longitude, tel){
+export async function updateResource(resourceId, updateData){
     let returnJson = {
         data:[],
         message:"initial message"
-    }
-    let updateData = {
-        user_id: userId,
-        resource_type_id: resourceTypeId,
-        resource_name: resourceName,
-        resource_amount: resourceAmount,
-        resource_unit: resourceUnitId,
-        resource_note: note,
-        resource_latitude: latitude,
-        resource_longitude: longitude,
-        tel: tel
     }
     await Resource.updateResourceById(resourceId, updateData).then((res)=>{
         returnJson.message = "Update resource successful"

@@ -81,18 +81,18 @@ function renderSlicedArray(slicedArray, isPrivate, isStatus){
     messageBoard.appendChild(messageElement);
   }
   if (counter + 1 < slicedArray.length && !isStatus) {
-      createShowMore(slicedArray, isPrivate)
+      createShowMore(slicedArray, isPrivate, isStatus)
       counter++;  
   }
 }
 
-function createShowMore(slicedArray, isPrivate){
+function createShowMore(slicedArray, isPrivate, isStatus){
   let messageBoard = document.getElementById("message-board")
   let showMore = document.createElement("div");
   showMore.setAttribute("id", "show-more")
   showMore.setAttribute("class", "list-group-item")
   let showMoreText = document.createTextNode("Show More...")  
-  showMore.addEventListener("click", () => {renderSlicedArray(slicedArray, isPrivate)})
+  showMore.addEventListener("click", () => {renderSlicedArray(slicedArray, isPrivate, isStatus)})
   showMore.appendChild(showMoreText)
   messageBoard.appendChild(showMore)
 }
@@ -136,3 +136,4 @@ function removePostElements(messageBoard) {
     messageBoard.removeChild(messageBoard.lastChild);
   }
 }
+

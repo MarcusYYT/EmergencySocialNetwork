@@ -1,4 +1,5 @@
 import {EmergencyContact} from "../models/EmergencyContact.model.js";
+import { returnData } from "../config/returnJsonUtility.js";
 
 /**
  * This function will insert a row to the emergency contact table with contact info
@@ -32,17 +33,9 @@ export async function createEmergencyContact(userId, primary, alternative, messa
  * @returns 
  */
 export async function getEmergencyContactByUserId(userId){
-    let returnJson = {
-      exist: null,
-      data:[]
-    }
+    let returnJson = null
     await EmergencyContact.getEmergencyContactByUserId(userId).then((res) => {
-      if(res != null){
-        returnJson.exist = true;
-        returnJson.data.push(res) 
-      } else {
-        returnJson.exist = false;
-      }
+      returnJson = returnData(res)
     })
     return returnJson;
   }

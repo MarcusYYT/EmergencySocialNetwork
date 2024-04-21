@@ -36,16 +36,6 @@ async function renderAnnouncements(chatlist) {
     }
 }
 
-function slice(array, size){   
-    let slicedArray = [];
-    for (let i = 0; i < Math.ceil(array.length / size); i++) {
-        slicedArray.push(array.slice(i * size, i * size + size));
-    }
-    return slicedArray 
-}
-
-let counter = 0;
-
 function renderSlicedArray(slicedArray){
     let announcementBoard = document.getElementById("announcement-board")
     let showMore = document.getElementById("show-more");

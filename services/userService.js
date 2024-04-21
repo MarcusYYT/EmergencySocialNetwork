@@ -1,5 +1,6 @@
 import {User} from "../models/User.model.js";
 import { getUsernameBanList } from "../config/usernameBanList.js";
+import { returnData } from "../config/returnJsonUtility.js";
 import bcrypt from "bcryptjs";
 
 let saltRounds = 10;
@@ -39,19 +40,10 @@ export async function createNewUser(username, password) {
  * @returns 
  */
 export async function getUserById(user_id){
-  let returnJson = {
-    exist: null,
-    data:[]
-  }
+  let returnJson = null
   await User.getUserById(user_id).then((res) => {
-    if(res != null){
-      returnJson.exist = true;
-      returnJson.data.push(res) 
-    } else {
-      returnJson.exist = false;
-    }
+    returnJson = returnData(res)
   })
-
   return returnJson;
 }
 
@@ -61,19 +53,10 @@ export async function getUserById(user_id){
  * @returns 
  */
 export async function getUserByUsername(username){
-  let returnJson = {
-    exist: null,
-    data:[]
-  }
+  let returnJson = null
   await User.getOneUser(username).then((res) => {
-    if(res != null){
-      returnJson.exist = true;
-      returnJson.data.push(res) 
-    } else {
-      returnJson.exist = false;
-    }
+    returnJson = returnData(res)
   })
-
   return returnJson;
 }
 

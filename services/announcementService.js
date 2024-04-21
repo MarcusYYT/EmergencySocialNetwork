@@ -1,4 +1,5 @@
 import { Announcement } from '../models/Announcement.model.js'
+import { returnData } from '../config/returnJsonUtility.js'
 
 /**
  * TODO
@@ -17,17 +18,9 @@ export async function createNewAnnouncement(userId, content) {
  * @returns 
  */
 export async function getAnnouncementById(announcementId){
-    let returnJson = {
-        exist: null, 
-        data: []
-    }
+    let returnJson = null;
     await Announcement.getAnnouncementById(announcementId).then((res)=>{
-        if(res != null){
-            returnJson.exist = true;
-            returnJson.data.push(res) 
-          } else {
-            returnJson.exist = false;
-          }
+      returnJson = returnData(res)
     })
     return returnJson;
 }

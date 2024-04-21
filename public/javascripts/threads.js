@@ -1,33 +1,31 @@
+function createUrgencyImage(urgency){
+  let urgencyFieldImage = document.createElement("i");
+  if (urgency === "Low Priority") {
+    urgencyFieldImage.setAttribute("class", "lowPriority col-1 bi bi-record-fill");
+  } else if (urgency === "High Priority") {
+    urgencyFieldImage.setAttribute("class", "highPriority col-1 bi bi-record-fill");
+  } else if (urgency === "Normal Priority") {
+    urgencyFieldImage.setAttribute("class", "normPriority col-1 bi bi-record-fill");
+  }
+  return urgencyFieldImage;
+}
 function constructThread(msgData, user_id) {
     const threadDiv = document.createElement('div');
-    threadDiv.className = 'thread row g-0 justify-content-between';
-    
+    threadDiv.className = 'thread row g-0 justify-content-between'; 
     const threadHeader = document.createElement('div');
     threadHeader.className = 'thread-name';
-
-    const urgencyFieldImage = document.createElement("i");
-    if (msgData.urgency === "Low Priority") {
-      urgencyFieldImage.setAttribute("class", "lowPriority col-1 bi bi-record-fill");
-    } else if (msgData.urgency === "High Priority") {
-      urgencyFieldImage.setAttribute("class", "highPriority col-1 bi bi-record-fill");
-    } else if (msgData.urgency === "Normal Priority") {
-      urgencyFieldImage.setAttribute("class", "normPriority col-1 bi bi-record-fill");
-    }
-
+    const urgencyFieldImage = createUrgencyImage(msgData.urgency)
     threadHeader.appendChild(urgencyFieldImage);
     threadHeader.appendChild(document.createTextNode(msgData.thread_name))
     const threadCreatorHeader = document.createElement('div');
     threadCreatorHeader.className = 'creator col-12';
     const creatorSpan = document.createElement('span');
     creatorSpan.className = 'thread-creator';
-    creatorSpan.appendChild(document.createTextNode("By: " + msgData.creator));
-    
+    creatorSpan.appendChild(document.createTextNode("By: " + msgData.creator));  
     threadCreatorHeader.appendChild(threadHeader);
     threadCreatorHeader.appendChild(creatorSpan);
     threadCreatorHeader.addEventListener("click", () => {routeToThreadChat(msgData.thread_id)})
-
     threadDiv.appendChild(threadCreatorHeader);
-
     if(msgData.creator_id === user_id){
       threadCreatorHeader.className = 'creator col-11';
       const editImage = document.createElement("i");
@@ -35,7 +33,6 @@ function constructThread(msgData, user_id) {
       editImage.addEventListener("click", () => {renderEditOverlay(msgData)});
       threadDiv.appendChild(editImage);
     }
-    //threadDiv.appendChild(urgencyFieldImage);
     return threadDiv;
   }
 
@@ -46,20 +43,16 @@ function constructThread(msgData, user_id) {
     let postWrapper = document.getElementById("post-wrapper")
     let editModal = document.createElement("div")
     editModal.setAttribute("id", "editModal")
-
     let cancelButton = document.createElement("i")
     cancelButton.setAttribute("class", "bi bi-x")
     cancelButton.addEventListener("click", () => {removeEditOverlay()})
-
     let editHeader = document.createElement("h2")
     editHeader.setAttribute("id", "editHeader")
     editHeader.appendChild(document.createTextNode("Edit Thread"))
-
     let threadNameWrapper = createGroupNameWrapper(msgData.thread_name);
     let urgencyWrapper = createUrgencyWrapper(msgData.urgency);
     let tagWrapper = createTagWrapper(msgData.tags);
     let buttonWrapper = createEditButttonWrapper(msgData.thread_id, msgData.thread_name);
-
     editModal.appendChild(cancelButton)
     editModal.appendChild(editHeader)
     editModal.appendChild(threadNameWrapper)
@@ -70,95 +63,61 @@ function constructThread(msgData, user_id) {
     body.insertBefore(editModal, postWrapper)
   }
   
-  async function renderThreads(threadlist, user_id) {
-    let threadWrapper = document.getElementById("threadWrapper")
-    removeChildElements(threadWrapper)
-    for (const msgData of threadlist) {
-
-      let creator = msgData.Creator.username;
-      
-      let messageDetails = createThreadObject(msgData, creator);
-      let messageElement = constructThread(messageDetails, user_id);
-      
-      threadWrapper.appendChild(messageElement);
-      threadWrapper.scrollTop = threadWrapper.scrollHeight;
-    }
+  async function renderThreads(threadlist, user_id, isEdited) {
+    renderEditedThreads(threadlist, user_id, isEdited);
   }
 
-  async function renderEditedThreads(threadlist, user_id) {
+  async function renderEditedThreads(threadlist, user_id, isEdited) {
     let threadWrapper = document.getElementById("threadWrapper")
     removeChildElements(threadWrapper)
     for (const msgData of threadlist) {
       let creator = msgData.Creator.username;     
       let messageDetails = createThreadObject(msgData, creator);
-      let messageElement = constructThread(messageDetails, user_id);
-      
+      let messageElement = constructThread(messageDetails, user_id);   
       threadWrapper.appendChild(messageElement);
+      if (!isEdited) {
+        threadWrapper.scrollTop = threadWrapper.scrollHeight;
+      }
     }
   }
 
-  function createButtonLabel(text){
+  function createButtonLabel(text, value){
     let label = document.createElement("label")
     label.setAttribute("class", "tag btn btn-outline-primary")
     label = addTextToElement(label, text)
+    label.setAttribute("for", value)
     return label
   }
 
-  function createTag(){
+  function createTag(id, value, selected){
     let input = document.createElement("input")
     input.setAttribute("class", "tag btn-check")
     input.setAttribute("type", "checkbox")
+    input.setAttribute("id", id)
+    input.setAttribute("value", value)
+    if(selected.includes(value)){
+      input.setAttribute("checked", true)
+    }
     return input
   }
 
   function createTagWrapper(selected){
     let tagWrapper = document.createElement("div")
     tagWrapper.setAttribute("id", "tagWrapper")
-    console.log(selected)
     if(selected == undefined){
       selected = []
     }
-
-    let disasterTag = createTag()
-    disasterTag.setAttribute("id", "disaster")
-    disasterTag.setAttribute("value", "Incident Report")
-    if(selected.includes("Incident Report")){
-      disasterTag.setAttribute("checked", true)
-    }
-    let disasterLabel = createButtonLabel("Incident Report")
-    disasterLabel.setAttribute("for", "disaster")
-
-    let statusReportTag =  createTag()
-    statusReportTag.setAttribute("id", "status-report")
-    statusReportTag.setAttribute("value", "Status Report")
-    if(selected.includes("Status Report")){
-      statusReportTag.setAttribute("checked", true)
-    }
-    let statusReportLabel = createButtonLabel("Status Report")
-    statusReportLabel.setAttribute("for", "status-report")
-
-    let infoTag =  createTag()
-    infoTag.setAttribute("id", "info")
-    infoTag.setAttribute("value", "Info")
-    if(selected.includes("Info")){
-      infoTag.setAttribute("checked", true)
-    }
-    let infoLabel = createButtonLabel("Info")
-    infoLabel.setAttribute("for", "info")
-
-    let volunteerTag =  createTag()
-    volunteerTag.setAttribute("id", "volunteer")
-    volunteerTag.setAttribute("value", "Volunteering")
-    if(selected.includes("Volunteering")){
-      volunteerTag.setAttribute("checked", true)
-    }
-    let volunteerLabel = createButtonLabel("Volunteering")
-    volunteerLabel.setAttribute("for", "volunteer")
-
+    let disasterTag = createTag("disaster", "Incident Report", selected)
+    let disasterLabel = createButtonLabel("Incident Report", "disaster")
+    let statusReportTag =  createTag("status-report", "Status Report", selected)
+    let statusReportLabel = createButtonLabel("Status Report", "status-report")
+    let infoTag =  createTag("info", "Info", selected)
+    let infoLabel = createButtonLabel("Info", "info")
+    let volunteerTag =  createTag("volunteer", "Volunteering", selected)
+    let volunteerLabel = createButtonLabel("Volunteering", "volunteer")
     let textWrapper = document.createElement("label")
     textWrapper = addTextToElement(textWrapper, "Choose a tag: ")
     tagWrapper.appendChild(textWrapper)
-
     tagWrapper.appendChild(disasterTag)
     tagWrapper.appendChild(disasterLabel)
     tagWrapper.appendChild(statusReportTag)
@@ -169,16 +128,6 @@ function constructThread(msgData, user_id) {
     tagWrapper.appendChild(volunteerLabel)
     return tagWrapper
   }
-
-  function slice(array, size){   
-    let slicedArray = [];
-    for (let i = 0; i < Math.ceil(array.length / size); i++) {
-        slicedArray.push(array.slice(i * size, i * size + size));
-    }
-    return slicedArray 
-  }
-  
-  let counter = 0;
   
   function renderSlicedArray(slicedArray){
     let threadWrapper = document.getElementById("threadWrapper")
@@ -270,6 +219,18 @@ function constructThread(msgData, user_id) {
     return threadNameWrapper
   }
 
+  function createUrgencyOption(priority, selected){
+    let option = document.createElement("option")
+    option.setAttribute("value", priority)
+    option = addTextToElement(option, priority)
+
+    if(selected == priority){
+      option.setAttribute("selected", true)
+    }
+
+    return option
+  }
+
   function createUrgencyWrapper(selected){
     let urgencyWrapper = document.createElement("div")
     urgencyWrapper.setAttribute("id", "urgencyWrapper")
@@ -280,29 +241,9 @@ function constructThread(msgData, user_id) {
     urgencyLabel.setAttribute("id", "urgencyLabel")
     urgencyLabel = addTextToElement(urgencyLabel, "Urgency Level:")
     urgencyWrapper.appendChild(urgencyLabel)
-    let urgencyHigh = document.createElement("option")
-    urgencyHigh.setAttribute("value", "High Priority")
-    urgencyHigh = addTextToElement(urgencyHigh, "High Priority")
-    let urgencyNormal = document.createElement("option")
-    urgencyNormal.setAttribute("value", "Normal Priority")
-    urgencyNormal = addTextToElement(urgencyNormal, "Normal Priority")
-    let urgencyLow = document.createElement("option")
-    urgencyLow.setAttribute("value", "Low Priority")
-    urgencyLow = addTextToElement(urgencyLow, "Low Priority")
-
-    //pre-selects the urgency level chosen
-    if(selected == "High Priority"){
-      urgencyHigh.setAttribute("selected", true)
-    }
-
-    else if(selected == "Normal Priority"){
-      urgencyNormal.setAttribute("selected", true)
-    }
-
-    else if(selected == "Low Priority"){
-      urgencyLow.setAttribute("selected", true)
-    }
-
+    let urgencyHigh = createUrgencyOption("High Priority", selected)
+    let urgencyNormal = createUrgencyOption("Normal Priority", selected)
+    let urgencyLow = createUrgencyOption("Low Priority", selected)
     urgencySelect.appendChild(urgencyHigh)
     urgencySelect.appendChild(urgencyNormal)
     urgencySelect.appendChild(urgencyLow)

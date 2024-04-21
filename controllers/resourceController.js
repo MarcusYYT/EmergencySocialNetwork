@@ -40,16 +40,8 @@ export async function getResourceGrouped(req, res){
 export async function postResource(req, res){
     try{
         const userId = req.body.user_id;
-        const resourceTypeId = req.body.resource_type_id;
-        const resourceName = req.body.resource_name;
-        const resourceAmount = req.body.resource_amount;
-        const resourceUnitId = req.body.resource_unit_id;
-        const note = req.body.resource_note;
-        const latitude = req.body.latitude;
-        const longitude = req.body.longitude;
-        const tel = req.body.tel;
-        await resourceService.createNewResource(userId, resourceTypeId, resourceName, resourceAmount, resourceUnitId, note, latitude, longitude, tel).then(() =>{
-            io.emit("resourceData", req.body);
+        const resourceData = req.body;
+        await resourceService.createNewResource(userId, resourceData).then(() =>{
             res.status(201).json({ success: true, message: 'Post a new resource successful' });
         })
     } catch(error) {
@@ -58,18 +50,10 @@ export async function postResource(req, res){
 }
 
 export async function updateResource(req, res){
+
     try {
         const resourceId = req.body.resource_id;
-        const userId = req.body.user_id;
-        const resourceTypeId = req.body.resource_type_id;
-        const resourceName = req.body.resource_name;
-        const resourceAmount = req.body.resource_amount;
-        const resourceUnitId = req.body.resource_unit_id;
-        const note = req.body.resource_note;
-        const latitude = req.body.latitude;
-        const longitude = req.body.longitude;
-        const tel = req.body.tel;
-        await resourceService.updateResource(resourceId, userId, resourceTypeId, resourceName, resourceAmount, resourceUnitId, note, latitude, longitude, tel).then(() =>{
+        await resourceService.updateResource(resourceId, req.body).then(() =>{
             res.status(200).json({ success: true, message: 'Update resource successful' });
         })
     } catch(error) {

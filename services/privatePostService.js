@@ -1,4 +1,5 @@
 import {PrivatePost} from "../models/PrivatePost.model.js";
+import { returnData } from "../config/returnJsonUtility.js";
 
 /**
  * TODO
@@ -19,17 +20,9 @@ export async function createPrivatePost(senderId, receiverId, content, status) {
  * @returns 
  */
 export async function getChatById(postId){
-    let returnJson = {
-        exist: null, 
-        data: []
-    }
+    let returnJson = null
     await PrivatePost.getChatById(postId).then((res)=>{
-        if(res != null){
-            returnJson.exist = true;
-            returnJson.data.push(res) 
-          } else {
-            returnJson.exist = false;
-          }
+      returnJson = returnData(res)
     })
     return returnJson;
 }
