@@ -1,7 +1,8 @@
 import DatabaseAdapter from "../config/DatabaseAdapter.js";
-import {getPerformanceTestMode, setPerformanceTestMode, cleanUpDatabase} from '../app.js'
+import {getPerformanceTestMode, setPerformanceTestMode} from '../app.js'
 import express from 'express';
 import { io } from "../config/socketConfig.js"
+import {cleanUpDatabase} from "../utils/databaseUtils.js";
 
 const router = express.Router();
 /**
