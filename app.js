@@ -26,6 +26,7 @@ import DatabaseAdapter from './config/DatabaseAdapter.js'
 
 import { createServer } from 'node:http';
 import cookieParser from 'cookie-parser';
+import socketRoutes from "./routes/socketRoutes.js";
 
 
 
@@ -94,6 +95,7 @@ app.use('/test', testRoute);
 app.use('/preference', preferenceRoute);
 app.use('/subscribers', subscriberRoutes);
 app.use('/resource', resourceRoutes);
+app.use('/sockets', socketRoutes)
 
 // setup swagger
 const swaggerSpec = await swaggerJSDoc(swaggerOptions);
