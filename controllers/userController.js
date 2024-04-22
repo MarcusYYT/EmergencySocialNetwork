@@ -45,38 +45,54 @@ export async function getUserList(req, res){
     }
 }
 
+
+async function updateOnlineStatus(req, res) {
+    const userId = req.body.user_id;
+    const updateStatus = req.body.updateValue;
+    const resolve = await userService.changeOnlineStatus(userId, updateStatus);
+    res.status(200).json({success: resolve.success, message: resolve.message});
+}
+
+async function updateStatus(req, res) {
+    const userId = req.body.user_id;
+    const updateStatus = req.body.updateValue;
+    const username = req.body.username;
+    const resolve = await userService.changeStatus(userId, updateStatus);
+    io.emit('status_update');
+    const data = await getAllSubscriberOfOneUser(userId);
+    const strategy = emailStrategies['StatusChanges'];
+    data.forEach(element => {
+        if (element.status_changes && shouldSendEmailNotification(element.status, element.email_notification_preference)){
+            strategy(element.email, username, updateStatus);
+        }
+    });
+    res.status(200).json({success: resolve.success, message: resolve.message});
+}
+
+async function updateAdminDetails(req, res) {
+    const userData = req.body.updateValue;
+    const result = await userService.updateUserDetails(userData);
+    if (result.success) {
+        io.emit('status_update');
+        res.status(201).json(result);
+    } else {
+        res.status(400).json(result);
+    }
+}
+
 export async function updateUser(req, res){
     try{
-        const userId = req.body.user_id;
-        const updateAtrribute = req.body.updateAt;
-        if(updateAtrribute === "online_status"){
-            const updateStatus = req.body.updateValue;
-            await userService.changeOnlineStatus(userId, updateStatus).then((resolve)=>{
-                res.status(200).json({success: resolve.success, message: resolve.message});
-        })}
-        if(updateAtrribute === "status"){
-            const updateStatus = req.body.updateValue;
-            const username = req.body.username;
-            await userService.changeStatus(userId, updateStatus).then(async (resolve)=>{
-                io.emit('status_update')
-                await getAllSubscriberOfOneUser(userId).then((data) =>{
-                    const strategy = emailStrategies['StatusChanges'];
-                    data.forEach(element =>{
-                        if (element.status_changes && shouldSendEmailNotification(element.status, element.email_notification_preference)){
-                            strategy(element.email, username, updateStatus);
-                        }
-                    })
-
-                })
-                res.status(200).json({success: resolve.success, message: resolve.message});
-        })}
-        //hey haoming
-        //basically we had an idea to make it so that we have this updateAt == "admin"
-        //then we can update all the fields at once (no matter if the admin updated one
-        // or more) since we will pass in all attributes as a json
-        // We need a new changeUserProfile() function in userService
-        // take a look at threadController (specifically the editThread method for an example of what was done to update multiple fields at once)
-
+        const updateAttribute = req.body.updateAt;
+        switch (updateAttribute) {
+            case "online_status":
+                return updateOnlineStatus(req, res);
+            case "status":
+                return updateStatus(req, res);
+            case "admin":
+                return updateAdminDetails(req, res);
+            default:
+                throw new Error('Invalid update attribute');
+        }
     } catch(error){
         res.status(500).json({ message: 'Error updating user', error: error.message });
     }

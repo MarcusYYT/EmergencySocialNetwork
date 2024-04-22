@@ -1,6 +1,7 @@
 import express from 'express';
 import passport from '../config/passportConfig.js';
 import { getResourceById } from "../services/resourceService.js";
+import {getUserById} from "../services/userService.js"
 
 const router = express.Router();
 function authenticateRoute(req, res, next) {
@@ -58,6 +59,7 @@ router.get('/emergencyContact/:user_id', authenticateJWT, authenticateRoute, (re
 //         res.render('Administrate', {user_id: user_id});
 //     }
 // });
+
 router.get('/resources/:user_id', authenticateJWT, authenticateRoute, (req, res) => {renderPage(req, res, 'Resources')});
 router.get('/resources/shared/:user_id', authenticateJWT, (req, res) => {
     const user_id = req.user.data[0].user_id;
@@ -85,10 +87,21 @@ router.get('/resources/typeview/:type_id/:type_name', authenticateJWT, (req, res
     const user_id = req.user.data[0].user_id;
     res.render('TypeOfResources', {user_id: req.user.data[0].user_id, type_id: req.params.type_id, type_name: req.params.type_name});
 });
-router.get('/test', (req, res) => {res.render('Test')})
+router.get('/test/:user_id', async (req, res) => {
+    try {
+        const user_id = parseInt(req.params.user_id);
+        const result = await getUserById(user_id);
+        const user= result.data[0];
 
-
-
-
+        if (user && user.privilege === 'Administrator') {
+            res.render('Test', {user_id: user_id});
+        } else {
+            res.status(403).send('Access Denied');
+        }
+    } catch (error) {
+        console.error('Error fetching user:', error);
+        res.status(500).send('Internal Server Error'); 
+    }
+})
 
 export default router;

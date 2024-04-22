@@ -21,9 +21,8 @@ html(lang='en')
       a.navLinks(onclick='routeToResource()') Resources
       a.navLinks(onclick='routeToThreadWall()') Threads
       a.navLinks(onclick='routeToEmergencyContact()') Contacts
-      a.navLinks(onclick='routeToTest()') Speed Test  
-      a.navLinks(onclick='routeToSetting()') Subscriptions
-      //a.navLinks(onclick='routeToAdministrate()') Administrate
+      a.navLinks(id='TestBtn', onclick='routeToTest()') Speed Test  
+      a.navLinks(onclick='routeToSetting()') Notification
     form#directory-search-form.input-group.mb-3(onsubmit="submitSearch()" onchange="searchFinished()")
         select#search-select.form-select-sm
           option(value='User') User
@@ -53,6 +52,7 @@ html(lang='en')
     script.
       const socket = io();
       let username = '';
+      let role = '';
 
       socket.on('connect', async function() {
         console.log('Connected to server');
@@ -97,7 +97,7 @@ html(lang='en')
             console.log('unread message status: ')
             console.log(unRead)
             // implement to display the notification
-            renderESNList(sortUsers(data.data),unRead.data)
+            renderESNList(sortUsers(data.data),unRead.data, role)
           })
         }).catch(error => {
           console.error(error);
@@ -111,7 +111,7 @@ html(lang='en')
 
         if (searchValue === ""){
           const userId = #{user_id}
-            await getUsers().then(response => response.json()).then(async (data)=>{
+            await getUsers().then(async (data)=>{
               await fetch(`/privatePosts/unread/${userId}`, {
               method: 'GET',
               headers: {
@@ -121,7 +121,7 @@ html(lang='en')
                 console.log('unread message status: ')
                 console.log(unRead)
                 // implement to display the notification
-                renderESNList(sortUsers(data.data),unRead.data)
+                renderESNList(sortUsers(data.data),unRead.data, role)
               })
           });
         }
@@ -139,11 +139,25 @@ html(lang='en')
         }).then(response => response.json()).then((data) => {
           username = data.data[0].username;
           renderMyStatus(username, data.data[0].status)
+          role = data.data[0].privilege;
+          if (role !== 'Administrator') {
+            document.getElementById('TestBtn').style.display = 'none';
+          } else {
+            document.getElementById('TestBtn').style.display = 'flex';
+          }
         })
       }
 
       async function getUsers(){
-        return await fetch('/users')
+        const response = await fetch('/users');
+        const data = await response.json();
+        if (role === 'Administrator') {
+          return data;
+        } else {
+          data.data = data.data.filter(user => user.isActive);
+          console.log(data)
+          return data;
+        }
       }
 
       function sortUsers(data){
@@ -170,7 +184,7 @@ html(lang='en')
         return online.concat(offline)
       }
 
-      function renderESNList(list, unread) {
+      function renderESNList(list, unread, role) {
         const userId = #{user_id}
         let directory = document.getElementById("directory");
         while(directory.firstChild){
@@ -234,12 +248,14 @@ html(lang='en')
 
           statusField.appendChild(statusFieldImage);
 
-          let editUserImage = document.createElement("i");
-          editUserImage.setAttribute("class", "bi bi-pencil-fill edit-user");  
-          editUserImage.addEventListener("click", () => {renderEditUserOverlay(list[i])})
-
-
-          userDiv.appendChild(editUserImage);
+          if(role === 'Administrator'){
+            let editUserImage = document.createElement("i");
+            editUserImage.setAttribute("class", "bi bi-pencil-fill edit-user");  
+            editUserImage.addEventListener("click", () => {
+              renderEditUserOverlay(list[i])
+            })
+            userDiv.appendChild(editUserImage);
+          }
 
           userDiv.appendChild(onlineStatusField);
           userDiv.appendChild(usernameField);
@@ -264,20 +280,28 @@ html(lang='en')
 
 
       function createRadioButtonWrapper(selected){
-        let dropdownWrapper = document.createElement("div")
-        dropdownWrapper.setAttribute("class", "dropdownWrapper")
-        let dropdownLabel = document.createElement("label")
-        dropdownLabel.setAttribute("class", "dropdownLabel")
-        dropdownLabel = addTextToElement(dropdownLabel, "Account Status:")
-        let dropdownSelect = document.createElement("select")
-        dropdownSelect.setAttribute("class", "form-select-sm dropdownSelect")
-        let activeOption = createOption("Active", selected)
-        let inactiveOption = createOption("Inactive", selected)
-        dropdownSelect.appendChild(activeOption)
-        dropdownSelect.appendChild(inactiveOption)
-        dropdownWrapper.appendChild(dropdownLabel)
-        dropdownWrapper.appendChild(dropdownSelect)
-        return dropdownWrapper
+        let dropdownWrapper = document.createElement("div");
+        dropdownWrapper.setAttribute("class", "dropdownWrapper");
+
+        let dropdownLabel = document.createElement("label");
+        dropdownLabel.setAttribute("class", "dropdownLabel");
+        dropdownLabel.setAttribute("for", "statusSelect");  // Ensure the label corresponds to the select element
+        dropdownLabel = addTextToElement(dropdownLabel, "Account Status:");
+
+        let dropdownSelect = document.createElement("select");
+        dropdownSelect.setAttribute("class", "form-select-sm dropdownSelect");
+        dropdownSelect.setAttribute("id", "statusSelect");  // Set unique ID here
+
+        let activeOption = createOption("Active", selected);
+        let inactiveOption = createOption("Inactive", selected);
+
+        dropdownSelect.appendChild(activeOption);
+        dropdownSelect.appendChild(inactiveOption);
+
+        dropdownWrapper.appendChild(dropdownLabel);
+        dropdownWrapper.appendChild(dropdownSelect);
+
+        return dropdownWrapper;
       }
 
       function createInput(selectedName, label, id){
@@ -299,22 +323,30 @@ html(lang='en')
       }
 
       function createDropdown(selected){
-        let dropdownWrapper = document.createElement("div")
-        dropdownWrapper.setAttribute("class", "dropdownWrapper")
-        let dropdownLabel = document.createElement("label")
-        dropdownLabel.setAttribute("class", "dropdownLabel")
-        dropdownLabel = addTextToElement(dropdownLabel, "Privilege Level:")
-        let dropdownSelect = document.createElement("select")
-        dropdownSelect.setAttribute("class", "form-select-sm dropdownSelect")
-        let coordinatorOption = createOption("Coordinator", selected)
-        let adminOption = createOption("Administrator", selected)
-        let citizenOption = createOption("Citizen", selected)
-        dropdownSelect.appendChild(coordinatorOption)
-        dropdownSelect.appendChild(adminOption)
-        dropdownSelect.appendChild(citizenOption)
-        dropdownWrapper.appendChild(dropdownLabel)
-        dropdownWrapper.appendChild(dropdownSelect)
-        return dropdownWrapper
+        let dropdownWrapper = document.createElement("div");
+        dropdownWrapper.setAttribute("class", "dropdownWrapper");
+
+        let dropdownLabel = document.createElement("label");
+        dropdownLabel.setAttribute("class", "dropdownLabel");
+        dropdownLabel.setAttribute("for", "privilegeSelect");  // Ensure the label corresponds to the select element
+        dropdownLabel = addTextToElement(dropdownLabel, "Privilege Level:");
+
+        let dropdownSelect = document.createElement("select");
+        dropdownSelect.setAttribute("class", "form-select-sm dropdownSelect");
+        dropdownSelect.setAttribute("id", "privilegeSelect");  // Set unique ID here
+
+        let coordinatorOption = createOption("Coordinator", selected);
+        let adminOption = createOption("Administrator", selected);
+        let citizenOption = createOption("Citizen", selected);
+
+        dropdownSelect.appendChild(coordinatorOption);
+        dropdownSelect.appendChild(adminOption);
+        dropdownSelect.appendChild(citizenOption);
+
+        dropdownWrapper.appendChild(dropdownLabel);
+        dropdownWrapper.appendChild(dropdownSelect);
+
+        return dropdownWrapper;
       }
 
       // See userController for needing a new service method
@@ -332,12 +364,14 @@ html(lang='en')
         editHeader.setAttribute("id", "editHeader")
         editHeader.appendChild(document.createTextNode("Edit User"))
 
-        
-
-        // We hard-code "Citizen" to test, but we will need 
-        // userData.privilege and userData.accountStatus from the user table
-        let statusWrapper = createRadioButtonWrapper("Active");
-        let privilegeWrapper = createDropdown("Citizen");
+        let isActive = '';
+        if(userData.isActive){
+          isActive = 'Active'
+        } else {
+          isActive = 'Inactive'
+        }
+        let statusWrapper = createRadioButtonWrapper(isActive);
+        let privilegeWrapper = createDropdown(userData.privilege);
         let usernameWrapper = createInput(userData.username, "Username: ", "usernameWrapper");
         let passwordWrapper = createInput("", "Password: ", "passwordWrapper");
 
@@ -345,9 +379,15 @@ html(lang='en')
         saveButton.className = "btn btn-primary validate"
         saveButton = addTextToElement(saveButton, "Save Changes")
         //validate changes for that specific username typed in
-        saveButton.addEventListener("click", async () => {validateChanges(document.getElementById("usernameWrapper").value, 
+        saveButton.addEventListener("click", async () => {
+          let privilegeValue = document.getElementById("privilegeSelect").value;
+          let statusValue = document.getElementById("statusSelect").value;
+          validateChanges(document.getElementById("usernameWrapper").value, 
                                                                           userData.username, 
-                                                                          document.getElementById("passwordWrapper").value)})
+                                                                          document.getElementById("passwordWrapper").value,
+                                                                          privilegeValue,
+                                                                          statusValue,
+                                                                          userData.user_id)})
 
         editModal.appendChild(cancelButton)
         editModal.appendChild(editHeader)
@@ -360,15 +400,25 @@ html(lang='en')
         body.insertBefore(editModal, directoryWrapper)
       }
 
-      async function validateChanges(username, prev_username, password){
+      async function validateChanges(username, prev_username, password, privilegeValue, statusValue, userId){
         await fetch('/auth/validate', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
           },
           body: JSON.stringify({ username: username, prev_username: prev_username })
-          }).then(response => response.json()).then((data) => {     
-            validationResult(data.success, data.message, validatePassword(password))
+          }).then(response => response.json()).then((data) => {  
+            let formData = {
+              user_id: userId,
+              username: username, 
+              password: password,
+              privilege: privilegeValue,
+              isActive: statusValue
+            }
+            if(username === prev_username){
+              formData.username = -1;
+            }
+            validationResult(data.success, data.message, validatePassword(password), formData)
         })
       }
 
@@ -379,13 +429,28 @@ html(lang='en')
         return true;
       }
 
-      function validationResult(usernameValidation, message, passwordValidation) {
+      async function validationResult(usernameValidation, message, passwordValidation, formData) {
         if (usernameValidation && passwordValidation) {
-            const confirmation = window.confirm("Validation Success! Do you want to save the changes?");  
+            const confirmation = window.confirm("Username and Password Validation Success! Do you want to save the changes?");  
             if (confirmation) {
-              console.log("Data saved");
-
-              
+              await fetch(`/users/${formData.user_id}`, {
+                method: 'PUT',
+                headers: {
+                  'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({userid: formData.user_id, updateAt: 'admin', updateValue: formData}),
+                }).then(response => response.json())
+                  .then(data => {
+                      console.log(data);
+                      if(!data.success){
+                        alert(data.messages)
+                      }
+                      console.log("Data saved");
+                      
+                  })
+                  .catch(error => {
+                      console.error('Error push status history', error);
+                  });
               removeEditOverlay();
             }  
         }     
@@ -440,7 +505,7 @@ html(lang='en')
           if(updateStatus.ok){
               const fetchUser = await getUsers()
               if(fetchUser.ok){
-                const data = await fetchUser.json();
+                const data = fetchUser
                 console.log(data)
 
                 await fetch(`/privatePosts/unread/${userId}`, {
@@ -450,7 +515,7 @@ html(lang='en')
                   },
                   }).then(response => response.json()).then((unRead) => {
                     // implement to display the notification
-                    renderESNList(sortUsers(data.data),unRead.data)
+                    renderESNList(sortUsers(data.data),unRead.data, role)
                 })
               
               }
@@ -522,7 +587,7 @@ html(lang='en')
 
       socket.on("status_update", async ()=> { 
         const userId = #{user_id}
-        await getUsers().then(response => response.json()).then(async (data)=>{
+        await getUsers().then(async (data)=>{
           await fetch(`/privatePosts/unread/${userId}`, {
           method: 'GET',
           headers: {
@@ -532,7 +597,7 @@ html(lang='en')
             console.log('unread message status: ')
             console.log(unRead)
             // implement to display the notification
-            renderESNList(sortUsers(data.data),unRead.data)
+            renderESNList(sortUsers(data.data),unRead.data, role)
           })
 
         });
@@ -575,7 +640,7 @@ html(lang='en')
         const user_id = #{user_id};
         const confirmation = window.confirm("You have elected to do a speed test. Doing so will log you out. Do you want to proceed?");  
         if (confirmation) {        
-          window.location.href = `/test`;
+          window.location.href = `/test/${user_id}`;
         }      
       }
       
@@ -615,6 +680,11 @@ html(lang='en')
         window.location.href = `/`
       }
 
+      socket.on("inactive", () => {
+        alert("your account is changed to Inactive by a Adminitrator. You will be logged out.");
+        logout();
+      })
+
       function showOverlay() {
         document.getElementById('overlayForTest').style.display = 'flex';
       }
@@ -651,8 +721,8 @@ html(lang='en')
             } else {
               const postData = {
                 user_id: userId,
-                primary_id: 1,
-                alternative_id: 2,
+                primary_id: 10,
+                alternative_id: 11,
                 emergency_message: 'I need HELP!!!',
               };
 
@@ -665,6 +735,7 @@ html(lang='en')
               })
                 .then((response) => response.json())
                 .then((data) => {
+                  console.log("emergency contact creation")
                   console.log(data);
                 })
                 .catch((error) => {

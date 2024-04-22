@@ -230,3 +230,7 @@ script.
           })
           .catch(error => console.error('Error loading resource details:', error));
   }
+  socket.on("inactive", () => {
+    alert("your account is changed to Inactive by a Adminitrator. You will be logged out.");
+    logout();
+  })

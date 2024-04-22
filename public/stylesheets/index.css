@@ -270,7 +270,7 @@ h2#message-header {
     flex-direction: column;
 }
 
-.standard-wrapper, .test-wrapper {
+.standard-wrapper, .test-wrapper , .base-wrapper {
     background-color: #78caff;
     width: 80vw;
     border-radius: 15px;
@@ -278,21 +278,20 @@ h2#message-header {
     flex-direction: column;
     margin: 0;
     position: absolute;
-    top: 50%;
     left: 50%;
-    -ms-transform: translate(-50%, -50%);
-    transform: translate(-50%, -50%);
+    -ms-transform: translateX(-50%);
+    transform: translateX(-50%);
     padding: 7vw;
+}
+.standard-wrapper {
+    top: 50%;
+    transform: translateY(-50%) translateX(-50%);
 }
 
 .test-wrapper {
     top: 32%;
-    left: 50%;
-    -ms-transform: translate(-50%, -50%);
-    transform: translate(-50%, -50%);
-    padding: 7vw;
+    transform: translateY(-50%) translateX(-50%);
 }
-
 button.btn.btn-primary.test-button {
     margin-bottom: 1rem;
 }
