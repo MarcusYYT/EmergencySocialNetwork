@@ -59,6 +59,7 @@ router.get('/emergencyContact/:user_id', authenticateJWT, authenticateRoute, (re
 //         res.render('Administrate', {user_id: user_id});
 //     }
 // });
+
 router.get('/resources/:user_id', authenticateJWT, authenticateRoute, (req, res) => {renderPage(req, res, 'Resources')});
 router.get('/resources/shared/:user_id', authenticateJWT, (req, res) => {
     const user_id = req.user.data[0].user_id;
@@ -102,9 +103,5 @@ router.get('/test/:user_id', async (req, res) => {
         res.status(500).send('Internal Server Error'); 
     }
 })
-
-
-
-
 
 export default router;

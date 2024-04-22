@@ -89,24 +89,26 @@ socket.on('connect', async function() {
     return re.test(String(email).toLowerCase());
   }
 
-  async function logout(){
-    const userId = window.userId;
-    const requestBody = {
-      user_id: userId,
-      updateAt: "online_status",
-      updateValue: "offline",
-    }
+  async function changeOnlineStatus(userId){
     await fetch(`/users/${userId}`, {
       method: 'PUT',
       headers: {
         'Content-Type': 'application/json',
         'X-Performance-Test': 'true'
       },
-      body: JSON.stringify(requestBody),
+      body: JSON.stringify({
+        user_id: userId,
+        updateAt: "online_status",
+        updateValue: "offline",
+      }),
     }).then(response=> response.json()).then((data)=>{
       console.log(data.message)
     })
+  }
 
+  async function logout(){
+    const userId = window.userId;
+    await changeOnlineStatus(userId)
     window.location.href = `/`
   }
 
