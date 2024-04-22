@@ -328,6 +328,47 @@ export async function changeUsername(user_id, newUsername) {
   return returnJson;
 }
 
+async function changeUsernameIfNeeded(userData, results) {
+  if (userData.username !== -1) {
+      const usernameResult = await changeUsername(userData.user_id, userData.username);
+      if (!usernameResult.success) {
+          results.success = false;
+          results.messages.push(usernameResult.message);
+      }
+  } else {
+      console.log("Won't Change Username");
+  }
+}
+
+async function changePasswordIfNeeded(userData, results) {
+  if (userData.password !== '') {
+      const passwordResult = await changeUserPassword(userData.user_id, userData.password);
+      if (!passwordResult.success) {
+          results.success = false;
+          results.messages.push(passwordResult.message);
+      }
+  } else {
+      console.log("Won't Change Password");
+  }
+}
+
+async function changePrivilegeIfNeeded(userData, results) {
+  const privilegeResult = await changeUserPrivilege(userData.user_id, userData.privilege);
+  if (!privilegeResult.success) {
+      results.success = false;
+      results.messages.push(privilegeResult.message);
+  }
+}
+
+async function changeActiveStatusIfNeeded(userData, results) {
+  let isActiveBool = userData.isActive === 'Active';
+  const activeStatusResult = await changeUserActiveStatus(userData.user_id, isActiveBool);
+  if (!activeStatusResult.success) {
+      results.success = false;
+      results.messages.push(activeStatusResult.message);
+  }
+}
+
 
 /**
  * Updates user details based on provided parameters.
@@ -336,53 +377,17 @@ export async function changeUsername(user_id, newUsername) {
  * @returns {Object} A JSON object indicating overall success or failure and messages for each operation.
  */
 export async function updateUserDetails(userData) {
-    let results = {
-        success: true,
-        messages: []
-    };
+  let results = {
+      success: true,
+      messages: []
+  };
 
-    // Change Username
-    if(userData.username != -1){
-      const usernameResult = await changeUsername(userData.user_id, userData.username);
-      if (!usernameResult.success) {
-          results.success = false;
-          results.messages.push(usernameResult.message);
-      }
-    } else {
-      console.log("Won't Change Username")
-    }
+  await changeUsernameIfNeeded(userData, results);
+  await changePasswordIfNeeded(userData, results);
+  await changePrivilegeIfNeeded(userData, results);
+  await changeActiveStatusIfNeeded(userData, results);
 
-    // Change Password
-    if (userData.password != ''){
-      const passwordResult = await changeUserPassword(userData.user_id, userData.password);
-        if (!passwordResult.success) {
-            results.success = false;
-            results.messages.push(passwordResult.message);
-        }
-    } else {
-      console.log("Won't Change Password")
-    }
-
-    // Change Privilege
-    const privilegeResult = await changeUserPrivilege(userData.user_id, userData.privilege);
-    if (!privilegeResult.success) {
-        results.success = false;
-        console.log()
-        results.messages.push(privilegeResult.message);
-    }
-
-    // Change Active Status
-    // Convert the isActive string to boolean. Assumes 'Active' means true, all else means false.
-    let isActiveBool = userData.isActive === 'Active';
-    console.log(isActiveBool)
-    const activeStatusResult = await changeUserActiveStatus(userData.user_id, isActiveBool);
-    console.log(activeStatusResult)
-    if (!activeStatusResult.success) {
-        results.success = false;
-        results.messages.push(activeStatusResult.message);
-    }
-
-    return results;
+  return results;
 }
 
 export async function ifCanPostAnnouncement(userId){
