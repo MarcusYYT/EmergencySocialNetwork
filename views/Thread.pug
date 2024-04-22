@@ -449,4 +449,10 @@ script.
         hideOverlay();
   });
   
+
+
+  socket.on("inactive", () => {
+    alert("your account is changed to Inactive by a Adminitrator. You will be logged out.");
+    logout();
+  })
   

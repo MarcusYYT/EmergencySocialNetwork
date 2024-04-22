@@ -88,4 +88,30 @@ socket.on('connect', async function() {
     const re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
     return re.test(String(email).toLowerCase());
   }
+
+  async function logout(){
+    const userId = window.userId;
+    const requestBody = {
+      user_id: userId,
+      updateAt: "online_status",
+      updateValue: "offline",
+    }
+    await fetch(`/users/${userId}`, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+        'X-Performance-Test': 'true'
+      },
+      body: JSON.stringify(requestBody),
+    }).then(response=> response.json()).then((data)=>{
+      console.log(data.message)
+    })
+
+    window.location.href = `/`
+  }
+
+  socket.on("inactive", () => {
+    alert("your account is changed to Inactive by a Adminitrator. You will be logged out.");
+    logout();
+  })
 window.onload = loadPreferences;

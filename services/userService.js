@@ -210,11 +210,13 @@ export async function changeUserActiveStatus(user_id, newIsActive) {
     await User.changeActiveStatus(user_id, newIsActive);
     returnJson.success = true;
     returnJson.message = "User active status changed successfully.";
-    await getSocketIdByUserId(user_id).then((socketId)=>{
-      if(socketId != null){
-          io.to(socketId).emit('inactive');
-      }
-  })
+    if(!newIsActive){
+      await getSocketIdByUserId(user_id).then((socketId)=>{
+        if(socketId != null){
+            io.to(socketId).emit('inactive');
+        }
+      }) 
+    }
   } catch (error) {
     console.log("Error changing user active status:", error);
     returnJson.message = "An unexpected error occurred.";
