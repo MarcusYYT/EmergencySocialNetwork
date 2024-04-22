@@ -10,6 +10,7 @@ passport.use('local-login', new LocalStrategy( {
 }, async function(req, username, password, done) {
     try {
         const authRes = await userService.validUser(username, password);
+        console.log(authRes);
         if (authRes.code == 401) {
             return done(null, false, { code: 401, message: "Username and Password does not match"});
         } else if (authRes.code == 404) {
@@ -17,6 +18,8 @@ passport.use('local-login', new LocalStrategy( {
         } else if (authRes.code == 200) {
             const user = { user_id: authRes.user_id, username: username};
             return done(null, user);
+        } else if(authRes.code === 403) {
+            return done(null, false, { code: 403, message: "Your account was set to Inactive by an administrator"})
         }
     } catch (err) {
         return done(err);

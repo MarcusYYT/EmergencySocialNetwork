@@ -146,8 +146,15 @@ export async function validUser(username, enteredPassword) {
       const user = res[0];
       const hashedPassword = user.password;
       await bcrypt.compare(enteredPassword, hashedPassword).then((isMatch) => {
-        if (isMatch == false) ret = {code: 401, user_id: null}; 
-        else ret = {code: 200, user_id: user.user_id}; 
+        if (isMatch == false) {ret = {code: 401, user_id: null};} 
+        else {
+          const isActive = user.isActive;
+          if(!isActive){
+            ret = {code: 403, user_id:null}
+          } else {
+            ret = {code: 200, user_id: user.user_id};
+          }
+        } 
       });
     } else ret = {code: 404, user_id: null}; 
   })
