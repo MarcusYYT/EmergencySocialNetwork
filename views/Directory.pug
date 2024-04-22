@@ -721,8 +721,8 @@ html(lang='en')
             } else {
               const postData = {
                 user_id: userId,
-                primary_id: 1,
-                alternative_id: 2,
+                primary_id: 10,
+                alternative_id: 11,
                 emergency_message: 'I need HELP!!!',
               };
 
@@ -735,6 +735,7 @@ html(lang='en')
               })
                 .then((response) => response.json())
                 .then((data) => {
+                  console.log("emergency contact creation")
                   console.log(data);
                 })
                 .catch((error) => {
