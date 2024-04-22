@@ -72,6 +72,15 @@ export async function updateUser(req, res){
         })}
         else if (updateAttribute === 'admin'){
             console.log(req.body.updateValue);
+            const userData = req.body.updateValue;
+            await userService.updateUserDetails(userData).then((result)=>{
+                if(result.success === true){
+                    io.emit('status_update')
+                    res.status(201).json(result)
+                } else {
+                    res.status(400).json(result)
+                }
+            })
         }
 
     } catch(error){

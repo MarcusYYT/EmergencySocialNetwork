@@ -96,7 +96,8 @@ export class Announcement {
         return await this.model.findAll({
             include: [{
             model: User.model,
-            attributes: ['username']
+            attributes: ['username'],
+            where: { isActive: true }
             }]
         });
     }

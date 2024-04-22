@@ -2,6 +2,7 @@ import {User} from "../models/User.model.js";
 import { getUsernameBanList } from "../config/usernameBanList.js";
 import { returnData } from "../config/returnJsonUtility.js";
 import bcrypt from "bcryptjs";
+import { io, getSocketIdByUserId} from "../config/socketConfig.js"
 
 let saltRounds = 10;
 
@@ -201,7 +202,7 @@ export async function changeUserActiveStatus(user_id, newIsActive) {
     }
 
     const activeAdmins = await User.model.count({ where: { privilege: 'Administrator', isActive: true }});
-    if (user.privilege === 'Administrator' && activeAdmins <= 1) {
+    if (user.privilege === 'Administrator' && activeAdmins <= 1 && newIsActive !== true) {
       returnJson.message = "Cannot deactivate the only active Administrator.";
       return returnJson;
     }
@@ -209,6 +210,11 @@ export async function changeUserActiveStatus(user_id, newIsActive) {
     await User.changeActiveStatus(user_id, newIsActive);
     returnJson.success = true;
     returnJson.message = "User active status changed successfully.";
+    await getSocketIdByUserId(user_id).then((socketId)=>{
+      if(socketId != null){
+          io.to(socketId).emit('inactive');
+      }
+  })
   } catch (error) {
     console.log("Error changing user active status:", error);
     returnJson.message = "An unexpected error occurred.";
@@ -311,6 +317,63 @@ export async function changeUsername(user_id, newUsername) {
   }
 
   return returnJson;
+}
+
+
+/**
+ * Updates user details based on provided parameters.
+ * @async
+ * @param {Object} userData The data to update the user with.
+ * @returns {Object} A JSON object indicating overall success or failure and messages for each operation.
+ */
+export async function updateUserDetails(userData) {
+    let results = {
+        success: true,
+        messages: []
+    };
+
+    // Change Username
+    if(userData.username != -1){
+      const usernameResult = await changeUsername(userData.user_id, userData.username);
+      if (!usernameResult.success) {
+          results.success = false;
+          results.messages.push(usernameResult.message);
+      }
+    } else {
+      console.log("Won't Change Username")
+    }
+
+    // Change Password
+    if (userData.password != ''){
+      const passwordResult = await changeUserPassword(userData.user_id, userData.password);
+        if (!passwordResult.success) {
+            results.success = false;
+            results.messages.push(passwordResult.message);
+        }
+    } else {
+      console.log("Won't Change Password")
+    }
+
+    // Change Privilege
+    const privilegeResult = await changeUserPrivilege(userData.user_id, userData.privilege);
+    if (!privilegeResult.success) {
+        results.success = false;
+        console.log()
+        results.messages.push(privilegeResult.message);
+    }
+
+    // Change Active Status
+    // Convert the isActive string to boolean. Assumes 'Active' means true, all else means false.
+    let isActiveBool = userData.isActive === 'Active';
+    console.log(isActiveBool)
+    const activeStatusResult = await changeUserActiveStatus(userData.user_id, isActiveBool);
+    console.log(activeStatusResult)
+    if (!activeStatusResult.success) {
+        results.success = false;
+        results.messages.push(activeStatusResult.message);
+    }
+
+    return results;
 }
 
 
