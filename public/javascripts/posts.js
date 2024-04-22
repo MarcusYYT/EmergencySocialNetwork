@@ -1,3 +1,8 @@
+/**
+ * Contructs an Announcement using the message data
+ * @param {*} msgData The message data 
+ * @returns a public chat dom element
+ */
 function constructChatMessage(msgData) {
   const messageDiv = document.createElement('div');
   messageDiv.className = 'list-group-item';
@@ -33,6 +38,11 @@ function constructChatMessage(msgData) {
   return messageDiv;
 }
 
+/**
+ * Renders all the chats on the page
+ * @param {*} chatlist the list of chats
+ * @param {*} isPrivate whther or not the message is private or public
+ */
 async function renderChats(chatlist, isPrivate) {
   let messageBoard = document.getElementById("message-board")
   let isStatus = false;
@@ -51,6 +61,12 @@ async function renderChats(chatlist, isPrivate) {
   }
 }
 
+/**
+ * Slices a given array into an array of a given size
+ * @param {*} array The array to slice
+ * @param {*} size The size of the array
+ * @returns the sliced array
+ */
 function slice(array, size){   
   let slicedArray = [];
   for (let i = 0; i < Math.ceil(array.length / size); i++) {
@@ -61,6 +77,12 @@ function slice(array, size){
 
 let counter = 0;
 
+/**
+ * Renders the sliced array on the page
+ * @param {*} slicedArray the sliced array
+ * @param {*} isPrivate whether the array is for private chat or not
+ * @param {*} isStatus whether the array is for statsues or not
+ */
 function renderSlicedArray(slicedArray, isPrivate, isStatus){
   let messageBoard = document.getElementById("message-board")
   let showMore = document.getElementById("show-more");
@@ -86,6 +108,12 @@ function renderSlicedArray(slicedArray, isPrivate, isStatus){
   }
 }
 
+/**
+ * Renders the show more button on the bottom
+ * @param {*} slicedArray the sliced array
+ * @param {*} isPrivate whether the array is for private chat or not
+ * @param {*} isStatus whether the array is for statsues or not
+ */
 function createShowMore(slicedArray, isPrivate, isStatus){
   let messageBoard = document.getElementById("message-board")
   let showMore = document.createElement("div");
@@ -97,6 +125,12 @@ function createShowMore(slicedArray, isPrivate, isStatus){
   messageBoard.appendChild(showMore)
 }
 
+/**
+ * Renders the searched post on the page
+ * @param {*} chatlist the list of messages to render
+ * @param {*} isPrivate whther the list of chats is private or not
+ * @param {*} isStatus whetehr the list is of status or not
+ */
 async function renderSearchedPosts(chatlist, isPrivate, isStatus) {
   counter = 0;
   let messageBoard = document.getElementById("message-board")
@@ -110,6 +144,9 @@ async function renderSearchedPosts(chatlist, isPrivate, isStatus) {
   }  
 }
 
+/**
+ * Renders the message for when there are no results
+ */
 function renderEmptyMessage(){
   let messageBoard = document.getElementById("message-board")
   removePostElements(messageBoard)
@@ -120,6 +157,13 @@ function renderEmptyMessage(){
   messageBoard.appendChild(emptyMessage);
 }
 
+/**
+ * Creates a message object
+ * @param {*} msgData the message data content
+ * @param {*} username the username of the sender
+ * @param {*} isStatus Whether the message is for status history or not
+ * @returns the message object
+ */
 function createMsgObject(msgData, username, isStatus) {
   let messageDetails = {
     sender: username,
@@ -131,6 +175,10 @@ function createMsgObject(msgData, username, isStatus) {
   return messageDetails;
 }
 
+/**
+ * Removes the message board element off of the page
+ * @param {*} messageBoard the message board element
+ */
 function removePostElements(messageBoard) {
   while (messageBoard.firstChild) {
     messageBoard.removeChild(messageBoard.lastChild);
