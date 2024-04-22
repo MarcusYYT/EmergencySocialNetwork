@@ -270,7 +270,7 @@ h2#message-header {
     flex-direction: column;
 }
 
-.standard-wrapper {
+.standard-wrapper, .test-wrapper {
     background-color: #78caff;
     width: 80vw;
     border-radius: 15px;
@@ -286,13 +286,6 @@ h2#message-header {
 }
 
 .test-wrapper {
-    background-color: #78caff;
-    width: 80vw;
-    border-radius: 15px;
-    display: flex;
-    flex-direction: column;
-    margin: 0;
-    position: absolute;
     top: 32%;
     left: 50%;
     -ms-transform: translate(-50%, -50%);
