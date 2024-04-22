@@ -10,7 +10,7 @@ export async function getAnnouncementById(req, res){
             if(resolve.exist==true){
                 res.status(200).json({success:true, data: resolve.data, message:"Fetch announcement successful"});
             } else {
-                res.status(404).json({success:false, data:[], message:"The post is not exist"});
+                res.status(404).json({success:false, data:[], message:"The announcement does not exist"});
             }
         })
     }  catch (error) {

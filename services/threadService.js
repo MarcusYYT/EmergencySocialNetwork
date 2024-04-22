@@ -2,10 +2,12 @@ import { Thread } from '../models/Thread.model.js'
 import { returnData } from '../config/returnJsonUtility.js'
 
 /**
- * TODO
- * @param {*} creatorId 
- * @param {*} urgency 
- * @returns 
+ * Creates a thread
+ * @param {number} creatorId 
+ * @param {string} threadName 
+ * @param {string} urgency 
+ * @param {string} tags 
+ * @returns {JSON} An object containing the creation outcome
  */
 export async function createNewThread(creatorId, threadName, urgency, tags) {
 
@@ -25,9 +27,9 @@ export async function createNewThread(creatorId, threadName, urgency, tags) {
 }
 
 /**
- * TODO
- * @param {*} threadName 
- * @returns 
+ * Checks if a thread name exists in the database
+ * @param {string} threadName The thread name to search for
+ * @returns {Promise} A promise indicating whther a thread with that threadname exists
  */
 export async function ifThreadNameExists(threadName) {
   return await Thread.ifThreadNameExists(threadName)
@@ -35,9 +37,9 @@ export async function ifThreadNameExists(threadName) {
   
 
 /**
- * TODO
- * @param {*} threadId 
- * @returns 
+ * Gets a thread in the database by the ID
+ * @param {string} threadId The specific thread ID to get
+ * @returns {JSON} An object containing the specific thread retrieved
  */
 export async function getThreadById(threadId){
     let returnJson = null
@@ -48,9 +50,9 @@ export async function getThreadById(threadId){
 }
 
 /**
- * TODO
- * @param {*} threadName 
- * @returns 
+ * Gets a thread using their name
+ * @param {string} threadName The name of the thread to get
+ * @returns {JSON}  An object containing the specific thread retrieved
  */
 export async function getThreadByName(threadName){
   let returnJson = {
@@ -69,8 +71,8 @@ export async function getThreadByName(threadName){
 }
 
 /**
- * TODO: write the function documentation
- * @returns 
+ * Gets a list of all of the threads 
+ * @returns {JSON} An object containing all the threads in the database
  */
 export async function getThreadList(){
     let returnJson = {
@@ -87,12 +89,12 @@ export async function getThreadList(){
   }
 
     /**
-   * TODO: write the function documentation
-   * @param {*} thread_id 
-   * @param {*} thread_name 
-   * @param {*} urgency 
-   * @param {*} tags 
-   * @returns 
+   * Edit a thread using its id and the new parameters
+   * @param {number} thread_id The thread ID of the thread to edit
+   * @param {string} thread_name The new name of the thread
+   * @param {string} urgency The new urgency value
+   * @param {string} tags The new set of tags to update
+   * @returns {JSON} An object containing the edited thread outcome 
    */
   export async function editThread(thread_id, thread_name, urgency, tags){
     let returnJson = {
@@ -110,9 +112,9 @@ export async function getThreadList(){
   }
 
     /**
-   * TODO: write the function documentation
-   * @param {*} thread_id 
-   * @returns 
+   * Delete a thread using a thread ID
+   * @param {*} thread_id The thread ID of the thread to delete
+   * @returns {JSON} An object containing the deleted thread outcome 
   */
   export async function deleteThread(thread_id){
     let returnJson = {

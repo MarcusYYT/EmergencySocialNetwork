@@ -22,7 +22,7 @@ html(lang='en')
       a.navLinks(onclick='routeToThreadWall()') Threads
       a.navLinks(onclick='routeToEmergencyContact()') Contacts
       a.navLinks(onclick='routeToTest()') Speed Test  
-      a.navLinks(onclick='routeToSetting()') Setting
+      a.navLinks(onclick='routeToSetting()') Subscriptions
       //a.navLinks(onclick='routeToAdministrate()') Administrate
     form#directory-search-form.input-group.mb-3(onsubmit="submitSearch()" onchange="searchFinished()")
         select#search-select.form-select-sm
@@ -573,8 +573,12 @@ html(lang='en')
 
       function routeToTest() {
         const user_id = #{user_id};
-        window.location.href = `/test`;
+        const confirmation = window.confirm("You have elected to do a speed test. Doing so will log you out. Do you want to proceed?");  
+        if (confirmation) {        
+          window.location.href = `/test`;
+        }      
       }
+      
       function routeToSetting() {
         const user_id = #{user_id};
         window.location.href = `/setting/${user_id}`;

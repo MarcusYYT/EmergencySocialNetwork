@@ -270,6 +270,41 @@ h2#message-header {
     flex-direction: column;
 }
 
+.standard-wrapper {
+    background-color: #78caff;
+    width: 80vw;
+    border-radius: 15px;
+    display: flex;
+    flex-direction: column;
+    margin: 0;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    -ms-transform: translate(-50%, -50%);
+    transform: translate(-50%, -50%);
+    padding: 7vw;
+}
+
+.test-wrapper {
+    background-color: #78caff;
+    width: 80vw;
+    border-radius: 15px;
+    display: flex;
+    flex-direction: column;
+    margin: 0;
+    position: absolute;
+    top: 32%;
+    left: 50%;
+    -ms-transform: translate(-50%, -50%);
+    transform: translate(-50%, -50%);
+    padding: 7vw;
+}
+
+button.btn.btn-primary.test-button {
+    margin-bottom: 1rem;
+}
+
+
 #directory-header {
     text-align: center;
     padding: 15px 0px 0px 0px;
@@ -752,6 +787,7 @@ select#search-select-filter {
     border-radius: 5px;
     padding-left: 10px;
     margin: 0px auto 15px auto;
+    border: none;
 }
 
 #primary-button,
@@ -793,4 +829,8 @@ button.btn.btn-primary.validate {
     font-size: .875rem;
     border-radius: .2rem;
     border: none;
+}
+
+.buttonWrapper {
+    display: flex;
 }

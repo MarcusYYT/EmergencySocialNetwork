@@ -10,8 +10,10 @@ html(lang='en')
     script(src='https://cdn.socket.io/4.7.4/socket.io.min.js')
     title Preference Settings
   body
-    .container
-      h1(style="margin-top: 70px; margin-bottom: 10px; display: flex; justify-content: center; ") Preferences
+    .links
+      a.btn.btn-primary(onclick='routeToDirectory()') Back
+    .container.standard-wrapper
+      h1(style="margin-bottom: 10px; display: flex; justify-content: center; ") Preferences
       form#preference-form
         .mb-3
           label(for="email") Email Address
@@ -38,11 +40,12 @@ html(lang='en')
           .form-check
             input.form-check-input(type="checkbox", name="status_changes", id="status-changes")
             label.form-check-label(for="status-changes") Status Changes
-        button.btn.btn-primary(type="button" onclick="routeToSubscriber()") Manage Status Subcribers
-        | &nbsp;  
-        button.btn.btn-primary(type="button" onclick="savePreferences()") Save Preferences
-        | &nbsp;  
-        button.btn.btn-primary(type="button" onclick="routeToDirectory()" style="margin-top: 10px; margin-bottom: 10px;") Go Back
+        .buttonWrapper
+          button.btn.btn-primary(type="button" onclick="routeToSubscriber()") Manage Status Subcriptions
+          | &nbsp;  
+          button.btn.btn-primary(type="button" onclick="savePreferences()") Save Preferences
+          | &nbsp;  
+        
     script.
       window.userId = #{user_id}
     script(src='/javascripts/preference.js')

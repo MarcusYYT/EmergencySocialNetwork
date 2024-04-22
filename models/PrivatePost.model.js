@@ -57,6 +57,14 @@ export class PrivatePost {
         this.model.belongsTo(User.model, { as: 'Receiver', foreignKey: 'receiver_id' });
     }
 
+    /**
+     * Create a private post using the sender id, receiver id, content and status of the sender
+     * @param {integer} senderId The user_id of the sender
+     * @param {integer} receiverId  - The user_id of the receiver
+     * @param {string} content - The content of the private post
+     * @param {string} status - The status of the sender
+     * @returns {Promise} a promise containing the created post
+     */
     static async createPost(senderId, receiverId, content, status) {
         return await this.model.create({
             sender_id: senderId,
@@ -68,10 +76,22 @@ export class PrivatePost {
         });
     }
 
+    /**
+     * Get a private post by its post id
+     * @param {integer} postId The id of the post to look for
+     * @returns {Promise} a promise containing the private post
+     */
     static async getChatById(postId) {
         return await this.model.findByPk(postId);
     }
 
+    /**
+     * Get all private posts between two people
+     * @param {integer} senderId The id of the sender
+     * @param {integer} receiverId The id of the receiver
+     * @returns {Promise} a promise containing messages between chatters
+     * 
+     */
     static async getChatByChatters(senderId, receiverId) {
         return await this.model.findAll({
             where: {
@@ -87,6 +107,11 @@ export class PrivatePost {
         })
     }
 
+    /**
+     * Update post in the database to reflect that a user has read it
+     * @param {integer} postId The id of the sender
+     * @returns {Promise} a promise containing the edited message in the database
+     */
     static async senderRead(postId) {
         return await this.model.update({ sender_read: true }, {
             where: {
@@ -95,6 +120,12 @@ export class PrivatePost {
         })
     }
 
+     /**
+     * Mark a message as read in the database
+     * @param {integer} senderId The id of the sender
+     * @param {integer} receiverId The id of the receiver
+     * @returns {Promise} a promise containing the edited message in the database
+     */
     static async markMessagesAsRead(senderId, receiverId) {
         return await this.model.update(
             { receiver_read: true },
@@ -108,6 +139,12 @@ export class PrivatePost {
         );
     }
 
+
+    /**
+     * Gets the unread messages count for the receiver of a message using the receiver id
+     * @param {integer} receiverId The id of the receiver
+     * @returns {Promise} the unread messages for the receiver of a message
+     */
     static async getUnreadMessageCountsForReceiver(receiverId) {
         const sequelize = DatabaseAdapter.getDatabase();
         const unreadMessages = await this.model.findAll({
@@ -131,14 +168,12 @@ export class PrivatePost {
         }));
     }
 
-
-
-
     /**
      * Query the posts by keyword
      * @param {string} query The keyword
      * @param {integer} senderId  - The user_id of the sender
      * @param {integer} receiverId - The user_id of the reciever
+     * @returns {Promise} the posts returned by the query
      */
     static async queryPrivatePosts(senderId, receiverId, query) {
 

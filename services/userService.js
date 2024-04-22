@@ -98,7 +98,7 @@ export async function isUsernameValid(username) {
  * This function will check if the password is greater than 4 characters
  * @async
  * @param {string} password
- * @returns True if the password is longer than 4, false if not
+ * @returns {boolean} True if the password is longer than 4, false if not
  */
 export async function isPasswordValid(password) {
   if (password.length <= 3) {
@@ -135,7 +135,7 @@ export async function changeStatus(id, status){
  * @async
  * @param {string} username The username passed from the frontend
  * @param {string} enteredPassword The password entered by user from the frontend
- * @returns user_id if user validates, -1 if username password mismatch, -2 if user does not exist
+ * @returns {JSON} user_id if user validates, -1 if username password mismatch, -2 if user does not exist
  */
 
 export async function validUser(username, enteredPassword) {

@@ -49,7 +49,7 @@ async function addSubscriber(){
     const userId = window.userId
     const subscriberUsername = document.getElementById('subscriber-username').value;
     if (!subscriberUsername) {
-        alert('Please enter a username to subscribe.');
+        alert('Please enter a username to subscribe to');
         return;
     }
 
@@ -64,7 +64,7 @@ async function addSubscriber(){
         }),
     }).then(response => response.json()).then(data =>{
         if (data.success === true){
-            alert('Subscriber added successfully!');
+            alert('Subscriber added successfully');
             loadSubscribers();
         } else {
             alert(data.message);

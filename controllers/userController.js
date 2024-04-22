@@ -12,7 +12,7 @@ export async function getUserById(req, res){
                 res.status(200).json({success:true, data: resolve.data, message:"Fetch user successful"});
             } else {
                 console.log("I am by id")
-                res.status(404).json({success:false, data:[], message:"The user is not exist"});
+                res.status(404).json({success:false, data:[], message:"The user does not exist"});
             }
         })
     }  catch (error) {
@@ -27,7 +27,7 @@ export async function getUserByUsername(req, res){
             if (resolve.exist==true) {
                 res.status(200).json({success:true, data: resolve.data, message:"Fetch user with username successful"});
             } else {
-                res.status(404).json({success:false, data:[], message:"The user with username is not exist"});
+                res.status(404).json({success:false, data:[], message:"The user with this username does not exist"});
             }
         })
     }  catch (error) {

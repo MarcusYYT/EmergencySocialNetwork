@@ -113,16 +113,16 @@ describe('User id is required, but primary contact id, alternative id, and messa
     });
 })
 
-describe('Check if a given user id is exist', () => {
+describe('Check if a given user id exists', () => {
 
-    test('If given user id is exist', async () => {
+    test('If given user id exists', async () => {
         const result = await getEmergencyContactByUserId(1);
         expect(result).toMatchObject({
             exist: true
         });
     });
 
-    test('If given user id is not exist', async () => {
+    test('If given user id does not exist', async () => {
         expect(await EmergencyContact.getEmergencyContactByUserId(-1)).not.toBe(true);
     });
 })
