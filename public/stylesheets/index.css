@@ -270,7 +270,7 @@ h2#message-header {
     flex-direction: column;
 }
 
-.standard-wrapper, .test-wrapper , .base-wrapper {
+.base-wrapper {
     background-color: #78caff;
     width: 80vw;
     border-radius: 15px;
