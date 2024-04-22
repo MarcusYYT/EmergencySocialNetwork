@@ -21,9 +21,8 @@ html(lang='en')
       a.navLinks(onclick='routeToResource()') Resources
       a.navLinks(onclick='routeToThreadWall()') Threads
       a.navLinks(onclick='routeToEmergencyContact()') Contacts
-      a.navLinks(onclick='routeToTest()') Speed Test  
-      a.navLinks(onclick='routeToSetting()') Subscriptions
-      //a.navLinks(onclick='routeToAdministrate()') Administrate
+      a.navLinks(id='TestBtn', onclick='routeToTest()') Speed Test  
+      a.navLinks(onclick='routeToSetting()') Notification
     form#directory-search-form.input-group.mb-3(onsubmit="submitSearch()" onchange="searchFinished()")
         select#search-select.form-select-sm
           option(value='User') User
@@ -53,6 +52,7 @@ html(lang='en')
     script.
       const socket = io();
       let username = '';
+      let role = '';
 
       socket.on('connect', async function() {
         console.log('Connected to server');
@@ -97,7 +97,7 @@ html(lang='en')
             console.log('unread message status: ')
             console.log(unRead)
             // implement to display the notification
-            renderESNList(sortUsers(data.data),unRead.data)
+            renderESNList(sortUsers(data.data),unRead.data, role)
           })
         }).catch(error => {
           console.error(error);
@@ -121,7 +121,7 @@ html(lang='en')
                 console.log('unread message status: ')
                 console.log(unRead)
                 // implement to display the notification
-                renderESNList(sortUsers(data.data),unRead.data)
+                renderESNList(sortUsers(data.data),unRead.data, role)
               })
           });
         }
@@ -139,6 +139,12 @@ html(lang='en')
         }).then(response => response.json()).then((data) => {
           username = data.data[0].username;
           renderMyStatus(username, data.data[0].status)
+          role = data.data[0].privilege;
+          if (role !== 'Administrator') {
+            document.getElementById('TestBtn').style.display = 'none';
+          } else {
+            document.getElementById('TestBtn').style.display = 'flex';
+          }
         })
       }
 
@@ -170,7 +176,7 @@ html(lang='en')
         return online.concat(offline)
       }
 
-      function renderESNList(list, unread) {
+      function renderESNList(list, unread, role) {
         const userId = #{user_id}
         let directory = document.getElementById("directory");
         while(directory.firstChild){
@@ -234,12 +240,12 @@ html(lang='en')
 
           statusField.appendChild(statusFieldImage);
 
-          let editUserImage = document.createElement("i");
-          editUserImage.setAttribute("class", "bi bi-pencil-fill edit-user");  
-          editUserImage.addEventListener("click", () => {renderEditUserOverlay(list[i])})
-
-
-          userDiv.appendChild(editUserImage);
+          if(role === 'Administrator'){
+            let editUserImage = document.createElement("i");
+            editUserImage.setAttribute("class", "bi bi-pencil-fill edit-user");  
+            editUserImage.addEventListener("click", () => {renderEditUserOverlay(list[i])})
+            userDiv.appendChild(editUserImage);
+          }
 
           userDiv.appendChild(onlineStatusField);
           userDiv.appendChild(usernameField);
@@ -450,7 +456,7 @@ html(lang='en')
                   },
                   }).then(response => response.json()).then((unRead) => {
                     // implement to display the notification
-                    renderESNList(sortUsers(data.data),unRead.data)
+                    renderESNList(sortUsers(data.data),unRead.data, role)
                 })
               
               }
@@ -532,7 +538,7 @@ html(lang='en')
             console.log('unread message status: ')
             console.log(unRead)
             // implement to display the notification
-            renderESNList(sortUsers(data.data),unRead.data)
+            renderESNList(sortUsers(data.data),unRead.data, role)
           })
 
         });
