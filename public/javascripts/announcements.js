@@ -1,3 +1,8 @@
+/**
+ * Contructs an Announcement using the message data
+ * @param {*} msgData the message data
+ * @returns an announcement dom element
+ */
 function constructAnnouncement(msgData) {
     const announcementDiv = document.createElement('div');
     announcementDiv.className = 'card';
@@ -25,6 +30,10 @@ function constructAnnouncement(msgData) {
     return announcementDiv;
 }
 
+/**
+ * Renders all the announcements on the dom
+ * @param {*} chatlist The list of announcements
+ */
 async function renderAnnouncements(chatlist) {
     let announcementBoard = document.getElementById("announcement-board")
     removeAnnoucementElement(announcementBoard)
@@ -36,6 +45,10 @@ async function renderAnnouncements(chatlist) {
     }
 }
 
+/**
+ * renders the sliced array from the search
+ * @param {*} slicedArray the array of sliced results
+ */
 function renderSlicedArray(slicedArray){
     let announcementBoard = document.getElementById("announcement-board")
     let showMore = document.getElementById("show-more");
@@ -51,13 +64,17 @@ function renderSlicedArray(slicedArray){
         announcementBoard.appendChild(announcementElement);
     }
     if (counter + 1 < slicedArray.length){
-        createShowMore(slicedArray)
+        createShowMoreButton(slicedArray, "announcement-board")
         counter++;   
     }
 }
 
-function createShowMore(slicedArray){
-    let announcementBoard = document.getElementById("announcement-board")
+/**
+ *  Renders the show more button on the bottom
+ * @param {*} slicedArray the array of sliced results
+ */
+function createShowMoreButton(slicedArray, id){
+    let element = document.getElementById(id)
     let showMore = document.createElement("div");
     showMore.setAttribute("id", "show-more")
     showMore.setAttribute("class", "list-group-item")
@@ -65,9 +82,25 @@ function createShowMore(slicedArray){
   
     showMore.addEventListener("click", () => {renderSlicedArray(slicedArray)})
     showMore.appendChild(showMoreText)
-    announcementBoard.appendChild(showMore)
+    element.appendChild(showMore)
 }
 
+// function createShowMore(slicedArray){
+//     let announcementBoard = document.getElementById("announcement-board")
+//     let showMore = document.createElement("div");
+//     showMore.setAttribute("id", "show-more")
+//     showMore.setAttribute("class", "list-group-item")
+//     let showMoreText = document.createTextNode("Show More...")
+  
+//     showMore.addEventListener("click", () => {renderSlicedArray(slicedArray)})
+//     showMore.appendChild(showMoreText)
+//     announcementBoard.appendChild(showMore)
+// }
+
+/**
+ * Renders the array of searched announcements
+ * @param {*} chatlist The list of announcements to render
+ */
 async function renderSearchedAnnouncements(chatlist) {
     counter = 0;
     let announcementBoard = document.getElementById("announcement-board")
@@ -81,6 +114,9 @@ async function renderSearchedAnnouncements(chatlist) {
     }
 }
 
+/**
+ * Renders the empty announcement message
+ */
 function renderEmptyAnnouncement(){
     let announcementBoard = document.getElementById("announcement-board")
     removeAnnoucementElement(announcementBoard);
@@ -97,6 +133,11 @@ function renderEmptyAnnouncement(){
     announcementBoard.appendChild(card);
 }
 
+/**
+ * Creates a announcement json object
+ * @param {*} data the data to insert in the announcement object
+ * @returns the created data object
+ */
 function createDataObject(data) {
     let announcementDetails = {
         sender: data.user.username,
@@ -106,6 +147,10 @@ function createDataObject(data) {
     return announcementDetails;
 }
 
+/**
+ * Removes the announcement board from the screen
+ * @param {*} announcementBoard The announcement board dom element 
+ */
 function removeAnnoucementElement(announcementBoard) {
     while (announcementBoard.firstChild) {
         announcementBoard.removeChild(announcementBoard.lastChild);

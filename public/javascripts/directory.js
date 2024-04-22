@@ -1,3 +1,6 @@
+/**
+ * Toggles the hamburger menu apperance on the page
+ */
 function toggleHamburgerMenu() {
     let hamburgerMenu = document.getElementById("hamburgerMenu");
     let overlay = document.createElement("div");
@@ -12,10 +15,26 @@ function toggleHamburgerMenu() {
     
     else {
       hamburgerMenu.style.display = "flex";
+      overlay.addEventListener("click", () => {hideNavOverlay()})
       body.insertBefore(overlay, statusWrapper)
     }
   }
 
+/**
+ * Hides the nav overlay when the overlay is clicked
+ */
+function hideNavOverlay(){
+  if (hamburgerMenu.style.display === "flex") {
+    hamburgerMenu.style.display = "none";
+    document.getElementById("overlay").remove()
+  } 
+}
+
+/**
+ * Renders the current user's status on the page
+ * @param {*} username The current user
+ * @param {*} status The user's current status
+ */
 function renderMyStatus(username, status) {
     let profile = document.getElementById("status-wrapper");
     if (document.getElementById("status-header") != undefined) {
@@ -38,7 +57,11 @@ function renderMyStatus(username, status) {
     profile.insertBefore(userInfo, statusForm);
 }
 
+/**
+ * Routes the user to the private chat
+ * @param {*} sender The sender's ID
+ * @param {*} receiver The receiver's ID
+ */
 function routeToPrivateChat(sender, receiver){
-    //await changeReadStatus(sender, receiver)
-    window.location.href = `/privatePostsWall/${sender}/${receiver}`;
+  window.location.href = `/privatePostsWall/${sender}/${receiver}`;
 }

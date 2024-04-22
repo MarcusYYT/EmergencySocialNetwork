@@ -1,3 +1,8 @@
+/**
+ * Creates the urgency image field for a thread
+ * @param {*} urgency the urgency value
+ * @returns the urgency image element
+ */
 function createUrgencyImage(urgency){
   let urgencyFieldImage = document.createElement("i");
   if (urgency === "Low Priority") {
@@ -9,6 +14,13 @@ function createUrgencyImage(urgency){
   }
   return urgencyFieldImage;
 }
+
+/**
+ * Constucts a thread object
+ * @param {*} msgData the data to add to the thread object
+ * @param {*} user_id the user id of the current user
+ * @returns the constructed thread element
+ */
 function constructThread(msgData, user_id) {
     const threadDiv = document.createElement('div');
     threadDiv.className = 'thread row g-0 justify-content-between'; 
@@ -36,6 +48,10 @@ function constructThread(msgData, user_id) {
     return threadDiv;
   }
 
+  /**
+   * Renders the edit overlay popup
+   * @param {*} msgData the data of the thread
+   */
   function renderEditOverlay(msgData){
     let editOverlay = document.createElement("div")
     editOverlay.setAttribute("id", "overlay")
@@ -63,10 +79,22 @@ function constructThread(msgData, user_id) {
     body.insertBefore(editModal, postWrapper)
   }
   
+  /**
+   * renders the threads on the page
+   * @param {*} threadlist the list of threads to render
+   * @param {*} user_id the current id
+   * @param {*} isEdited whether the thread is edited or not
+   */
   async function renderThreads(threadlist, user_id, isEdited) {
     renderEditedThreads(threadlist, user_id, isEdited);
   }
 
+  /**
+   * Renders the edited threads
+   * @param {*} threadlist the list of threads to render
+   * @param {*} user_id the current id
+   * @param {*} isEdited whether the thread is edited or not
+   */
   async function renderEditedThreads(threadlist, user_id, isEdited) {
     let threadWrapper = document.getElementById("threadWrapper")
     removeChildElements(threadWrapper)
@@ -81,6 +109,12 @@ function constructThread(msgData, user_id) {
     }
   }
 
+  /**
+   * Creates a button label
+   * @param {*} text the text to add to the label
+   * @param {*} value the value to add to the label
+   * @returns the label dom element
+   */
   function createButtonLabel(text, value){
     let label = document.createElement("label")
     label.setAttribute("class", "tag btn btn-outline-primary")
@@ -89,6 +123,13 @@ function constructThread(msgData, user_id) {
     return label
   }
 
+  /**
+   * Creates a tag dom element
+   * @param {*} id The id of the tag
+   * @param {*} value The text inside the tag
+   * @param {*} selected the selected tag
+   * @returns the tag dom element
+   */
   function createTag(id, value, selected){
     let input = document.createElement("input")
     input.setAttribute("class", "tag btn-check")
@@ -101,6 +142,11 @@ function constructThread(msgData, user_id) {
     return input
   }
 
+  /**
+   * Creates a tag wrapper element
+   * @param {*} selected the selected value of the tag
+   * @returns the tag wrapper dom element
+   */
   function createTagWrapper(selected){
     let tagWrapper = document.createElement("div")
     tagWrapper.setAttribute("id", "tagWrapper")
@@ -129,7 +175,11 @@ function constructThread(msgData, user_id) {
     return tagWrapper
   }
   
-  function renderSlicedArray(slicedArray){
+  /**
+   * Renders the sliced array
+   * @param {*} slicedArray the presliced array
+   */
+  function renderSlicedArray(slicedArray, user_id){
     let threadWrapper = document.getElementById("threadWrapper")
     let showMore = document.getElementById("show-more");
     if (showMore) {
@@ -141,27 +191,20 @@ function constructThread(msgData, user_id) {
       let username = msgData.Creator.username;
     
       let messageDetails = createThreadObject(msgData, username)
-      let messageElement = constructThread(messageDetails);
+      let messageElement = constructThread(messageDetails, user_id);
       threadWrapper.appendChild(messageElement);
     }
     if (counter + 1 < slicedArray.length) {
-        createShowMore(slicedArray)
+        createShowMoreButton(slicedArray, "threadWrapper")
         counter++;  
     }
   }
   
-  function createShowMore(slicedArray){
-    let threadWrapper = document.getElementById("threadWrapper")
-    let showMore = document.createElement("div");
-    showMore.setAttribute("id", "show-more")
-    showMore.setAttribute("class", "list-group-item")
-    let showMoreText = document.createTextNode("Show More...")  
-    showMore.addEventListener("click", () => {renderSlicedArray(slicedArray)})
-    showMore.appendChild(showMoreText)
-    threadWrapper.appendChild(showMore)
-  }
-  
-  async function renderSearchedThreads(chatlist) {
+  /**
+   * Renders the searched threads on the page
+   * @param {*} chatlist the list of threads to render
+   */
+  async function renderSearchedThreads(chatlist, user_id) {
     counter = 0;
     let threadWrapper = document.getElementById("threadWrapper")
     removeChildElements(threadWrapper);
@@ -170,10 +213,13 @@ function constructThread(msgData, user_id) {
     } else {
       const sliceSize = 10;
       let slicedArray = slice(chatlist, sliceSize)
-      renderSlicedArray(slicedArray);    
+      renderSlicedArray(slicedArray, user_id);    
     }  
   }
   
+  /**
+   * Renders the message for when there are no results
+   */
   function renderEmptyMessage(){
     let threadWrapper = document.getElementById("threadWrapper")
     removeChildElements(threadWrapper)
@@ -183,6 +229,12 @@ function constructThread(msgData, user_id) {
     threadWrapper.appendChild(emptyMessage);
   }
   
+  /**
+   * Creates a thread Object
+   * @param {*} msgData The data contasined in the thread
+   * @param {*} username The current username
+   * @returns the created thread dom element
+   */
   function createThreadObject(msgData, username) {
     let messageDetails = {
       creator: username,
@@ -195,12 +247,21 @@ function constructThread(msgData, user_id) {
     return messageDetails;
   }
   
+  /**
+   * Removes the children of an element
+   * @param {*} element the element to act upon
+   */
   function removeChildElements(element) {
     while (element.firstChild) {
         element.removeChild(element.lastChild);
     }
   }
 
+  /**
+   * Creates the wrapper for the group name
+   * @param {*} selectedName the sleected name for the thread
+   * @returns the group name dom element
+   */
   function createGroupNameWrapper(selectedName){
     let threadNameWrapper = document.createElement("div")
     threadNameWrapper.setAttribute("id", "threadNameWrapper")
@@ -219,6 +280,12 @@ function constructThread(msgData, user_id) {
     return threadNameWrapper
   }
 
+  /**
+   * Creates options elements
+   * @param {*} priority the priority of the thread
+   * @param {*} selected which priority is selected
+   * @returns the option dom element
+   */
   function createOption(priority, selected){
     let option = document.createElement("option")
     option.setAttribute("value", priority)
@@ -231,6 +298,11 @@ function constructThread(msgData, user_id) {
     return option
   }
 
+  /**
+   * Creates a dom element for the urgency info
+   * @param {*} selected the sleected urgency
+   * @returns the urgency wrapper dom element
+   */
   function createUrgencyWrapper(selected){
     let urgencyWrapper = document.createElement("div")
     urgencyWrapper.setAttribute("id", "urgencyWrapper")
@@ -251,12 +323,22 @@ function constructThread(msgData, user_id) {
     return urgencyWrapper
   }
 
+  /**
+   * Adds text to a specfic dom element
+   * @param {*} element the element to act on
+   * @param {*} text the text to add to the element
+   * @returns the newly updated element
+   */
   function addTextToElement(element, text){
     let textNode = document.createTextNode(text)
     element.appendChild(textNode)
     return element
   }
 
+  /**
+   * Creates a button wrapper
+   * @returns the newly created button wrapper dom element
+   */
   function createButttonWrapper(){
     let buttonWrapper = document.createElement("div")
     buttonWrapper.setAttribute("id", "buttonWrapper")
@@ -273,11 +355,20 @@ function constructThread(msgData, user_id) {
     return buttonWrapper
   }
 
+  /**
+   * Removes the create thread overlay
+   */
   function removeCreateOverlay(){
     document.getElementById("overlay").remove();
     document.getElementById("createModal").remove();
   }
 
+  /**
+   * Creates the edit button wrapper dom element
+   * @param {*} thread_id The id of the specific thread
+   * @param {*} prev_thred_name the previous thread's name to compare if it changed
+   * @returns the edit button wrapper dom element
+   */
   function createEditButttonWrapper(thread_id, prev_thred_name){
     let buttonWrapper = document.createElement("div")
     buttonWrapper.setAttribute("id", "buttonWrapper")
@@ -294,6 +385,9 @@ function constructThread(msgData, user_id) {
     return buttonWrapper
   }
 
+  /**
+   * Removes the edit overlay
+   */
   function removeEditOverlay(){
     document.getElementById("overlay").remove();
     document.getElementById("editModal").remove();
