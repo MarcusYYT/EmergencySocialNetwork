@@ -10,7 +10,7 @@ export async function postSubscriber(username, subscriberId){
     let returnJson = {success: false, message: "default"};
     try {
         if (await User.ifUserExist(username) === false) {
-            returnJson.message = "Username not exists.";
+            returnJson.message = "Username does not exist";
             return returnJson;
         } else {
             const user = await User.getOneUser(username);
@@ -18,7 +18,7 @@ export async function postSubscriber(username, subscriberId){
             await Subscriber.addSubscriber(userId, subscriberId).then((data)=>{
                 if(data === false){
                     returnJson.success = false;
-                    returnJson.message = 'User already subscribed';
+                    returnJson.message = 'A subscription for this user has already been added';
 
                 } else {
                     returnJson.success = true;

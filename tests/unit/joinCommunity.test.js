@@ -4,7 +4,7 @@ import { sync as rimrafSync } from 'rimraf';
 
 let database
 beforeAll(async () => {
-  DatabaseAdapter.setTestDatabaseName("unit_db.sqlite")
+  DatabaseAdapter.setTestDatabaseName("thread_unit_db.sqlite")
   DatabaseAdapter.setCurrentDatabase('test')
   database = DatabaseAdapter.getDatabase()
   await database.authenticate();// Connect to the database
@@ -14,7 +14,7 @@ beforeAll(async () => {
 afterAll(async () => {
   await database.close();// Disconnect from the database
   await new Promise(resolve => setTimeout(resolve, 1000));
-  rimrafSync('./unit_db.sqlite');
+  rimrafSync('./thread_unit_db.sqlite');
 });
 
 describe('Username should be at least 3 characters long', () => {

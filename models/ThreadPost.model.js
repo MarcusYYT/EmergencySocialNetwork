@@ -61,7 +61,7 @@ export class ThreadPost {
      * @param {number} userId - The ID of the user who is creating the post
      * @param {string} content - The content of the post
      * @param {string} status - The status when the user push the post
-     * @returns The created post
+     * @returns {Promise} The created post
      */
     static async createThreadPost(userId, content, status, thread_id) {
         return await this.model.create({
@@ -75,7 +75,7 @@ export class ThreadPost {
     /**
      * Get a post by its ID
      * @param {number} post_id - The ID of the post
-     * @returns The post with the given ID, or null if not found
+     * @returns {Promise} The post with the given ID, or null if not found
      */
     static async getThreadPostById(post_id) {
         return await this.model.findByPk(post_id);
@@ -83,7 +83,8 @@ export class ThreadPost {
 
     /**
      * Get all posts
-     * @returns An array of all posts
+     * @param {string} thread_id The keyword
+     * @returns {Promise} A promise containing an array of all posts
      */
     static async getAllThreadPosts(thread_id) {
         return await this.model.findAll({
@@ -101,7 +102,9 @@ export class ThreadPost {
 
     /**
      * Query the posts by keyword
+     * @param {string} thread_id The specific thread id
      * @param {string} query The keyword
+     * @returns {Promise} a promise containing the thread posts queried for in the database
      */
     static async queryThreadPosts(thread_id, query) {
         return await this.model.findAll({

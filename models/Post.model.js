@@ -45,7 +45,7 @@ export class Post {
      * @param {number} userId - The ID of the user who is creating the post
      * @param {string} content - The content of the post
      * @param {string} status - The status when the user push the post
-     * @returns The created post
+     * @returns {Promise} The created post
      */
     static async createPost(userId, content, status) {
         return await this.model.create({
@@ -58,7 +58,7 @@ export class Post {
     /**
      * Get a post by its ID
      * @param {number} post_id - The ID of the post
-     * @returns The post with the given ID, or null if not found
+     * @returns {Promise} The post with the given ID, or null if not found
      */
     static async getPostById(post_id) {
         return await this.model.findByPk(post_id);
@@ -67,7 +67,7 @@ export class Post {
     /**
      * Get all posts by a specific user
      * @param {number} userId - The ID of the user
-     * @returns An array of posts created by the user
+     * @returns {Promise} An array of posts created by the user
      */
     static async getPostsByUser(userId) {
         return await this.model.findAll({
@@ -80,7 +80,7 @@ export class Post {
     /**
      * Get all posts by a specific username
      * @param {string} username - The username of the user
-     * @returns An array of posts created by the user with the given username
+     * @returns {Promise} An array of posts created by the user with the given username
      */
     static async getPostsByUsername(username) {
         return await this.model.findAll({
@@ -93,13 +93,14 @@ export class Post {
 
     /**
      * Get all posts
-     * @returns An array of all posts
+     * @returns {Promise} An array of all posts
      */
     static async getAllPosts() {
         return await this.model.findAll({
             include: [{
               model: User.model,
-              attributes: ['username']
+              attributes: ['username'],
+              where: { isActive: true }
             }]
           });
     }
@@ -108,6 +109,7 @@ export class Post {
     /**
      * Query the posts by keyword
      * @param {string} query The keyword
+     * @returns {Promise} The posts found by the query
      */
     static async queryPosts(query) {
         return await this.model.findAll({
@@ -125,7 +127,7 @@ export class Post {
     /**
      * Delete a post
      * @param {number} postId - The ID of the post to delete
-     * @returns The number of deleted posts (1 if successful, 0 if not found)
+     * @returns {Promise} The number of deleted posts (1 if successful, 0 if not found)
      */
     static async deletePost(postId) {
         return await this.model.destroy({

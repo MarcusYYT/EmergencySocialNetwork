@@ -2,7 +2,7 @@ import supertest from 'supertest';
 import app from '../../app.js';
 import { sync as rimrafSync } from 'rimraf';
 import DatabaseAdapter from '../../config/DatabaseAdapter.js';
-
+import { createAdminUser, createNewUser } from '../../services/userService.js';
 
 let server;
 let database;
@@ -729,4 +729,67 @@ describe('Resouece Management tests', () => {
       expect(resourceResponse.statusCode).toBe(404);
   });
 
+});
+
+describe('I5 integration test', () => {
+  test('Administraor update a user', async ()  =>{
+    const formData = {
+      user_id: 1,
+      username: 'firstid', 
+      password: 'firstPass',
+      privilege: 'Coordinator',
+      isActive: 'Active'
+    }
+    const updateUser1 = await supertest(app).put(`/users/1`).send({userid: 1, updateAt: 'admin', updateValue: formData})
+    expect(updateUser1.body.success).toBe(true)
+    const getUser1 = await supertest(app).get('/users/1');
+    console.log(getUser1.body)
+    expect(getUser1.body.data[0].username).toBe('firstid');
+    expect(getUser1.body.data[0].privilege).toBe('Coordinator');
+  });
+
+
+  test('Administraor update the only administrator privilege and active', async ()  =>{
+    const adminUser = await createAdminUser();
+    const formData = {
+      user_id: adminUser.user_id,
+      username: 'esnadmin1', 
+      password: '',
+      privilege: 'Coordinator',
+      isActive: 'Inactive'
+    }
+    const updateUser1 = await supertest(app).put(`/users/${adminUser.user_id}`).send({userid: adminUser.user_id, updateAt: 'admin', updateValue: formData})
+    expect(updateUser1.body.success).toBe(false)
+    expect(updateUser1.body.messages.length).toBe(2)
+
+    const getUser1 = await supertest(app).get(`/users/${adminUser.user_id}`);
+    console.log(getUser1.body)
+    expect(getUser1.body.data[0].username).toBe('esnadmin1');
+    expect(getUser1.body.data[0].privilege).toBe('Administrator');
+    expect(getUser1.body.data[0].isActive).toBe(true);
+  });
+
+  test('Administraor update the multiple administrator privilege', async ()  =>{
+    const adminUser = await createAdminUser();
+    const formData = {
+      user_id: adminUser.user_id,
+      username: 'esnadmin2', 
+      password: '',
+      privilege: 'Coordinator',
+      isActive: 'Inactive'
+    }
+    const updateUser1 = await supertest(app).put(`/users/${adminUser.user_id}`).send({userid: adminUser.user_id, updateAt: 'admin', updateValue: formData})
+    expect(updateUser1.body.success).toBe(true)
+    const getUser1 = await supertest(app).get(`/users/${adminUser.user_id}`);
+    console.log(getUser1.body)
+    expect(getUser1.body.data[0].username).toBe('esnadmin2');
+    expect(getUser1.body.data[0].privilege).toBe('Coordinator');
+    expect(getUser1.body.data[0].isActive).toBe(false);
+  });
+
+  test('Non administrator cannot perform Speed test', async ()  =>{
+    const citizenUser = await createNewUser('normal', 'password');
+    const goToTest = await supertest(app).get(`/test/${citizenUser.user_id}`);
+    expect(goToTest.statusCode).toBe(403);
+  });
 });

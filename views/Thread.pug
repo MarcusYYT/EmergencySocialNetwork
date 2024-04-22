@@ -148,20 +148,22 @@ script.
 
   async function deleteThread(thread_id){
     
-    removeEditOverlay()
-
-    await fetch(`/threads/${thread_id}`, {
-          method: 'DELETE',
-          headers: {
-              'Content-Type': 'application/json',
-          }})
-          .then(response => response.json())
-          .then(data => {
-              //console.log(data);
-          })
-          .catch(error => {
-              console.error('Error fetching data:', error);
-          });
+    const confirmation = window.confirm("Are you sure you want to delete your thread?");  
+    if (confirmation) {        
+      removeEditOverlay()
+      await fetch(`/threads/${thread_id}`, {
+            method: 'DELETE',
+            headers: {
+                'Content-Type': 'application/json',
+            }})
+            .then(response => response.json())
+            .then(data => {
+                //console.log(data);
+            })
+            .catch(error => {
+                console.error('Error fetching data:', error);
+            });
+    }  
   }
 
   async function editThread(thread_id, prev_thread_name){
@@ -447,4 +449,10 @@ script.
         hideOverlay();
   });
   
+
+
+  socket.on("inactive", () => {
+    alert("your account is changed to Inactive by a Adminitrator. You will be logged out.");
+    logout();
+  })
   

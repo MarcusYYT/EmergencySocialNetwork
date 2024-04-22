@@ -49,7 +49,7 @@ async function addSubscriber(){
     const userId = window.userId
     const subscriberUsername = document.getElementById('subscriber-username').value;
     if (!subscriberUsername) {
-        alert('Please enter a username to subscribe.');
+        alert('Please enter a username to subscribe to');
         return;
     }
 
@@ -64,7 +64,7 @@ async function addSubscriber(){
         }),
     }).then(response => response.json()).then(data =>{
         if (data.success === true){
-            alert('Subscriber added successfully!');
+            alert('Subscriber added successfully');
             loadSubscribers();
         } else {
             alert(data.message);
@@ -89,5 +89,31 @@ async function removeSubscriber(subscriberId, userId) {
         alert(`Failed to remove subscription: ${error.message}`);
     }
 }
+
+async function logout(){
+    const userId = window.userId;
+    const requestBody = {
+      user_id: userId,
+      updateAt: "online_status",
+      updateValue: "offline",
+    }
+    await fetch(`/users/${userId}`, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+        'X-Performance-Test': 'true'
+      },
+      body: JSON.stringify(requestBody),
+    }).then(response=> response.json()).then((data)=>{
+      console.log(data.message)
+    })
+
+    window.location.href = `/`
+  }
+
+socket.on("inactive", () => {
+    alert("your account is changed to Inactive by a Adminitrator. You will be logged out.");
+    logout();
+})
 
 window.onload = loadSubscribers;

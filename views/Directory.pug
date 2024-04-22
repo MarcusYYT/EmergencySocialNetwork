@@ -7,12 +7,13 @@ html(lang='en')
     link(rel='stylesheet', href='https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css')
     link(rel='stylesheet', type='text/css', href='/stylesheets/index.css')
     script(src='/javascripts/directory.js')
+    script(src='/javascripts/threads.js')
     script(src='https://cdn.socket.io/4.7.4/socket.io.min.js')
     script(src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js")
     title Directory 
   body
     .navbar.container
-      i.bi.bi-plus-circle-fill.col.col-2(onclick='toggleHamburgerMenu()')
+      i.bi.bi-list.col.col-2(onclick='toggleHamburgerMenu()')
       a#logout.btn.btn-primary.col.col-1(onclick='logout()') Log Out
     #hamburgerMenu.links
       a.navLinks(onclick='routeToAnnouncement()') Annoucements
@@ -20,8 +21,8 @@ html(lang='en')
       a.navLinks(onclick='routeToResource()') Resources
       a.navLinks(onclick='routeToThreadWall()') Threads
       a.navLinks(onclick='routeToEmergencyContact()') Contacts
-      a.navLinks(onclick='routeToTest()') Speed Test
-      a.navLinks(onclick='routeToSetting()') Setting
+      a.navLinks(id='TestBtn', onclick='routeToTest()') Speed Test  
+      a.navLinks(onclick='routeToSetting()') Notification
     form#directory-search-form.input-group.mb-3(onsubmit="submitSearch()" onchange="searchFinished()")
         select#search-select.form-select-sm
           option(value='User') User
@@ -51,6 +52,7 @@ html(lang='en')
     script.
       const socket = io();
       let username = '';
+      let role = '';
 
       socket.on('connect', async function() {
         console.log('Connected to server');
@@ -95,7 +97,7 @@ html(lang='en')
             console.log('unread message status: ')
             console.log(unRead)
             // implement to display the notification
-            renderESNList(sortUsers(data.data),unRead.data)
+            renderESNList(sortUsers(data.data),unRead.data, role)
           })
         }).catch(error => {
           console.error(error);
@@ -109,7 +111,7 @@ html(lang='en')
 
         if (searchValue === ""){
           const userId = #{user_id}
-            await getUsers().then(response => response.json()).then(async (data)=>{
+            await getUsers().then(async (data)=>{
               await fetch(`/privatePosts/unread/${userId}`, {
               method: 'GET',
               headers: {
@@ -119,7 +121,7 @@ html(lang='en')
                 console.log('unread message status: ')
                 console.log(unRead)
                 // implement to display the notification
-                renderESNList(sortUsers(data.data),unRead.data)
+                renderESNList(sortUsers(data.data),unRead.data, role)
               })
           });
         }
@@ -137,11 +139,25 @@ html(lang='en')
         }).then(response => response.json()).then((data) => {
           username = data.data[0].username;
           renderMyStatus(username, data.data[0].status)
+          role = data.data[0].privilege;
+          if (role !== 'Administrator') {
+            document.getElementById('TestBtn').style.display = 'none';
+          } else {
+            document.getElementById('TestBtn').style.display = 'flex';
+          }
         })
       }
 
       async function getUsers(){
-        return await fetch('/users')
+        const response = await fetch('/users');
+        const data = await response.json();
+        if (role === 'Administrator') {
+          return data;
+        } else {
+          data.data = data.data.filter(user => user.isActive);
+          console.log(data)
+          return data;
+        }
       }
 
       function sortUsers(data){
@@ -168,7 +184,7 @@ html(lang='en')
         return online.concat(offline)
       }
 
-      function renderESNList(list, unread) {
+      function renderESNList(list, unread, role) {
         const userId = #{user_id}
         let directory = document.getElementById("directory");
         while(directory.firstChild){
@@ -191,12 +207,13 @@ html(lang='en')
         for (let i = 0; i < list.length; i++) {
           let userDiv = document.createElement("div");
           userDiv.setAttribute("class", "directory-user row gx-1 justify-content-between");
-          userDiv.addEventListener("click", () => {routeToPrivateChat(userId, list[i].user_id)})
+          
 
           let usernameField = document.createElement("p");
           usernameField.setAttribute("class", "usernameField col-10");
           let usernameFieldText = document.createTextNode(list[i].username);
           usernameField.appendChild(usernameFieldText);
+          usernameField.addEventListener("click", () => {routeToPrivateChat(userId, list[i].user_id)})
 
           let onlineStatusField = document.createElement("div");
           onlineStatusField.setAttribute("class", "onlineStatusField col-1");
@@ -230,6 +247,16 @@ html(lang='en')
 
 
           statusField.appendChild(statusFieldImage);
+
+          if(role === 'Administrator'){
+            let editUserImage = document.createElement("i");
+            editUserImage.setAttribute("class", "bi bi-pencil-fill edit-user");  
+            editUserImage.addEventListener("click", () => {
+              renderEditUserOverlay(list[i])
+            })
+            userDiv.appendChild(editUserImage);
+          }
+
           userDiv.appendChild(onlineStatusField);
           userDiv.appendChild(usernameField);
 
@@ -251,15 +278,198 @@ html(lang='en')
         }
       }
 
-      
-      function addEventListenerstoStatus(){
-          let okStatus = document.getElementById("ok-status");
-          let helpStatus = document.getElementById("help-status");
-          let emergencyStatus = document.getElementById("emergency-status");
 
-          okStatus.addEventListener("click", () => {changeMyStatus("OK")})
-          helpStatus.addEventListener("click", () => {changeMyStatus("help")})
-          emergencyStatus.addEventListener("click", () => {changeMyStatus("emergency")})
+      function createRadioButtonWrapper(selected){
+        let dropdownWrapper = document.createElement("div");
+        dropdownWrapper.setAttribute("class", "dropdownWrapper");
+
+        let dropdownLabel = document.createElement("label");
+        dropdownLabel.setAttribute("class", "dropdownLabel");
+        dropdownLabel.setAttribute("for", "statusSelect");  // Ensure the label corresponds to the select element
+        dropdownLabel = addTextToElement(dropdownLabel, "Account Status:");
+
+        let dropdownSelect = document.createElement("select");
+        dropdownSelect.setAttribute("class", "form-select-sm dropdownSelect");
+        dropdownSelect.setAttribute("id", "statusSelect");  // Set unique ID here
+
+        let activeOption = createOption("Active", selected);
+        let inactiveOption = createOption("Inactive", selected);
+
+        dropdownSelect.appendChild(activeOption);
+        dropdownSelect.appendChild(inactiveOption);
+
+        dropdownWrapper.appendChild(dropdownLabel);
+        dropdownWrapper.appendChild(dropdownSelect);
+
+        return dropdownWrapper;
+      }
+
+      function createInput(selectedName, label, id){
+        let inputWrapper = document.createElement("div")
+        inputWrapper.setAttribute("class", "inputWrapper")
+        let inputNameLabel = document.createElement("label")
+        inputNameLabel.setAttribute("class", "inputNameLabel")
+        inputNameLabel = addTextToElement(inputNameLabel, label)
+        let inputNameInput = document.createElement("input")
+        inputNameInput.setAttribute("class", "form-control inputNameInput")
+        inputNameInput.setAttribute("id", id)
+        inputNameInput.setAttribute("type", "text")
+        if(selectedName != undefined){
+          inputNameInput.value = selectedName
+        }
+        inputWrapper.appendChild(inputNameLabel)
+        inputWrapper.appendChild(inputNameInput)
+        return inputWrapper
+      }
+
+      function createDropdown(selected){
+        let dropdownWrapper = document.createElement("div");
+        dropdownWrapper.setAttribute("class", "dropdownWrapper");
+
+        let dropdownLabel = document.createElement("label");
+        dropdownLabel.setAttribute("class", "dropdownLabel");
+        dropdownLabel.setAttribute("for", "privilegeSelect");  // Ensure the label corresponds to the select element
+        dropdownLabel = addTextToElement(dropdownLabel, "Privilege Level:");
+
+        let dropdownSelect = document.createElement("select");
+        dropdownSelect.setAttribute("class", "form-select-sm dropdownSelect");
+        dropdownSelect.setAttribute("id", "privilegeSelect");  // Set unique ID here
+
+        let coordinatorOption = createOption("Coordinator", selected);
+        let adminOption = createOption("Administrator", selected);
+        let citizenOption = createOption("Citizen", selected);
+
+        dropdownSelect.appendChild(coordinatorOption);
+        dropdownSelect.appendChild(adminOption);
+        dropdownSelect.appendChild(citizenOption);
+
+        dropdownWrapper.appendChild(dropdownLabel);
+        dropdownWrapper.appendChild(dropdownSelect);
+
+        return dropdownWrapper;
+      }
+
+      // See userController for needing a new service method
+      function renderEditUserOverlay(userData){
+        let editOverlay = document.createElement("div")
+        editOverlay.setAttribute("id", "overlay")
+        let body = document.getElementsByTagName("body")[0]
+        let directoryWrapper = document.getElementById("directory-wrapper")
+        let editModal = document.createElement("div")
+        editModal.setAttribute("id", "editModal")
+        let cancelButton = document.createElement("i")
+        cancelButton.setAttribute("class", "bi bi-x")
+        cancelButton.addEventListener("click", () => {removeEditOverlay()})
+        let editHeader = document.createElement("h2")
+        editHeader.setAttribute("id", "editHeader")
+        editHeader.appendChild(document.createTextNode("Edit User"))
+
+        let isActive = '';
+        if(userData.isActive){
+          isActive = 'Active'
+        } else {
+          isActive = 'Inactive'
+        }
+        let statusWrapper = createRadioButtonWrapper(isActive);
+        let privilegeWrapper = createDropdown(userData.privilege);
+        let usernameWrapper = createInput(userData.username, "Username: ", "usernameWrapper");
+        let passwordWrapper = createInput("", "Password: ", "passwordWrapper");
+
+        let saveButton = document.createElement("button")
+        saveButton.className = "btn btn-primary validate"
+        saveButton = addTextToElement(saveButton, "Save Changes")
+        //validate changes for that specific username typed in
+        saveButton.addEventListener("click", async () => {
+          let privilegeValue = document.getElementById("privilegeSelect").value;
+          let statusValue = document.getElementById("statusSelect").value;
+          validateChanges(document.getElementById("usernameWrapper").value, 
+                                                                          userData.username, 
+                                                                          document.getElementById("passwordWrapper").value,
+                                                                          privilegeValue,
+                                                                          statusValue,
+                                                                          userData.user_id)})
+
+        editModal.appendChild(cancelButton)
+        editModal.appendChild(editHeader)
+        editModal.appendChild(statusWrapper)
+        editModal.appendChild(privilegeWrapper)
+        editModal.appendChild(usernameWrapper)
+        editModal.appendChild(passwordWrapper)
+        editModal.appendChild(saveButton)
+        body.insertBefore(editOverlay, directoryWrapper)
+        body.insertBefore(editModal, directoryWrapper)
+      }
+
+      async function validateChanges(username, prev_username, password, privilegeValue, statusValue, userId){
+        await fetch('/auth/validate', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ username: username, prev_username: prev_username })
+          }).then(response => response.json()).then((data) => {  
+            let formData = {
+              user_id: userId,
+              username: username, 
+              password: password,
+              privilege: privilegeValue,
+              isActive: statusValue
+            }
+            if(username === prev_username){
+              formData.username = -1;
+            }
+            validationResult(data.success, data.message, validatePassword(password), formData)
+        })
+      }
+
+      function validatePassword(password) {     
+        if (password.length < 4 && password.length > 0) {  
+          return false;
+        }
+        return true;
+      }
+
+      async function validationResult(usernameValidation, message, passwordValidation, formData) {
+        if (usernameValidation && passwordValidation) {
+            const confirmation = window.confirm("Username and Password Validation Success! Do you want to save the changes?");  
+            if (confirmation) {
+              await fetch(`/users/${formData.user_id}`, {
+                method: 'PUT',
+                headers: {
+                  'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({userid: formData.user_id, updateAt: 'admin', updateValue: formData}),
+                }).then(response => response.json())
+                  .then(data => {
+                      console.log(data);
+                      if(!data.success){
+                        alert(data.messages)
+                      }
+                      console.log("Data saved");
+                      
+                  })
+                  .catch(error => {
+                      console.error('Error push status history', error);
+                  });
+              removeEditOverlay();
+            }  
+        }     
+        else if (!passwordValidation){
+          alert("The password has to be at least 4 characters long");
+        }
+        else{
+          alert(message);
+        }
+      }
+
+      function addEventListenerstoStatus(){
+        let okStatus = document.getElementById("ok-status");
+        let helpStatus = document.getElementById("help-status");
+        let emergencyStatus = document.getElementById("emergency-status");
+
+        okStatus.addEventListener("click", () => {changeMyStatus("OK")})
+        helpStatus.addEventListener("click", () => {changeMyStatus("help")})
+        emergencyStatus.addEventListener("click", () => {changeMyStatus("emergency")})
       }
 
       async function changeMyStatus(selectedValue) {
@@ -295,7 +505,7 @@ html(lang='en')
           if(updateStatus.ok){
               const fetchUser = await getUsers()
               if(fetchUser.ok){
-                const data = await fetchUser.json();
+                const data = fetchUser
                 console.log(data)
 
                 await fetch(`/privatePosts/unread/${userId}`, {
@@ -305,7 +515,7 @@ html(lang='en')
                   },
                   }).then(response => response.json()).then((unRead) => {
                     // implement to display the notification
-                    renderESNList(sortUsers(data.data),unRead.data)
+                    renderESNList(sortUsers(data.data),unRead.data, role)
                 })
               
               }
@@ -377,7 +587,7 @@ html(lang='en')
 
       socket.on("status_update", async ()=> { 
         const userId = #{user_id}
-        await getUsers().then(response => response.json()).then(async (data)=>{
+        await getUsers().then(async (data)=>{
           await fetch(`/privatePosts/unread/${userId}`, {
           method: 'GET',
           headers: {
@@ -387,7 +597,7 @@ html(lang='en')
             console.log('unread message status: ')
             console.log(unRead)
             // implement to display the notification
-            renderESNList(sortUsers(data.data),unRead.data)
+            renderESNList(sortUsers(data.data),unRead.data, role)
           })
 
         });
@@ -428,8 +638,12 @@ html(lang='en')
 
       function routeToTest() {
         const user_id = #{user_id};
-        window.location.href = `/test`;
+        const confirmation = window.confirm("You have elected to do a speed test. Doing so will log you out. Do you want to proceed?");  
+        if (confirmation) {        
+          window.location.href = `/test/${user_id}`;
+        }      
       }
+      
       function routeToSetting() {
         const user_id = #{user_id};
         window.location.href = `/setting/${user_id}`;
@@ -438,6 +652,11 @@ html(lang='en')
       function routeToResource() {
         const user_id = #{user_id};
         window.location.href = `/resources/${user_id}`;
+      }
+
+      function routeToAdministrate() {
+        const user_id = #{user_id};
+        window.location.href = `/administration/${user_id}`;
       }
       
       async function logout(){
@@ -460,6 +679,11 @@ html(lang='en')
 
         window.location.href = `/`
       }
+
+      socket.on("inactive", () => {
+        alert("your account is changed to Inactive by a Adminitrator. You will be logged out.");
+        logout();
+      })
 
       function showOverlay() {
         document.getElementById('overlayForTest').style.display = 'flex';
@@ -497,8 +721,8 @@ html(lang='en')
             } else {
               const postData = {
                 user_id: userId,
-                primary_id: 1,
-                alternative_id: 2,
+                primary_id: 10,
+                alternative_id: 11,
                 emergency_message: 'I need HELP!!!',
               };
 
@@ -511,6 +735,7 @@ html(lang='en')
               })
                 .then((response) => response.json())
                 .then((data) => {
+                  console.log("emergency contact creation")
                   console.log(data);
                 })
                 .catch((error) => {

@@ -96,7 +96,8 @@ export class Announcement {
         return await this.model.findAll({
             include: [{
             model: User.model,
-            attributes: ['username']
+            attributes: ['username'],
+            where: { isActive: true }
             }]
         });
     }
@@ -118,6 +119,7 @@ export class Announcement {
     /**
      * Query the announcements by keyword
      * @param {string} query The keyword
+     * @returns the announcements found by the query
      */
     static async queryAnnouncement(query) {
         return await this.model.findAll({

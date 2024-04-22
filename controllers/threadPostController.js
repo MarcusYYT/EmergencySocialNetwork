@@ -8,7 +8,7 @@ export async function getThreadPostById(req, res){
             if(resolve.exist==true){
                 res.status(200).json({success:true, data: resolve.data, message:"Fetch post successful"});
             } else {
-                res.status(404).json({success:false, data:[], message:"The post is not exist"});
+                res.status(404).json({success:false, data:[], message:"The post does not exist"});
             }
         })
     }  catch (error) {

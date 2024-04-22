@@ -6,7 +6,7 @@ import { sync as rimrafSync } from 'rimraf';
 
 let database
 beforeAll(async () => {
-  DatabaseAdapter.setTestDatabaseName("unit_db.sqlite")
+  DatabaseAdapter.setTestDatabaseName("thread_post_unit_db.sqlite")
   DatabaseAdapter.setCurrentDatabase('test')
   database = DatabaseAdapter.getDatabase()
   await database.authenticate();// Connect to the database
@@ -19,7 +19,7 @@ beforeAll(async () => {
 afterAll(async () => {
   await database.close();// Disconnect from the database
   await new Promise(resolve => setTimeout(resolve, 1000));
-  rimrafSync('./unit_db.sqlite');
+  rimrafSync('./thread_post_unit_db.sqlite');
 });
 
 describe('You should be able to create a thread post and get its id', () => {

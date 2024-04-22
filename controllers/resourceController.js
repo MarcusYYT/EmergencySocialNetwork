@@ -9,7 +9,7 @@ export async function getResourceById(req, res){
             if(resolve.exist==true){
                 res.status(200).json({success:true, data: resolve.data, message:"Fetch resource successful"});
             } else {
-                res.status(404).json({success:false, data:[], message:"The resource is not exist"});
+                res.status(404).json({success:false, data:[], message:"The resource dooes not exist"});
             }
         })
     }  catch (error) {

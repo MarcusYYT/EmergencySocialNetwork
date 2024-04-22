@@ -12,7 +12,7 @@ export async function getUserById(req, res){
                 res.status(200).json({success:true, data: resolve.data, message:"Fetch user successful"});
             } else {
                 console.log("I am by id")
-                res.status(404).json({success:false, data:[], message:"The user is not exist"});
+                res.status(404).json({success:false, data:[], message:"The user does not exist"});
             }
         })
     }  catch (error) {
@@ -27,7 +27,7 @@ export async function getUserByUsername(req, res){
             if (resolve.exist==true) {
                 res.status(200).json({success:true, data: resolve.data, message:"Fetch user with username successful"});
             } else {
-                res.status(404).json({success:false, data:[], message:"The user with username is not exist"});
+                res.status(404).json({success:false, data:[], message:"The user with this username does not exist"});
             }
         })
     }  catch (error) {
@@ -45,32 +45,54 @@ export async function getUserList(req, res){
     }
 }
 
+
+async function updateOnlineStatus(req, res) {
+    const userId = req.body.user_id;
+    const updateStatus = req.body.updateValue;
+    const resolve = await userService.changeOnlineStatus(userId, updateStatus);
+    res.status(200).json({success: resolve.success, message: resolve.message});
+}
+
+async function updateStatus(req, res) {
+    const userId = req.body.user_id;
+    const updateStatus = req.body.updateValue;
+    const username = req.body.username;
+    const resolve = await userService.changeStatus(userId, updateStatus);
+    io.emit('status_update');
+    const data = await getAllSubscriberOfOneUser(userId);
+    const strategy = emailStrategies['StatusChanges'];
+    data.forEach(element => {
+        if (element.status_changes && shouldSendEmailNotification(element.status, element.email_notification_preference)){
+            strategy(element.email, username, updateStatus);
+        }
+    });
+    res.status(200).json({success: resolve.success, message: resolve.message});
+}
+
+async function updateAdminDetails(req, res) {
+    const userData = req.body.updateValue;
+    const result = await userService.updateUserDetails(userData);
+    if (result.success) {
+        io.emit('status_update');
+        res.status(201).json(result);
+    } else {
+        res.status(400).json(result);
+    }
+}
+
 export async function updateUser(req, res){
     try{
-        const userId = req.body.user_id;
-        const updateAtrribute = req.body.updateAt;
-        if(updateAtrribute === "online_status"){
-            const updateStatus = req.body.updateValue;
-            await userService.changeOnlineStatus(userId, updateStatus).then((resolve)=>{
-                res.status(200).json({success: resolve.success, message: resolve.message});
-        })}
-        if(updateAtrribute === "status"){
-            const updateStatus = req.body.updateValue;
-            const username = req.body.username;
-            await userService.changeStatus(userId, updateStatus).then(async (resolve)=>{
-                io.emit('status_update')
-                await getAllSubscriberOfOneUser(userId).then((data) =>{
-                    const strategy = emailStrategies['StatusChanges'];
-                    data.forEach(element =>{
-                        if (element.status_changes && shouldSendEmailNotification(element.status, element.email_notification_preference)){
-                            strategy(element.email, username, updateStatus);
-                        }
-                    })
-
-                })
-                res.status(200).json({success: resolve.success, message: resolve.message});
-        })}
-
+        const updateAttribute = req.body.updateAt;
+        switch (updateAttribute) {
+            case "online_status":
+                return updateOnlineStatus(req, res);
+            case "status":
+                return updateStatus(req, res);
+            case "admin":
+                return updateAdminDetails(req, res);
+            default:
+                throw new Error('Invalid update attribute');
+        }
     } catch(error){
         res.status(500).json({ message: 'Error updating user', error: error.message });
     }
