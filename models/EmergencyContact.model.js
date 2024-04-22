@@ -115,7 +115,7 @@ export class EmergencyContact {
 
     /**
      * Change the primary emergency contact of the specific user id
-     * @param {integer} userId - The user id
+     * @param {number} userId - The user id
      * @param {number} primary - The ID of the primary emergency contact
      * @returns {Promise} A promise indicating the success or failure of the update operation.
      */
@@ -129,7 +129,7 @@ export class EmergencyContact {
 
     /**
      * Change the alternative emergency contact of the specific user id
-     * @param {integer} userId - The user id
+     * @param {number} userId - The user id
      * @param {number} alternative - The ID of the alternative emergency contact
      * @returns {Promise} A promise indicating the success or failure of the update operation.
      */
@@ -143,7 +143,7 @@ export class EmergencyContact {
 
     /**
      * Change the emergency message of the specific user id
-     * @param {integer} userId - The user id
+     * @param {number} userId - The user id
      * @param {string} message - The emergency message
      * @returns {Promise} A promise indicating the success or failure of the update operation.
      */
@@ -157,7 +157,7 @@ export class EmergencyContact {
 
     /**
      * Change the location permission of the specific user id
-     * @param {integer} userId - The user id
+     * @param {number} userId - The user id
      * @param {string} permission - The location permission
      * @returns {Promise} A promise indicating the success or failure of the update operation.
      */
@@ -171,7 +171,7 @@ export class EmergencyContact {
 
     /**
      * Change the location link of the specific user id
-     * @param {integer} userId - The user id
+     * @param {number} userId - The user id
      * @param {string} link - The location link
      * @returns {Promise} A promise indicating the success or failure of the update operation.
      */
@@ -185,7 +185,7 @@ export class EmergencyContact {
 
         /**
      * Delete specific user id
-     * @param {integer} userId - The user id
+     * @param {number} userId - The user id
      * @returns {Promise} A promise indicating the deletion of given user.
      */
         static async deleteEmergencyContact(userId) {

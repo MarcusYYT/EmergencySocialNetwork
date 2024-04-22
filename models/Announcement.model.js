@@ -118,6 +118,7 @@ export class Announcement {
     /**
      * Query the announcements by keyword
      * @param {string} query The keyword
+     * @returns the announcements found by the query
      */
     static async queryAnnouncement(query) {
         return await this.model.findAll({

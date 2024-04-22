@@ -219,7 +219,7 @@ function constructThread(msgData, user_id) {
     return threadNameWrapper
   }
 
-  function createUrgencyOption(priority, selected){
+  function createOption(priority, selected){
     let option = document.createElement("option")
     option.setAttribute("value", priority)
     option = addTextToElement(option, priority)
@@ -241,9 +241,9 @@ function constructThread(msgData, user_id) {
     urgencyLabel.setAttribute("id", "urgencyLabel")
     urgencyLabel = addTextToElement(urgencyLabel, "Urgency Level:")
     urgencyWrapper.appendChild(urgencyLabel)
-    let urgencyHigh = createUrgencyOption("High Priority", selected)
-    let urgencyNormal = createUrgencyOption("Normal Priority", selected)
-    let urgencyLow = createUrgencyOption("Low Priority", selected)
+    let urgencyHigh = createOption("High Priority", selected)
+    let urgencyNormal = createOption("Normal Priority", selected)
+    let urgencyLow = createOption("Low Priority", selected)
     urgencySelect.appendChild(urgencyHigh)
     urgencySelect.appendChild(urgencyNormal)
     urgencySelect.appendChild(urgencyLow)

@@ -1,6 +1,6 @@
 import express from 'express';
 import {login, register, tokenResolve, logout} from '../controllers/authController.js';
-import { showLogin, showRegister } from '../controllers/authController.js';
+import { showLogin, showRegister, validateUser } from '../controllers/authController.js';
 import passport from "../config/passportConfig.js";
 
 const router = express.Router();
@@ -60,6 +60,8 @@ const router = express.Router();
 router.get('/login', showLogin);
 
 router.get('/register', showRegister);
+
+router.post('/validate', validateUser);
 
 router.post('/register', register)
 

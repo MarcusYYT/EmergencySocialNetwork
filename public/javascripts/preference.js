@@ -29,7 +29,7 @@ async function savePreferences() {
       body: JSON.stringify(data),
     }).then(response => response.json())
       .then(result => {
-        alert('Preferences saved successfully!');
+        alert('Preferences saved successfully');
       })
       .catch(error => {
         console.error('Error saving preferences:', error);

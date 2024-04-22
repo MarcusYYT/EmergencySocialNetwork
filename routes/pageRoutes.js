@@ -50,6 +50,15 @@ router.get('/threadWall/:thread_id/:user_id', authenticateJWT, (req, res) => {
     }
 });
 router.get('/emergencyContact/:user_id', authenticateJWT, authenticateRoute, (req, res) => {renderPage(req, res, 'EmergencyContact')});
+// router.get('/administration/:user_id', authenticateJWT, (req, res) => {
+//     const user_id = req.user.data[0].user_id;
+//     if (user_id != req.params.user_id) {
+//         res.status(401).json({message: "Unauthorized access."});
+//     }
+//     else {
+//         res.render('Administrate', {user_id: user_id});
+//     }
+// });
 router.get('/resources/:user_id', authenticateJWT, authenticateRoute, (req, res) => {renderPage(req, res, 'Resources')});
 router.get('/resources/shared/:user_id', authenticateJWT, (req, res) => {
     const user_id = req.user.data[0].user_id;

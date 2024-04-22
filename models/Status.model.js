@@ -41,7 +41,7 @@ export class Status {
      * Create a new status
      * @param {number} userId - The ID of the user who is creating the status history
      * @param {string} status - The status user updated
-     * @returns The promise of this method
+     * @returns {Promise} The promise of this method
      */
     static async createStatus(userId, status) {
         return await this.model.create({
@@ -53,7 +53,7 @@ export class Status {
     /**
      * Get a status by its ID
      * @param {number} status_id - The ID of the status
-     * @returns The promise , if resolve, return status with the given ID, or null if not found
+     * @returns {Promise} The promise , if resolve, return status with the given ID, or null if not found
      */
     static async getStatusById(status_id) {
         return await this.model.findByPk(status_id);
@@ -62,6 +62,7 @@ export class Status {
     /**
      * Query the status by user_id
      * @param {number} userId The status keyword
+     * @returns {Promise} The statuses from the user specified
      */
     static async queryUserStatus(userId) {
         return await this.model.findAll({
@@ -79,7 +80,7 @@ export class Status {
     /**
      * Get all status history by a specific user
      * @param {number} userId - The ID of the user
-     * @returns An array of statuses created by the user
+     * @returns {Promise} An array of statuses created by the user
      */
     static async getStatusByUser(userId) {
         return await this.model.findAll({

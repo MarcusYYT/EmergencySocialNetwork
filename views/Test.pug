@@ -10,7 +10,9 @@ html
     link(rel='stylesheet', href='/stylesheets/index.css')
     script(src='/javascripts/performanceTest.js')
   body
-    .container
+    .links
+        a.btn.btn-primary(onclick='goBack()') Home
+    .container.test-wrapper
       h1 Performance Test
       .form-group.mb-3
         label(for='testDuration') Test Duration (s)
@@ -18,9 +20,9 @@ html
       .form-group.mb-3
         label(for='interval') Interval (ms)
         input#interval.form-control(type='number', min='1', step='1', placeholder='Enter interval in milliseconds')
-      button.btn.btn-primary(onclick="startPerformanceTest()", type='button') Start Performance Test
-      button.btn.btn-secondary(onclick="endTheTest()", type='button') End Performance Test
-      button.btn.btn-primary(onclick="goBack()", type='button') Home
+      button.btn.btn-primary.test-button(onclick="startPerformanceTest()", type='button') Start Performance Test
+      button.btn.btn-secondary.test-button(onclick="endTheTest()", type='button') End Performance Test
+
   script.
     function goBack() {
       alert("Please Re-Login")

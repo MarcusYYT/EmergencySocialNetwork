@@ -2,10 +2,10 @@ import { Announcement } from '../models/Announcement.model.js'
 import { returnData } from '../config/returnJsonUtility.js'
 
 /**
- * TODO
- * @param {*} userId 
- * @param {*} content 
- * @returns 
+ * Creates a new Announcement using a user's ID and their specfiied content
+ * @param {integer} userId A user's ID
+ * @param {string} content The content of the announcement post
+ * @returns {Promise} A Promise that resolves to the created announcement object
  */
 export async function createNewAnnouncement(userId, content) {
     return await Announcement.createAnnouncement(userId, content)
@@ -13,9 +13,9 @@ export async function createNewAnnouncement(userId, content) {
 
 
 /**
- * TODO
- * @param {*} announcementId 
- * @returns 
+ * Gets an accouncement using the Announcement ID
+ * @param {integer} announcementId 
+ * @returns {JSON} A Promise that resolves to the announcement data if successful, or null if no announcement is found
  */
 export async function getAnnouncementById(announcementId){
     let returnJson = null;
@@ -27,8 +27,8 @@ export async function getAnnouncementById(announcementId){
 
 
 /**
- * TODO: write the function documentation
- * @returns 
+ *  Retrieves a list of announcements.
+ * @returns {JSON} A Promise that resolves to an object containing an array of announcement data and a message indicating the status of the operation
  */
 export async function getAnnouncementList(){
     let returnJson = {
