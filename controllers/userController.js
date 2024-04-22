@@ -71,7 +71,6 @@ export async function updateUser(req, res){
                 res.status(200).json({success: resolve.success, message: resolve.message});
         })}
         else if (updateAttribute === 'admin'){
-            console.log(req.body.updateValue);
             const userData = req.body.updateValue;
             await userService.updateUserDetails(userData).then((result)=>{
                 if(result.success === true){

@@ -385,4 +385,23 @@ export async function updateUserDetails(userData) {
     return results;
 }
 
+export async function ifCanPostAnnouncement(userId){
+  const user = await getUserById(userId);
+  if (user.data[0].privilege === 'Citizen'){
+    return false;
+  } else {
+    return true;
+  }
+}
+
+
+export async function ifCanPerformSpeedTest(userId){
+  const user = await getUserById(userId);
+  if (user.data[0].privilege === 'Administrator'){
+    return true;
+  } else {
+    return false;
+  }
+}
+
 

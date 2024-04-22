@@ -1,6 +1,6 @@
 import DatabaseAdapter from '../../config/DatabaseAdapter.js';
 import {sync as rimrafSync} from "rimraf";
-import {createAdminUser, changeUserPrivilege, changeUserActiveStatus, createNewUser, getUserById, updateUserDetails, validUser} from '../../services/userService.js'
+import {createAdminUser, changeUserPrivilege, changeUserActiveStatus, createNewUser, getUserById, updateUserDetails, validUser, ifCanPerformSpeedTest, ifCanPostAnnouncement} from '../../services/userService.js'
 import { getPostList, createNewPost } from '../../services/postService.js';
 import { getAnnouncementList, createNewAnnouncement } from '../../services/announcementService.js';
 
@@ -159,4 +159,30 @@ describe('active-inactive rule', () => {
 
         expect((await getAnnouncementList()).data.length).toBe(0);
     })
+});
+
+describe('privilege rule', () => {
+    test('Citizen cannot post Announcement', async ()  =>{
+        expect(await ifCanPostAnnouncement(3)).toBe(false);
+    });
+
+    test('Citizen cannot perform Speed Test', async ()  =>{
+        expect(await ifCanPerformSpeedTest(3)).toBe(false);
+    });
+
+    test('Coordinator can post Announcement', async ()  =>{
+        expect(await ifCanPostAnnouncement(2)).toBe(true);
+    });
+
+    test('Coordinator cannot perform speed test', async ()  =>{
+        expect(await ifCanPerformSpeedTest(2)).toBe(false);
+    });
+
+    test('Administrator can post Announcement', async ()  =>{
+        expect(await ifCanPostAnnouncement(1)).toBe(true);
+    });
+
+    test('Citizen can perform Speed Test', async ()  =>{
+        expect(await ifCanPostAnnouncement(1)).toBe(true);
+    });
 });
