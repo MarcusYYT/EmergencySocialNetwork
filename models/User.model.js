@@ -26,7 +26,18 @@ export class User {
             online_status: {
                 type: DataTypes.STRING,
                 allowNull: false
-            }
+            }, 
+            isActive: {
+                type: DataTypes.BOOLEAN,
+                allowNull: false,
+                defaultValue: true
+            },
+            privilege: {
+                type: DataTypes.ENUM,
+                values: ['Citizen', 'Coordinator', 'Administrator'],
+                allowNull: false,
+                defaultValue: 'Citizen'
+            },
         }, 
         {
             freezeTableName: true
@@ -38,7 +49,14 @@ export class User {
      * @param {string} password 
      */
     static async createUser(username, password) {
-        return await this.model.create({ username: username, password: password, status: "place_holder", online_status: "online" });
+        return await this.model.create({
+            username: username, 
+            password: password,
+            status: "place_holder",
+            online_status: "online",
+            isActive: true,
+            privilege: 'Citizen'
+        });
     }
 
     /**
