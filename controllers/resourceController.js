@@ -39,9 +39,7 @@ export async function getResourceGrouped(req, res){
 
 export async function postResource(req, res){
     try{
-        const userId = req.body.user_id;
-        const resourceData = req.body;
-        await resourceService.createNewResource(userId, resourceData).then(() =>{
+        await resourceService.createNewResource(req.body.user_id, req.body).then(() =>{
             res.status(201).json({ success: true, message: 'Post a new resource successful' });
         })
     } catch(error) {

@@ -14,7 +14,7 @@ head
   a.btn.btn-primary(onclick='routeToShared()') Back
 h2#message-header Create A New Resource Post
 #status-wrapper.dropdown
-    form(action="/resources/post" method="POST" onsubmit="return handleSubmit(event)")
+    form(action="/resource/post" method="POST" onsubmit="return handleSubmit(event)")
         input(type="hidden" name="user_id" id="user_id")
         .mb-3
             label(for="resourceName" class="form-label") Resource Name
@@ -57,13 +57,13 @@ h2#message-header Create A New Resource Post
             textarea(class="form-control" id="resourceNote" name="resource_note" rows="3")
 
         .mb-3
-            label(for="contact" class="form-label") contact
+            label(for="contact" class="form-label") Phone Number
             input(type="text" class="form-control" id="contact" name="tel" pattern="[0-9]{3}-[0-9]{3}-[0-9]{4}"
                 title="Phone number must be in the format: 123-456-7890" required)
 
         .mb-3
             label(for="shareLocation" class="form-check-label")
-                input(type="checkbox" class="form-check-input" id="shareLocation" name="share_location" onchange="toggleLocationSharing(this)")
+                input(type="checkbox" class="form-check-input" id="shareLocation" onchange="toggleLocationSharing(this)")
                 span#checkboxLabel Share my current location in this post
             input(type="hidden" id="latitude" name="latitude" value="0")
             input(type="hidden" id="longitude" name="longitude" value="0")
@@ -355,7 +355,7 @@ script.
           alert('Location data is required but not available. Please ensure location services are enabled and try again.');
           return false; // Prevent form submission if location data is missing
       }
-      const formData = new URLSearchParams(new FormData(document.querySelector('form[action="/resources/post"]')));
+      const formData = new URLSearchParams(new FormData(document.querySelector('form[action="/resource/post"]')));
       formData.append('resource_id', resourceId);
       fetch('/resource/update', {
           method: 'PUT',

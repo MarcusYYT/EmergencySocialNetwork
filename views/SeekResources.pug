@@ -89,37 +89,6 @@ script.
       window.location.href = `/`;
   }
 
-
-  // function displayResources(resources) {
-  //     const listElement = document.getElementById('resourceList'); // This should be the id of your container element
-  //
-  //     // Clear any existing content
-  //     listElement.innerHTML = '';
-  //
-  //     resources.forEach(resource => {
-  //         const resourceElement = document.createElement('div');
-  //         resourceElement.className = 'resource-item';
-  //
-  //         const nameLink = document.createElement('a');
-  //         nameLink.href = `/resources/shared/edit/${resource.resource_id}`;
-  //         nameLink.className = 'resource-link';
-  //
-  //         const nameElement = document.createElement('h3');
-  //         nameElement.textContent = `${resource.resource_name} (${resource.resource_amount})`;
-  //         resourceElement.appendChild(nameElement);
-  //         nameLink.appendChild(nameElement);
-  //         resourceElement.appendChild(nameLink);
-  //
-  //         const typeElement = document.createElement('p');
-  //         typeElement.textContent = resource.resource_type.name;
-  //         resourceElement.appendChild(typeElement);
-  //
-  //         // If you want to add more details like notes or the user who shared the resource, continue appending elements here.
-  //
-  //         listElement.appendChild(resourceElement);
-  //     });
-  // }
-
   function displayResources(groups) {
       const listElement = document.getElementById('resourceList');
       listElement.innerHTML = '';
