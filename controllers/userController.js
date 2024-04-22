@@ -48,13 +48,13 @@ export async function getUserList(req, res){
 export async function updateUser(req, res){
     try{
         const userId = req.body.user_id;
-        const updateAtrribute = req.body.updateAt;
-        if(updateAtrribute === "online_status"){
+        const updateAttribute = req.body.updateAt;
+        if(updateAttribute === "online_status"){
             const updateStatus = req.body.updateValue;
             await userService.changeOnlineStatus(userId, updateStatus).then((resolve)=>{
                 res.status(200).json({success: resolve.success, message: resolve.message});
         })}
-        if(updateAtrribute === "status"){
+        else if(updateAttribute === "status"){
             const updateStatus = req.body.updateValue;
             const username = req.body.username;
             await userService.changeStatus(userId, updateStatus).then(async (resolve)=>{
@@ -70,12 +70,9 @@ export async function updateUser(req, res){
                 })
                 res.status(200).json({success: resolve.success, message: resolve.message});
         })}
-        //hey haoming
-        //basically we had an idea to make it so that we have this updateAt == "admin"
-        //then we can update all the fields at once (no matter if the admin updated one
-        // or more) since we will pass in all attributes as a json
-        // We need a new changeUserProfile() function in userService
-        // take a look at threadController (specifically the editThread method for an example of what was done to update multiple fields at once)
+        else if (updateAttribute === 'admin'){
+            console.log(req.body.updateValue);
+        }
 
     } catch(error){
         res.status(500).json({ message: 'Error updating user', error: error.message });

@@ -48,14 +48,14 @@ export class User {
      * @param {string} username 
      * @param {string} password 
      */
-    static async createUser(username, password) {
+    static async createUser(username, password, previlege='Citizen', status='place_holder') {
         return await this.model.create({
             username: username, 
             password: password,
-            status: "place_holder",
+            status: status,
             online_status: "online",
             isActive: true,
-            privilege: 'Citizen'
+            privilege: previlege
         });
     }
 
@@ -176,5 +176,62 @@ export class User {
         })
     }
 
+    /**
+     * Change the active status of a specific user.
+     * @param {number} user_id The ID of the user whose active status is to be changed.
+     * @param {boolean} newIsActive The new active status.
+     * @returns {Promise} A promise that resolves with the update operation result.
+     */
+    static async changeActiveStatus(user_id, newIsActive) {
+        return await this.model.update({ isActive: newIsActive }, {
+            where: {
+                user_id: user_id
+            }
+        });
+    }
+
+    /**
+     * Change the privilege of a specific user.
+     * @param {number} user_id The ID of the user whose privilege is to be changed.
+     * @param {string} newPrivilege The new privilege to set.
+     * @returns {Promise} A promise that resolves with the update operation result.
+     */
+    static async changePrivilege(user_id, newPrivilege) {
+        return await this.model.update({ privilege: newPrivilege }, {
+            where: {
+                user_id: user_id
+            }
+        });
+    }
+
+    /**
+     * Change the password of a specific user.
+     * @param {number} user_id The ID of the user whose password is to be changed.
+     * @param {string} hashedPassword The new hashed password.
+     * @returns {Promise} A promise that resolves with the update operation result.
+     */
+    static async changePassword(user_id, hashedPassword) {
+        return await this.model.update({ password: hashedPassword }, {
+            where: {
+                user_id: user_id
+            }
+        });
+    }
+
+    /**
+     * Change the username of a specific user.
+     * @param {number} user_id The ID of the user whose username is to be changed.
+     * @param {string} newUsername The new username to set.
+     * @returns {Promise} A promise that resolves with the update operation result.
+     */
+    static async changeUsername(user_id, newUsername) {
+        return await this.model.update({ username: newUsername }, {
+            where: {
+                user_id: user_id
+            }
+        });
+    }
+
+    
 
 }
