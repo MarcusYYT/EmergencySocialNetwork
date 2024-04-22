@@ -122,7 +122,7 @@ export class Thread {
 
     /**
      * Change the online status of the sepcific user id
-     * @param {integer} thread_id The thread id
+     * @param {number} thread_id The thread id
      * @param {string} thread_name The name of the thread it's to be changed to
      * @param {string} urgency The name of the thread it's to be changed to
      * @param {string} tags The tag of the thread it's to be changed to

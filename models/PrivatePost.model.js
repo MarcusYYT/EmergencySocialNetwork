@@ -59,8 +59,8 @@ export class PrivatePost {
 
     /**
      * Create a private post using the sender id, receiver id, content and status of the sender
-     * @param {integer} senderId The user_id of the sender
-     * @param {integer} receiverId  - The user_id of the receiver
+     * @param {number} senderId The user_id of the sender
+     * @param {number} receiverId  - The user_id of the receiver
      * @param {string} content - The content of the private post
      * @param {string} status - The status of the sender
      * @returns {Promise} a promise containing the created post
@@ -78,7 +78,7 @@ export class PrivatePost {
 
     /**
      * Get a private post by its post id
-     * @param {integer} postId The id of the post to look for
+     * @param {number} postId The id of the post to look for
      * @returns {Promise} a promise containing the private post
      */
     static async getChatById(postId) {
@@ -87,8 +87,8 @@ export class PrivatePost {
 
     /**
      * Get all private posts between two people
-     * @param {integer} senderId The id of the sender
-     * @param {integer} receiverId The id of the receiver
+     * @param {number} senderId The id of the sender
+     * @param {number} receiverId The id of the receiver
      * @returns {Promise} a promise containing messages between chatters
      * 
      */
@@ -109,7 +109,7 @@ export class PrivatePost {
 
     /**
      * Update post in the database to reflect that a user has read it
-     * @param {integer} postId The id of the sender
+     * @param {number} postId The id of the sender
      * @returns {Promise} a promise containing the edited message in the database
      */
     static async senderRead(postId) {
@@ -122,8 +122,8 @@ export class PrivatePost {
 
      /**
      * Mark a message as read in the database
-     * @param {integer} senderId The id of the sender
-     * @param {integer} receiverId The id of the receiver
+     * @param {number} senderId The id of the sender
+     * @param {number} receiverId The id of the receiver
      * @returns {Promise} a promise containing the edited message in the database
      */
     static async markMessagesAsRead(senderId, receiverId) {
@@ -142,7 +142,7 @@ export class PrivatePost {
 
     /**
      * Gets the unread messages count for the receiver of a message using the receiver id
-     * @param {integer} receiverId The id of the receiver
+     * @param {number} receiverId The id of the receiver
      * @returns {Promise} the unread messages for the receiver of a message
      */
     static async getUnreadMessageCountsForReceiver(receiverId) {
@@ -171,8 +171,8 @@ export class PrivatePost {
     /**
      * Query the posts by keyword
      * @param {string} query The keyword
-     * @param {integer} senderId  - The user_id of the sender
-     * @param {integer} receiverId - The user_id of the reciever
+     * @param {number} senderId  - The user_id of the sender
+     * @param {number} receiverId - The user_id of the reciever
      * @returns {Promise} the posts returned by the query
      */
     static async queryPrivatePosts(senderId, receiverId, query) {

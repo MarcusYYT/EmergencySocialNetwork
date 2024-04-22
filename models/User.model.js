@@ -131,7 +131,7 @@ export class User {
 
     /**
      * Change the online status of the sepcific user id
-     * @param {integer} id The user id
+     * @param {number} id The user id
      * @param {string} status The status wants to be changed to
      * @returns {Promise} the online status that was edited in the database
      */
@@ -146,7 +146,7 @@ export class User {
     
     /**
      * Change the status of the sepcific user id
-     * @param {integer} id The user id
+     * @param {number} id The user id
      * @param {string} status The status wants to be changed to
      * @returns {Promise} the status that was edited in the database
      */
