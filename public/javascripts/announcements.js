@@ -64,7 +64,7 @@ function renderSlicedArray(slicedArray){
         announcementBoard.appendChild(announcementElement);
     }
     if (counter + 1 < slicedArray.length){
-        createShowMore(slicedArray)
+        createShowMoreButton(slicedArray, "announcement-board")
         counter++;   
     }
 }
@@ -73,8 +73,8 @@ function renderSlicedArray(slicedArray){
  *  Renders the show more button on the bottom
  * @param {*} slicedArray the array of sliced results
  */
-function createShowMore(slicedArray){
-    let announcementBoard = document.getElementById("announcement-board")
+function createShowMoreButton(slicedArray, id){
+    let element = document.getElementById(id)
     let showMore = document.createElement("div");
     showMore.setAttribute("id", "show-more")
     showMore.setAttribute("class", "list-group-item")
@@ -82,8 +82,20 @@ function createShowMore(slicedArray){
   
     showMore.addEventListener("click", () => {renderSlicedArray(slicedArray)})
     showMore.appendChild(showMoreText)
-    announcementBoard.appendChild(showMore)
+    element.appendChild(showMore)
 }
+
+// function createShowMore(slicedArray){
+//     let announcementBoard = document.getElementById("announcement-board")
+//     let showMore = document.createElement("div");
+//     showMore.setAttribute("id", "show-more")
+//     showMore.setAttribute("class", "list-group-item")
+//     let showMoreText = document.createTextNode("Show More...")
+  
+//     showMore.addEventListener("click", () => {renderSlicedArray(slicedArray)})
+//     showMore.appendChild(showMoreText)
+//     announcementBoard.appendChild(showMore)
+// }
 
 /**
  * Renders the array of searched announcements

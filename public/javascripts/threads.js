@@ -179,7 +179,7 @@ function constructThread(msgData, user_id) {
    * Renders the sliced array
    * @param {*} slicedArray the presliced array
    */
-  function renderSlicedArray(slicedArray){
+  function renderSlicedArray(slicedArray, user_id){
     let threadWrapper = document.getElementById("threadWrapper")
     let showMore = document.getElementById("show-more");
     if (showMore) {
@@ -191,35 +191,20 @@ function constructThread(msgData, user_id) {
       let username = msgData.Creator.username;
     
       let messageDetails = createThreadObject(msgData, username)
-      let messageElement = constructThread(messageDetails);
+      let messageElement = constructThread(messageDetails, user_id);
       threadWrapper.appendChild(messageElement);
     }
     if (counter + 1 < slicedArray.length) {
-        createShowMore(slicedArray)
+        createShowMoreButton(slicedArray, "threadWrapper")
         counter++;  
     }
-  }
-  
-  /**
-   *  Renders the show more button on the bottom
-   * @param {*} slicedArray the array of sliced results
-   */
-  function createShowMore(slicedArray){
-    let threadWrapper = document.getElementById("threadWrapper")
-    let showMore = document.createElement("div");
-    showMore.setAttribute("id", "show-more")
-    showMore.setAttribute("class", "list-group-item")
-    let showMoreText = document.createTextNode("Show More...")  
-    showMore.addEventListener("click", () => {renderSlicedArray(slicedArray)})
-    showMore.appendChild(showMoreText)
-    threadWrapper.appendChild(showMore)
   }
   
   /**
    * Renders the searched threads on the page
    * @param {*} chatlist the list of threads to render
    */
-  async function renderSearchedThreads(chatlist) {
+  async function renderSearchedThreads(chatlist, user_id) {
     counter = 0;
     let threadWrapper = document.getElementById("threadWrapper")
     removeChildElements(threadWrapper);
@@ -228,7 +213,7 @@ function constructThread(msgData, user_id) {
     } else {
       const sliceSize = 10;
       let slicedArray = slice(chatlist, sliceSize)
-      renderSlicedArray(slicedArray);    
+      renderSlicedArray(slicedArray, user_id);    
     }  
   }
   
