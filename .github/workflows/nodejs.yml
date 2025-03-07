@@ -24,7 +24,7 @@ jobs:
     - run: yarn install
     - run: npm run test:jest
     - name: Upload coverage to GitHub Artifacts
-      uses: actions/upload-artifact@v2
+      uses: actions/upload-artifact@v3
       with:
         name: coverage-report
         path: coverage/
