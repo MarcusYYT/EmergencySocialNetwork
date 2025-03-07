@@ -1,27 +1,44 @@
-// MySQL databse adapter
+// MySQL database adapter
 import { Sequelize } from 'sequelize';
-import DatabaseInterface from './DatabaseInterface.js';
+import dotenv from 'dotenv';
 
-export default class MySQLDatabase extends DatabaseInterface {
+dotenv.config();
+
+export default class MySQLDatabase {
     constructor() {
-        super();
-        this.sequelize = new Sequelize('Emergency_Social_Network', 'root', 'sb1sb1', {
-            host: '34.102.56.250',
+        
+        // Get database configuration from environment variables with fallbacks
+        const dbName = process.env.DB_NAME || 'Emergency_Social_Network';
+        const dbUser = process.env.DB_USER || 'root';
+        const dbPassword = process.env.DB_PASSWORD || '';
+        const dbHost = process.env.DB_HOST || 'localhost';
+        const dbPort = process.env.DB_PORT || 3306;
+        
+        
+        // Connection options
+        const options = {
+            host: dbHost,
+            port: dbPort,
             dialect: 'mysql',
-            logging: false
-        });
-    }
-
-    async connect() {
-        try {
-            await this.sequelize.authenticate();
-            console.log('MySQL Connection has been established successfully.');
-        } catch (error) {
-            console.error('Unable to connect to the database:', error);
+            logging: process.env.NODE_ENV === 'development',
+            pool: {
+                max: 10,
+                min: 0,
+                acquire: 30000,
+                idle: 10000
+            }
+        };
+        
+        // Add SSL if configured
+        if (process.env.DB_SSL === 'true') {
+            options.dialectOptions = {
+                ssl: {
+                    require: true,
+                    rejectUnauthorized: false // You might want to set this to true in production
+                }
+            };
         }
-    }
-
-    async disconnect() {
-        await this.sequelize.close();
+        
+        this.sequelize = new Sequelize(dbName, dbUser, dbPassword, options);
     }
 }

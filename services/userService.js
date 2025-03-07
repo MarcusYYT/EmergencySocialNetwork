@@ -335,9 +335,7 @@ async function changeUsernameIfNeeded(userData, results) {
           results.success = false;
           results.messages.push(usernameResult.message);
       }
-  } else {
-      console.log("Won't Change Username");
-  }
+  } 
 }
 
 async function changePasswordIfNeeded(userData, results) {
@@ -347,9 +345,7 @@ async function changePasswordIfNeeded(userData, results) {
           results.success = false;
           results.messages.push(passwordResult.message);
       }
-  } else {
-      console.log("Won't Change Password");
-  }
+  } 
 }
 
 async function changePrivilegeIfNeeded(userData, results) {
