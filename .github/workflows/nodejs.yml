@@ -22,7 +22,7 @@ jobs:
         node-version: ${{ matrix.node-version }}
     - run: npm install
     - run: yarn install
-    - run: npm run jtest 
+    - run: npm run test:jest
     - name: Upload coverage to GitHub Artifacts
       uses: actions/upload-artifact@v2
       with:
