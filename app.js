@@ -10,6 +10,9 @@ import { createServer } from 'node:http';
 import cookieParser from 'cookie-parser';
 import {swaggerOptions} from "./config/swaggerConfig.js";
 import {cleanUpDatabase, initializeDatabase} from "./utils/databaseUtils.js";
+import dotenv from 'dotenv';
+
+dotenv.config();
 
 // get the root folder for the project
 const root = process.cwd();

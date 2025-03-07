@@ -1,74 +1,97 @@
 doctype html
-head
-  meta(charset='UTF-8')
-  meta(name='viewport' content='width=device-width, initial-scale=1.0')
-  link(href='https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css' rel='stylesheet' integrity='sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3' crossorigin='anonymous')
-  link(rel='stylesheet', href='https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css')
-  link(rel='stylesheet' type='text/css' href='/stylesheets/index.css')
-  script(src='/javascripts/resources.js')
-  script(src='/javascripts/directory.js')
-  script(src='https://cdn.socket.io/4.7.4/socket.io.min.js')
-  script(src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js")
-  title Create A New Resource Post
-.links
-  a.btn.btn-primary(onclick='routeToShared()') Back
-h2#message-header Create A New Resource Post
-#status-wrapper.dropdown
-    form(action="/resource/post" method="POST" onsubmit="return handleSubmit(event)")
-        input(type="hidden" name="user_id" id="user_id")
-        .mb-3
-            label(for="resourceName" class="form-label") Resource Name
-            input(type="text" class="form-control" id="resourceName" name="resource_name" required)
+html(lang='en')
+  head
+    meta(charset='UTF-8')
+    meta(name='viewport', content='width=device-width, initial-scale=1.0')
+    link(href='https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css', rel='stylesheet', integrity='sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3', crossorigin='anonymous')
+    link(rel='stylesheet', href='https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css')
+    link(rel='stylesheet', href='https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css')
+    link(rel='stylesheet', type='text/css', href='/stylesheets/index.css')
+    script(src='/javascripts/resources.js')
+    script(src='/javascripts/directory.js')
+    script(src='https://cdn.socket.io/4.7.4/socket.io.min.js')
+    script(src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js")
+    title Create Resource
+  body.bg-light
+    // Navigation Bar
+    nav.navbar.navbar-expand-lg.navbar-light.bg-white.shadow-sm.mb-4
+      .container
+        a.btn.btn-outline-primary(onclick='routeToShared()')
+          i.fas.fa-arrow-left.me-2
+          | Back
 
-        .mb-3
-            label(for="resourceAmount" class="form-label") Resource Amount
-            input(type="number" class="form-control" id="resourceAmount" name="resource_amount" required)
+    .container.py-3
+      .row.justify-content-center
+        .col-lg-8.mx-auto
+          // Create Resource Card
+          .card.shadow-sm.border-0.rounded-3.mb-4
+            .card-header.bg-white.border-0.py-3
+              h5#message-header.mb-0.fw-bold.text-primary
+                i.fas.fa-plus-circle.me-2
+                | Create Resource Post
+            
+            .card-body
+              form(action="/resource/post", method="POST", onsubmit="handleSubmit(event)")
+                input(type="hidden", id="user_id", name="user_id", value="")
+                
+                .mb-3
+                  label(for="resourceName" class="form-label") Resource Name
+                  input(type="text" class="form-control" id="resourceName" name="resource_name" required)
+                
+                .mb-3
+                  label(for="resourceAmount" class="form-label") Amount
+                  input(type="number" class="form-control" id="resourceAmount" name="resource_amount" required)
+                
+                .mb-3
+                  label(for="resourceType" class="form-label") Type
+                  select(class="form-select" id="resourceType" name="resource_type_id" onchange="checkForNewType(this.value)" required)
+                    option(value="") Select a type
+                    option(value="new_type") Add new type
+                
+                .mb-3.type-input-group(style="display: none;")
+                  label(for="newTypeName" class="form-label") New Type Name
+                  .input-group
+                    input(type="text" class="form-control" id="newTypeName" name="new_type_name")
+                    button(type="button", class="btn btn-danger", onclick="disableTypeInput()")
+                      i.bi.bi-x
+                    button(type="button", class="btn btn-success", onclick="submitNewType()")
+                      i.bi.bi-check
+                
+                .mb-3
+                  label(for="resourceUnit" class="form-label") Unit
+                  select(class="form-select" id="resourceUnit" name="resource_unit_id" onchange="checkForNewUnit(this.value)" required)
+                    option(value="") Select a unit
+                    option(value="new_unit") Add new unit
+                
+                .mb-3.unit-input-group(style="display: none;")
+                  label(for="newUnitName" class="form-label") New Unit Name
+                  .input-group
+                    input(type="text" class="form-control" id="newUnitName" name="new_unit_name")
+                    button(type="button", class="btn btn-danger", onclick="disableUnitInput()")
+                      i.bi.bi-x
+                    button(type="button", class="btn btn-success", onclick="submitNewUnit()")
+                      i.bi.bi-check
 
-        .mb-3
-            label(for="resourceType" class="form-label") Resource Type
-            select(class="form-select" id="resourceType" name="resource_type_id" required onchange="checkForNewType(this.value)")
-                option(value="") Select Type
-                // Populate these options dynamically with your server-side logic
-                option(value="new_type") Add new type...
-                // etc.
-            .input-group.mb-3(class="type-input-group" style="display: none;")
-                input(type="text" class="form-control" id="newTypeName"  placeholder="New Type Name" onchange="enableTypeInput()")
-                button(type="button", class="btn btn-danger", onclick="disableTypeInput()" )
-                    bi.bi-trash-fill
-                button(type="button", class="btn btn-success", onclick="submitNewType()")
-                    bi.bi-check
+                .mb-3
+                  label(for="resourceNote" class="form-label") Note
+                  textarea(class="form-control" id="resourceNote" name="resource_note" rows="3")
 
-        .mb-3
-            label(for="resourceUnit" class="form-label") Resource Unit
-            select(class="form-select" id="resourceUnit" name="resource_unit_id" required onchange="checkForNewUnit(this.value)")
-                option(value="") Select Unit
-                // Populate these options dynamically with your server-side logic
-                option(value="new_unit") Add new unit...
-                // etc.
-            .input-group.mb-3(class="unit-input-group" style="display: none;")
-                input(type="text" class="form-control" id="newUnitName" placeholder="New Unit Name" onchange="enableTypeInput()")
-                button(type="button", class="btn btn-danger", onclick="disableUnitInput()")
-                    bi.bi-trash-fill
-                button(type="button", class="btn btn-success", onclick="submitNewUnit()")
-                    bi.bi-check
+                .mb-3
+                  label(for="contact" class="form-label") Phone Number
+                  input(type="text" class="form-control" id="contact" name="tel" pattern="[0-9]{3}-[0-9]{3}-[0-9]{4}"
+                      title="Phone number must be in the format: 123-456-7890" required)
 
-        .mb-3
-            label(for="resourceNote" class="form-label") Note
-            textarea(class="form-control" id="resourceNote" name="resource_note" rows="3")
+                .mb-3.form-check
+                  input(type="checkbox" class="form-check-input" id="shareLocation" onchange="toggleLocationSharing(this)")
+                  label(for="shareLocation" class="form-check-label")
+                    span#checkboxLabel Share my current location in this post
+                  input(type="hidden" id="latitude" name="latitude" value="0")
+                  input(type="hidden" id="longitude" name="longitude" value="0")
 
-        .mb-3
-            label(for="contact" class="form-label") Phone Number
-            input(type="text" class="form-control" id="contact" name="tel" pattern="[0-9]{3}-[0-9]{3}-[0-9]{4}"
-                title="Phone number must be in the format: 123-456-7890" required)
-
-        .mb-3
-            label(for="shareLocation" class="form-check-label")
-                input(type="checkbox" class="form-check-input" id="shareLocation" onchange="toggleLocationSharing(this)")
-                span#checkboxLabel Share my current location in this post
-            input(type="hidden" id="latitude" name="latitude" value="0")
-            input(type="hidden" id="longitude" name="longitude" value="0")
-
-        button(type="submit" class="btn btn-primary") Submit
+                .d-grid.mt-4
+                  button(type="submit" class="btn btn-primary btn-lg") 
+                    i.fas.fa-save.me-2
+                    | Submit
 
 script(src='https://cdn.socket.io/4.7.4/socket.io.min.js')
 script.
@@ -174,11 +197,8 @@ script.
 
   function checkForNewType(value) {
       if (value === 'new_type') {
-          // var modal = new bootstrap.Modal(document.getElementById('addNewModal'), {});
-          // document.getElementById('modalBodyText').innerText = 'Please add a new resource type:';
-          // modal.show();
-            document.querySelector('.type-input-group').style.display = 'flex';
-            document.getElementById('newTypeName').focus();
+          document.querySelector('.type-input-group').style.display = 'flex';
+          document.getElementById('newTypeName').focus();
       }
   }
   function checkForNewUnit(value) {
@@ -386,8 +406,8 @@ script.
       document.getElementById('message-header').textContent = 'Edit Resource Post';
       const deleteButton = document.createElement('button');
       deleteButton.type = 'button';
-      deleteButton.className = 'btn btn-danger';
-      deleteButton.textContent = 'Delete';
+      deleteButton.className = 'btn btn-danger mt-3';
+      deleteButton.innerHTML = '<i class="fas fa-trash-alt me-2"></i> Delete';
       deleteButton.onclick = deleteResource;
       document.querySelector('form').appendChild(deleteButton);
       document.getElementById('checkboxLabel').textContent = 'Update my location';

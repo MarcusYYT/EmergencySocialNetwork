@@ -132,5 +132,26 @@ dist
 # Jetbrains config
 .idea
 
+# MacOS
 .DS_Store
 jsdoc
+
+# Package lock files
+package-lock.json
+
+# Test coverage
+coverage-report/
+
+# Local config files
+config.local.js
+
+# Build artifacts
+build/
+dist/
+
+# Editor specific files
+.vscode/
+*.sublime-*
+
+# Yarn lock file (if you prefer to use package-lock.json)
+# yarn.lock
