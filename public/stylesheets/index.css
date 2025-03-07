@@ -1,22 +1,16 @@
 html, body {
     margin: 0;
-    background-color: #238EE1;
 }
 
 a {
     margin-top: 10px;
 }
 
-a.btn.btn-primary {
-    margin: 6px 6px 6px 0;
-    width: 95px;
-}
 
 #hamburgerMenu {
     display: none;
     position: fixed;
     flex-direction: column;
-    background-color: #238EE1;
     width: 34vw;
     height: 100vh;
     z-index: 4;
@@ -131,54 +125,6 @@ button#ack-btn {
     z-index: 0;
 }
 
-
-.login-form {
-    width: 80vw;
-    height: 35vh;
-    max-width: 460px;
-    max-height: 350px;
-    display: flex;
-    flex-direction: column;
-    padding: 2vh 4vw 2vh 4vw;
-    text-align: center;
-    position: relative;
-    z-index: 100;
-    background-color: #78caff;
-    border-radius: 18px;
-    overflow: hidden;
-    justify-content: center;
-    align-items: center;
-}
-
-.login-form h2 {
-    font-size: 5.5vw;
-    font-weight: 400;
-    color: #031926;
-    margin-bottom: 2vh;
-}
-
-.login-form input {
-    margin: 6px 0;
-    height: 36px;
-    border: none;
-    border-radius: 4px;
-    padding: 0 14px;
-    width: 65vw;
-}
-
-.login-form button {
-    margin-top: 20px;
-    height: 36px;
-    border: none;
-    border-radius: 4px;
-    padding: 0 14px;
-    width: 150px;
-}
-
-.login-form button:hover {
-    background-color: rgba(255, 255, 255, 0.5);
-}
-
 #post-wrapper {
     width: 80vw;
     border-radius: 15px;
@@ -195,14 +141,12 @@ button#ack-btn {
 form#post-form {
     display: flex;
     flex-direction: column;
-    width: 85vw;
     justify-content: end;
     margin-bottom: 5vw;
 }
 
 div#message-board {
-    width: 85vw;
-    margin: 0 3vw 3vw 3vw;
+    /* margin: 0 3vw 3vw 3vw; */
     overflow: scroll;
     height: 75vh;
     border-radius: 15px;
@@ -210,11 +154,10 @@ div#message-board {
 }
 
 div#announcement-board {
-    width: 85vw;
-    margin: 0 3vw 3vw 3vw;
+    /* width: 85vw; */
+    margin: 0;
     overflow: scroll;
     height: 75vh;
-    border-radius: 15px;
 }
 
 .empty-message{
@@ -235,24 +178,17 @@ textarea {
 }
 
 button#post-btn {
-    border-radius: 0px 0px 15px 15px;
-}
-
-button#thread-btn {
-    width: 68vw;
-    margin-left: auto;
-    margin-right: auto;
-    position: relative;
-    display: block;
+    border-radius: 5 px;
 }
 
 h2#message-header {
     text-align: center;
     margin-top: 1.5vh;
     font-size: 8vw;
-    color: white;
+    color: #031926;
     margin-bottom: 1vh;
 }
+
 
 #change-status-btn {
     width: 64vw;
@@ -344,12 +280,18 @@ p.onlineStatusField {
 
 span.message-sender {
     font-weight: bold;
+    font-size: 0.9rem;
     color: #031926;
 }
 
 .message-body {
-    font-size: 4.5vw;
+    font-size: 1.2rem;
     color: #031926;
+}
+
+.message-date{
+    font-size: 0.6rem;
+    color: gray
 }
 
 #status-wrapper {
@@ -426,19 +368,6 @@ label {
     z-index: 1000;
   }
 
-#directory-search-form {
-    width: 80vw;
-    margin: auto;
-}
-
-.search-form {
-    width: 85vw;
-}
-
-.search-input {
-    border-radius: 15px;
-}
-
 select#search-select {
     width: 23vw;
     font-size: 4vw;
@@ -448,12 +377,7 @@ select#search-select {
     border: none;
 }
 
-select#urgencySelect {
-    width: 35vw;
-    font-size: 4vw;
-    height: 4.5vh;
-    border: none;
-}
+
 
 option{
     font-size: 3.5vw;
@@ -477,7 +401,7 @@ div#show-more {
     background-color: #fff;
     background-clip: border-box;
     border: 1px solid rgba(0, 0, 0, .125);
-    border-radius: 15px;
+    border-radius: 10px;
     margin-bottom: 1vh;
 }
 
@@ -586,11 +510,8 @@ div#editModal {
 }
 
 div#thread-board {
-    width: 85vw;
     margin: 0 3vw 3vw 3vw;
-    height: 75vh;
-    border-radius: 15px;
-    background-color: #78caff;
+    height: 50vh;
 }
 
 div#threadNameWrapper {
@@ -601,12 +522,6 @@ div#urgencyWrapper {
     margin-bottom: 2vh;
 }
 
-.thread {
-    background-color: #c5ebff;
-    border-radius: 10px;
-    padding: 2vw;
-    margin-bottom: 1vh;
-}
 
 .delete {
     width: 32vw;
@@ -633,22 +548,12 @@ h2#editHeader {
     text-align: center;
 }
 
-label{
-    font-size: 4vw;
-    color: #031926;
-    padding-bottom: 0.5vh;
-}
+
 
 div#buttonWrapper {
     justify-content: space-between;
     display: flex;
     margin-top: 3vh;
-}
-
-.thread-name {
-    font-weight: bold;
-    font-size: 5vw;
-    color:#031926
 }
 
 .lowPriority {
@@ -700,108 +605,8 @@ div#buttonWrapper {
     background-color: #c5ebff;
 }
 
-div#search-terms {
-    margin: 3vw 0 3vw 0;
-    overflow-x: auto;
-    overflow-y: hidden;
-    display: inline-block;
-    width: 85vw;
-    white-space: nowrap;
-    border-radius: 17px;
-}
 
-select#search-select-filter {
-    width: 31vw;
-    font-size: 4vw;
-    height: 5vh;
-    border-radius: 15px;
-    background-color: #78caff;
-    border: none;
-    margin-left: auto;
-    position: relative;
-    display: block;
-    right: 7vw;
-}
 
-select#search-select-filter {
-    width: 37vw;
-    font-size: 4vw;
-    height: 5vh;
-    border-radius: 15px;
-    background-color: #78caff;
-    border: none;
-    margin-right: auto;
-    position: relative;
-    display: block;
-    right: 18vw;
-}
-
-#emergency-wrapper {
-    background-color: #78caff;
-    width: 80vw;
-    border-radius: 15px;
-    height: 88vh;
-    position: relative;
-    display: flex;
-    margin: auto;
-    top: 1.5;
-    flex-direction: column;
-    text-align: center;
-    padding: 15px;
-}
-
-#emergency-header {
-    text-align: center;
-    padding: 20px 0px 10px 0px;
-    font-size: 8vw;
-}
-
-#primary-contact-form,
-#alternative-contact-form,
-#emergency-message-form {
-    display: flex;
-    flex-direction: column;
-}
-
-#primary-contact,
-#alternative-contact,
-#user-message {
-    font-size: 20px;
-    font-style: italic;
-    font-weight: 800;
-    margin-bottom: 10px;
-}
-
-#primary-input,
-#alternative-input {
-    width: 50vw;
-    height: 10vw;
-    border-radius: 5px;
-    padding-left: 10px;
-    margin: 0px auto 15px auto;
-    border: none;
-}
-
-#primary-button,
-#alternative-button,
-#message-button {
-    width: 25vw;
-    margin: auto;
-    margin-bottom: 5px;
-}
-
-#emergency-message {
-    height: 10vh;
-    width: 65vw;
-    border-radius: 5px;
-    margin: auto;
-    margin-bottom: 15px;
-}
-
-#location-sharing-text {
-    font-size: 20px;
-    font-weight: 500;
-}
 
 button.btn.btn-primary.validate {
     margin-right: auto;

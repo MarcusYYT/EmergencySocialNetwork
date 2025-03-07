@@ -1,0 +1,19 @@
+runtime: nodejs20  # Use Node.js 20 (or 21 if available in App Engine)
+
+env: standard
+
+instance_class: F1  # Smallest instance, adjust based on your needs
+
+automatic_scaling:
+  min_instances: 0
+  max_instances: 1
+  target_cpu_utilization: 0.65
+
+env_variables:
+  NODE_ENV: "production"
+  # sensitive values will be set via GitHub secrets
+
+handlers:
+- url: /.*
+  script: auto
+  secure: always  # Forces HTTPS 

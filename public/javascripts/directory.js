@@ -37,24 +37,43 @@ function hideNavOverlay(){
  */
 function renderMyStatus(username, status) {
     let profile = document.getElementById("status-wrapper");
-    if (document.getElementById("status-header") != undefined) {
-        profile.removeChild(document.getElementById("status-header"));
-        profile.removeChild(document.getElementById("user-info"))
+    
+    // Clear existing content if it exists
+    while (profile.firstChild && profile.firstChild.id !== "status-list" && profile.firstChild.className !== "dropdown mt-3 w-100") {
+        profile.removeChild(profile.firstChild);
     }
     
-    let user = document.createElement("h1");
-    user.setAttribute("id", "status-header");
-    let userText = document.createTextNode(username);
-    user.appendChild(userText);
+    // Create username element
+    let userElement = document.createElement("h3");
+    userElement.setAttribute("id", "status-header");
+    userElement.className = "fw-bold mb-2";
+    userElement.textContent = username;
     
-    let userInfo = document.createElement("p");
-    userInfo.setAttribute("id", "user-info");
-    let userInfoText = document.createTextNode("My current status is: " + status);
-    userInfo.appendChild(userInfoText);
+    // Create status badge
+    let statusBadge = document.createElement("div");
+    statusBadge.setAttribute("id", "user-info");
+    statusBadge.className = "mb-3";
     
-    let statusForm = document.getElementById("status-list");
-    profile.insertBefore(user, statusForm);
-    profile.insertBefore(userInfo, statusForm);
+    let badgeClass = "";
+    let iconClass = "";
+    
+    if (status === "OK") {
+        badgeClass = "badge bg-success";
+        iconClass = "fas fa-check-circle";
+    } else if (status === "help") {
+        badgeClass = "badge bg-warning text-dark";
+        iconClass = "fas fa-exclamation-circle";
+    } else if (status === "emergency") {
+        badgeClass = "badge bg-danger";
+        iconClass = "fas fa-exclamation-triangle";
+    }
+    
+    statusBadge.innerHTML = `<span class="${badgeClass} px-3 py-2"><i class="${iconClass} me-1"></i> Current Status: ${status}</span>`;
+    
+    // Insert elements at the beginning of the status wrapper
+    profile.insertBefore(statusBadge, profile.firstChild);
+    profile.insertBefore(userElement, profile.firstChild);
+    profile.insertBefore(avatar, profile.firstChild);
 }
 
 /**

@@ -4,10 +4,30 @@ html
     meta(charset='utf-8')
     meta(name='viewport', content='width=device-width, initial-scale=1.0')
     link(href='https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css', rel='stylesheet', integrity='sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3', crossorigin='anonymous')
-    link(rel='stylesheet', type='text/css', href='/stylesheets/index.css')
-    title Home
-  body
-    .wrapper
-      .links
-        a.btn.btn-primary(href='/auth/login') Login
-      h1#header Emergency Social Network
+    link(rel='stylesheet', href='https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css')
+    title Emergency Social Network
+  body.bg-light
+    .container.py-5
+      .row.justify-content-center
+        .col-md-8
+          .card.shadow-lg.border-0.rounded-3
+            .card-body.p-5.text-center
+              .mb-4
+                i.fas.fa-hands-helping.text-primary.fa-4x.mb-3
+                h1.display-4.fw-bold.text-primary Emergency Social Network
+                p.lead.text-muted Connect with your community during emergencies
+              
+              .row.mt-5
+                .col-md-8.mx-auto
+                  p.mb-4 A platform designed to help communities coordinate and communicate during emergency situations.
+                  
+                  .d-grid.gap-3
+                    a.btn.btn-primary.btn-lg.shadow(href='/auth/login')
+                      i.fas.fa-sign-in-alt.me-2
+                      | Login
+                    a.btn.btn-outline-secondary.btn-lg(href='/about')
+                      i.fas.fa-info-circle.me-2
+                      | Learn More
+              
+              .mt-5.text-muted.small
+                p &copy; 2024 Emergency Social Network. All rights reserved.

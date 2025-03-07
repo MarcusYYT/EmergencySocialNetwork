@@ -1,44 +1,87 @@
+doctype html
 html(lang='en')
   head
     meta(charset='UTF-8')
     meta(name='viewport', content='width=device-width, initial-scale=1.0')
     link(href='https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css', rel='stylesheet', integrity='sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3', crossorigin='anonymous')
     link(rel='stylesheet', href='https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css')
+    link(rel='stylesheet', href='https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css')
     link(rel='stylesheet', type='text/css', href='/stylesheets/index.css')
     script(src='/javascripts/emergencyContact.js')
     script(src='https://cdn.socket.io/4.7.4/socket.io.min.js')
     script(src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js")
-    title Emergency Contact 
-  body
-    .navbar.container
-        a.btn.btn-primary(onclick='routeToDirectory()') Back
-    #emergency-wrapper
-        form#primary-contact-form(method='put')
-            h2 Primary Contact
-            input#primary-input(type='text', name='primary', value='', placeholder='New Contact' required='')
-            button#primary-button.btn.btn-primary(type='button' onclick='changePrimaryContact()') Save
-        form#alternative-contact-form(method='put')
-            h2 Alternative Contact
-            input#alternative-input(type='text', name='alternative', value='', placeholder='New Contact' required='')
-            button#alternative-button.btn.btn-primary(type='button' onclick='changeAlternativeContact()') Save
-        form#emergency-message-form(method='put')
-            h2 Message
-            textarea#emergency-message(placeholder='Type your personalized emergency message here...' required='')
-            button#message-button.btn.btn-primary(type='button' onclick='changeEmergencyMessage()') Save
-        form
-            p#location-sharing-text Allow location sharing?
-            .form-check.form-check-inline
-                input#location-yes.form-check-input(type='radio', name='location', value='yes', onclick='getLocation()')
-                label.form-check-label(for='location-yes') YES
-            .form-check.form-check-inline
-                input#location-no.form-check-input(type='radio', name='location', value='no', onclick='disableLocationSharing()')
-                label.form-check-label(for='location-no') NO
-            button#message-button.btn.btn-primary(type='button' onclick='changeLocationPermission()') Save
-    
+    title Emergency Contact
+  body.bg-light
+    // Navigation Bar
+    nav.navbar.navbar-expand-lg.navbar-light.bg-white.shadow-sm.mb-4
+      .container
+        a.btn.btn-outline-primary(onclick='routeToDirectory()')
+          i.fas.fa-arrow-left.me-2
+          | Back to Directory
 
-script(src='https://cdn.socket.io/4.7.4/socket.io.min.js')
+    .container.py-3
+      .row.justify-content-center
+        .col-lg-8.mx-auto
+          // Emergency Contact Card
+          .card.shadow-sm.border-0.rounded-3.mb-4
+            .card-header.bg-white.border-0.py-3
+              h5.mb-0.fw-bold.text-primary
+                i.fas.fa-ambulance.me-2
+                | Emergency Contacts
+            
+            .card-body.p-4
+              // Primary Contact Form
+              form#primary-contact-form.mb-4(method='put')
+                h5.mb-3.text-dark Primary Contact
+                .input-group.mb-3
+                  input#primary-input.form-control(type='text', name='primary', value='', placeholder='New Contact' required='')
+                  button#primary-button.btn.btn-primary(type='button' onclick='changePrimaryContact()')
+                    i.fas.fa-save.me-2
+                    | Save
+              
+              // Alternative Contact Form
+              form#alternative-contact-form.mb-4(method='put')
+                h5.mb-3.text-dark Alternative Contact
+                .input-group.mb-3
+                  input#alternative-input.form-control(type='text', name='alternative', value='', placeholder='New Contact' required='')
+                  button#alternative-button.btn.btn-primary(type='button' onclick='changeAlternativeContact()')
+                    i.fas.fa-save.me-2
+                    | Save
+              
+              // Emergency Message Form
+              form#emergency-message-form.mb-4(method='put')
+                h5.mb-3.text-dark Emergency Message
+                .mb-3
+                  textarea#emergency-message.form-control(rows='4', placeholder='Type your personalized emergency message here...' required='')
+                .d-grid
+                  button#message-button.btn.btn-primary(type='button' onclick='changeEmergencyMessage()')
+                    i.fas.fa-save.me-2
+                    | Save Message
+              
+              // Location Sharing Form
+              form#location-form.mb-4
+                h5.mb-3.text-dark Location Sharing
+                p#location-sharing-text.mb-3 Allow location sharing?
+                .mb-3
+                  .form-check.form-check-inline
+                    input#location-yes.form-check-input(type='radio', name='location', value='yes', onclick='getLocation()')
+                    label.form-check-label(for='location-yes') YES
+                  .form-check.form-check-inline
+                    input#location-no.form-check-input(type='radio', name='location', value='no', onclick='disableLocationSharing()')
+                    label.form-check-label(for='location-no') NO
+                .d-grid
+                  button#location-button.btn.btn-primary(type='button' onclick='changeLocationPermission()')
+                    i.fas.fa-save.me-2
+                    | Save Preference
+
+    // Testing Overlay
+    #overlayForTest.position-fixed.top-0.start-0.w-100.h-100.bg-dark.d-none.justify-content-center.align-items-center.text-white(style='opacity: 0.9; z-index: 2000;')
+      .text-center.p-4
+        .spinner-border.text-light.mb-3(role='status')
+        p.h5 Currently Speed Testing... 
+        p Don't Close the Browser Tab...
+
 script.
-
     const socket = io();
     let username = '';
     let userId = '';
@@ -148,16 +191,13 @@ script.
             const data = await response.json();
             if (data.data[0].length === 0) {
                 alert("User does not exist!")
-                return;
-            }
-            primary_id = data.data[0][0].user_id;
-
-            if (userId === primary_id) {
+            } else if (userId === data.data[0][0].user_id) {
                 alert("You cannot set yourself as contact!")
-            } else if (primary_id === alternative_id) {
+            } else if (data.data[0][0].user_id === alternative_id) {
                 alert("You cannot set both contact to the same person")
             } else {
-                primary_username = new_primary_username;
+                primary_username = new_primary_username
+                primary_id = data.data[0][0].user_id
                 const requestBody = {
                     user_id: userId,
                     updateAt: "primary_contact_id",
@@ -172,8 +212,9 @@ script.
                     },
                     body: JSON.stringify(requestBody),
                     })
+
                 renderEmergencyContact(primary_username, alternative_username, emergency_message);
-            }
+            } 
         } else {
             console.error('Failed to fetch user data');
         }
@@ -186,7 +227,7 @@ script.
         if (!new_alternative_username) {
             alert("You cannot have empty input!")
             return; 
-        } 
+        }
 
         alternativeForm.querySelector('[name="alternative"]').value = ''; // Reset input value
         if (alternative_username === new_alternative_username) {
@@ -205,18 +246,13 @@ script.
             const data = await response.json();
             if (data.data[0].length === 0) {
                 alert("User does not exist!")
-                return;
-            }
-            alternative_id = data.data[0][0].user_id;
-
-            if (primary_id === 1) {
-                alert("You need to set up primary contact first!")
-            } else if (userId === alternative_id) {
+            } else if (userId === data.data[0][0].user_id) {
                 alert("You cannot set yourself as contact!")
-            } else if (primary_id === alternative_id) {
+            } else if (primary_id === data.data[0][0].user_id) {
                 alert("You cannot set both contact to the same person")
             } else {
                 alternative_username = new_alternative_username
+                alternative_id = data.data[0][0].user_id
                 const requestBody = {
                     user_id: userId,
                     updateAt: "alternative_contact_id",
@@ -333,6 +369,15 @@ script.
         const user_id = #{user_id}
         window.location.href = `/directory/${user_id}`
     }
+    
+    function showOverlay() {
+      document.getElementById('overlayForTest').style.display = 'flex';
+    }
+
+    function hideOverlay() {
+      document.getElementById('overlayForTest').style.display = 'none';
+    }
+    
     async function logout(){
         const userId = #{user_id};
         const requestBody = {
@@ -352,7 +397,7 @@ script.
         })
 
         window.location.href = `/`
-      }
+    }
 
     socket.on("inactive", () => {
         alert("your account is changed to Inactive by a Adminitrator. You will be logged out.");

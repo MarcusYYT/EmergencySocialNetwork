@@ -1,18 +1,42 @@
 doctype html
-head
-  meta(charset='UTF-8')
-  meta(name='viewport' content='width=device-width, initial-scale=1.0')
-  link(href='https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css' rel='stylesheet' integrity='sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3' crossorigin='anonymous')
-  link(rel='stylesheet', href='https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css')
-  link(rel='stylesheet' type='text/css' href='/stylesheets/index.css')
-  script(src='/javascripts/announcements.js')
-  title Shared Resources
-.links
-  a.btn.btn-primary(onclick='routeToResources()') Back
-#post-wrapper
-    h2#message-header Resources Shared by Others
-    #announcement-board
-        #resourceList.resource-list
+html(lang='en')
+  head
+    meta(charset='UTF-8')
+    meta(name='viewport', content='width=device-width, initial-scale=1.0')
+    link(href='https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css', rel='stylesheet', integrity='sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3', crossorigin='anonymous')
+    link(rel='stylesheet', href='https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css')
+    link(rel='stylesheet', href='https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css')
+    link(rel='stylesheet', type='text/css', href='/stylesheets/index.css')
+    title Shared Resources
+  body.bg-light
+    // Navigation Bar
+    nav.navbar.navbar-expand-lg.navbar-light.bg-white.shadow-sm.mb-4
+      .container
+        a.btn.btn-outline-primary(onclick='routeToResources()')
+          i.fas.fa-arrow-left.me-2
+          | Back
+
+    .container.py-3
+      .row.justify-content-center
+        .col-lg-8.mx-auto
+          // Resources Card
+          .card.shadow-sm.border-0.rounded-3.mb-4
+            .card-header.bg-white.border-0.py-3
+              h5#message-header.mb-0.fw-bold.text-primary
+                i.fas.fa-search.me-2
+                | Resources Shared by Others
+            
+            .card-body
+              #resourceList.resource-list
+                // Resources will be rendered here
+
+    // Testing Overlay
+    #overlayForTest.position-fixed.top-0.start-0.w-100.h-100.bg-dark.d-none.justify-content-center.align-items-center.text-white(style='opacity: 0.9; z-index: 2000;')
+      .text-center.p-4
+        .spinner-border.text-light.mb-3(role='status')
+        p.h5 Currently Speed Testing... 
+        p Don't Close the Browser Tab...
+
 script(src='https://cdn.socket.io/4.7.4/socket.io.min.js')
 script.
 
@@ -41,9 +65,6 @@ script.
     const user_id = #{user_id}
     window.location.href = `/resources/${user_id}`
   }
-
-
-
 
   window.onload = async function() {
     const userId = #{user_id}
@@ -94,7 +115,7 @@ script.
       listElement.innerHTML = '';
 
       const table = document.createElement('table');
-      table.className = 'table table-hover';
+      table.className = 'table table-hover shadow-sm rounded';
 
       const thead = document.createElement('thead');
       const headers = ['Resource Type', 'Total Amount', 'Users Involved'];
@@ -102,29 +123,33 @@ script.
       headers.forEach(headerText => {
           const header = document.createElement('th');
           header.textContent = headerText;
+          header.className = 'py-3';
           headerRow.appendChild(header);
       });
       thead.appendChild(headerRow);
       table.appendChild(thead);
-
 
       const tbody = document.createElement('tbody');
       groups.forEach(group => {
           console.log("group")
           console.log(group);
           const row = document.createElement('tr');
-          row.addEventListener('click', () => loadTypeDetails(group.resource_type_id, group['resource_type.name'])); // 点击时加载该类型的详细列表
+          row.className = 'cursor-pointer';
+          row.addEventListener('click', () => loadTypeDetails(group.resource_type_id, group['resource_type.name']));
 
           const typeCell = document.createElement('td');
           typeCell.textContent = group['resource_type.name'];
+          typeCell.className = 'py-3';
           row.appendChild(typeCell);
 
           const amountCell = document.createElement('td');
           amountCell.textContent = group.amount_sum;
+          amountCell.className = 'py-3';
           row.appendChild(amountCell);
 
           const userCell = document.createElement('td');
           userCell.textContent = group.user_count;
+          userCell.className = 'py-3';
           row.appendChild(userCell);
 
           tbody.appendChild(row);
@@ -138,7 +163,21 @@ script.
       window.location.href = `/resources/typeview/${typeId}/${typeName}`;
   }
 
+  function showOverlay() {
+    document.getElementById('overlayForTest').style.display = 'flex';
+  }
 
+  function hideOverlay() {
+    document.getElementById('overlayForTest').style.display = 'none';
+  }
+
+  socket.on("testMode", () => {
+        showOverlay();
+  });
+
+  socket.on("testFinish", () => {
+        hideOverlay();
+  });
 
   socket.on("inactive", () => {
     alert("your account is changed to Inactive by a Adminitrator. You will be logged out.");
