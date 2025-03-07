@@ -1,14 +1,17 @@
 import Mailgun from 'mailgun-js';
+import dotenv from 'dotenv';
 
-// Mailgun configuration
-// move to github secret later
-const mailgunApiKey = '8f6db5dd8cd6980f6e993af986a9019d-4b670513-7293ebc5';
-const mailgunDomain = 'mg.depasinre.xyz';
+// Load environment variables
+dotenv.config();
+
+// Mailgun configuration from environment variables
+const mailgunApiKey = process.env.MAILGUN_API_KEY;
+const mailgunDomain = process.env.MAILGUN_DOMAIN;
 const mailgun = new Mailgun({ apiKey: mailgunApiKey, domain: mailgunDomain });
 
 export function sendPublicPostUpdateEmail(email, sender, content) {
     const emailData = {
-      from: 'ESN <ESN@mg.depasinre.xyz>',
+      from: `ESN <ESN@${mailgunDomain}>`,
       to: email,
       subject: `ESN: Public Post Update`,
       text: `User \"${sender}\" sends a message on public message wall: \n \n ${content}`,
@@ -25,7 +28,7 @@ export function sendPublicPostUpdateEmail(email, sender, content) {
 
   export function sendAnnouncementUpdateEmail(email, sender, content) {
     const emailData = {
-      from: 'ESN <ESN@mg.depasinre.xyz>',
+      from: `ESN <ESN@${mailgunDomain}>`,
       to: email,
       subject: `ESN: Announcement Update`,
       text: `User \"${sender}\" published a new announcement: \n \n ${content}`,
@@ -43,7 +46,7 @@ export function sendPublicPostUpdateEmail(email, sender, content) {
 
 export function sendPrivatePostUpdateEmail(email, sender, content) {
     const emailData = {
-        from: 'ESN <ESN@mg.depasinre.xyz>',
+        from: `ESN <ESN@${mailgunDomain}>`,
         to: email,
         subject: `ESN: Private Post Update`,
         text: `User \"${sender}\" sends you a private message: \n \n ${content}`,
@@ -60,7 +63,7 @@ export function sendPrivatePostUpdateEmail(email, sender, content) {
 
 export function sendStatusUpdateEmail(email, sender, content) {
   const emailData = {
-      from: 'ESN <ESN@mg.depasinre.xyz>',
+      from: `ESN <ESN@${mailgunDomain}>`,
       to: email,
       subject: `ESN: Status Update`,
       text: `User \"${sender}\" change his/her status to: \n \n ${content}`,
